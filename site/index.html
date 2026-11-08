@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1D55C4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Forscher-Insel">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Forscher-Insel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Playwrite+DE+Grund:wght@300;400&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: ein Schulheft – liniertes Papier, Tintenblau, Sonnengelb als einziger Akzent. Kind: Lernpfad. Eltern: Übersicht. */
+:root{
+  --paper:#F3F6FA; --card:#FFFFFF; --ink:#16304F; --muted:#5B6C82; --line:#CBD8E8;
+  --blue:#1D55C4; --blue-soft:#DDE7FA; --water:#8EBAF2; --sun:#F2B705; --sun-soft:#FFF2C4;
+  --ok:#2C8A57; --ok-soft:#DDF2E5; --bad:#C0453A; --bad-soft:#FBE3E0;
+  --f-hand:'Playwrite DE Grund', 'Andika', cursive;
+  --f-body:'Andika', 'Segoe UI', system-ui, sans-serif;
+  --f-ko:'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0E1625; --card:#152038; --ink:#E5ECF6; --muted:#97A7BC; --line:#2A3B57;
+  --blue:#86AEFF; --blue-soft:#1C2D4D; --water:#3366B3; --sun:#F5C842; --sun-soft:#3A3115;
+  --ok:#62C690; --ok-soft:#173527; --bad:#F2867B; --bad-soft:#3E1F1C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0E1625; --card:#152038; --ink:#E5ECF6; --muted:#97A7BC; --line:#2A3B57;
+  --blue:#86AEFF; --blue-soft:#1C2D4D; --water:#3366B3; --sun:#F5C842; --sun-soft:#3A3115;
+  --ok:#62C690; --ok-soft:#173527; --bad:#F2867B; --bad-soft:#3E1F1C; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding-block:20px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.hand{font-family:var(--f-hand);font-weight:400}
+.ko{font-family:var(--f-ko)}
+.muted{color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.stack{display:flex;flex-direction:column;gap:14px}
+.btn{border:2px solid var(--blue);background:var(--blue);color:var(--card);border-radius:12px;padding:10px 18px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--blue)}
+.btn.sun{background:var(--sun);border-color:var(--sun);color:#2A2200}
+.btn:disabled{opacity:.45;cursor:default}
+.icon-btn{border:0;background:var(--blue-soft);color:var(--blue);border-radius:999px;width:38px;height:38px;display:inline-grid;place-items:center;flex:none}
+.icon-btn svg{width:20px;height:20px}
+.back{border:0;background:none;color:var(--blue);font-weight:700;padding:6px 0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-size:15px;z-index:50;max-width:90vw}
+
+/* Kopf */
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+.top .kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.top h1{font-family:var(--f-hand);font-weight:400;font-size:clamp(26px,6vw,36px);line-height:1.35;color:var(--blue)}
+.countdown{background:var(--sun-soft);border-radius:12px;padding:8px 12px;font-weight:700;text-align:center;flex:none}
+.countdown b{display:block;font-size:24px;line-height:1}
+
+/* Heft-Linien */
+.lined{background:var(--card);border-radius:14px;padding:18px 18px 20px 46px;position:relative;
+  background-image:repeating-linear-gradient(to bottom,transparent 0 33px,var(--line) 33px 34px);background-position:0 14px;border:1px solid var(--line)}
+.lined::before{content:"";position:absolute;left:30px;top:0;bottom:0;width:2px;background:var(--bad);opacity:.35}
+
+/* Lernpfad */
+.path{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;position:relative}
+.path::before{content:"";position:absolute;left:27px;top:20px;bottom:20px;border-left:3px dashed var(--line)}
+.stop{display:flex;gap:14px;align-items:center;padding:8px 0;position:relative}
+.stop button.main{flex:1;min-width:0;display:flex;gap:14px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stop button.main:hover{border-color:var(--blue)}
+.drop{width:56px;height:56px;flex:none;display:grid;place-items:center;position:relative;z-index:1}
+.drop svg{position:absolute;inset:0;width:100%;height:100%}
+.drop span{position:relative;font-weight:700;font-size:18px;margin-top:8px}
+.stop .t{font-weight:700;line-height:1.25}
+.stop .s{font-size:14px;color:var(--muted)}
+.stars{color:var(--sun);letter-spacing:2px;font-size:18px;flex:none}
+.stars .off{color:var(--line)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--sun-soft);color:var(--ink)}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:18px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:left}
+.tile b{display:block;font-size:17px}
+.tile span{font-size:14px;color:var(--muted)}
+.tile.hl{background:var(--blue-soft);border-color:var(--blue)}
+
+/* Lernkarte */
+.tabs{display:flex;gap:6px;margin:14px 0;border-bottom:2px solid var(--line)}
+.tabs button{border:0;background:none;padding:10px 14px;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+.tabs button[aria-selected="true"]{color:var(--blue);border-color:var(--blue)}
+.merk{list-style:none;margin:0;padding:0}
+.merk li{display:flex;gap:10px;align-items:flex-start;min-height:34px;line-height:34px;padding:0}
+.merk li .txt{flex:1;min-width:0}
+.merk .icon-btn{width:30px;height:30px;margin-top:2px}
+.merk .icon-btn svg{width:16px;height:16px}
+.w{border:0;background:var(--sun-soft);color:inherit;border-bottom:2px solid var(--sun);padding:0 3px;border-radius:4px;font:inherit;line-height:1.4;cursor:pointer}
+.pop{position:fixed;z-index:40;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(420px,calc(100vw - 32px));background:var(--card);border:2px solid var(--blue);border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.pop .big{font-size:26px;font-weight:700}
+.pop .syl{font-size:18px;color:var(--blue);letter-spacing:.04em}
+
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.wcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.wcard .wt{font-weight:700;font-size:19px}
+.wcard .syl{color:var(--blue);font-size:15px}
+.wcard .row{margin-top:4px}
+.slow{font-size:13px;width:auto;padding:0 10px;border-radius:999px}
+
+/* Quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.bar{height:10px;border-radius:999px;background:var(--line);overflow:hidden;flex:1}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:999px}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.qtext{font-size:20px;font-weight:700;display:flex;gap:10px;align-items:flex-start}
+.qtext .txt{flex:1;min-width:0}
+.fig{margin:12px 0;overflow-x:auto}
+.fig svg{max-width:100%;height:auto;display:block;margin:0 auto}
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.opt{border:2px solid var(--line);background:var(--card);border-radius:12px;padding:12px 14px;text-align:left;font-size:17px}
+.opt[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.tf{flex-direction:row}.tf .opt{flex:1;text-align:center;font-weight:700}
+.seq{display:flex;flex-direction:column;gap:8px;min-height:40px;margin-top:12px;padding:10px;border:2px dashed var(--line);border-radius:12px}
+.seq .opt{display:flex;gap:10px;align-items:center}
+.seq .n{width:28px;height:28px;border-radius:50%;background:var(--blue);color:var(--card);display:grid;place-items:center;font-weight:700;flex:none;font-size:14px}
+.sortrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.sortrow .item{font-weight:700;min-width:80px;flex:1}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:15px}
+.chip[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft);font-weight:700}
+.matchrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.matchrow select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);width:100%}
+.cloze{font-size:18px;line-height:2.4}
+.blank{min-width:110px;border:0;border-bottom:3px solid var(--blue);background:var(--blue-soft);border-radius:6px 6px 0 0;padding:2px 10px;font:inherit;font-weight:700;color:var(--blue)}
+.blank.active{background:var(--sun-soft);border-color:var(--sun)}
+.blank.right{border-color:var(--ok);color:var(--ok)}.blank.wrong{border-color:var(--bad);color:var(--bad)}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+textarea{width:100%;min-height:120px;font:inherit;font-size:18px;border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--card);color:var(--ink);
+  background-image:repeating-linear-gradient(to bottom,transparent 0 33px,var(--line) 33px 34px);line-height:34px}
+.fb{margin-top:14px;border-radius:12px;padding:12px 14px;font-weight:700}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.no{background:var(--bad-soft);color:var(--bad)}
+.fb p{margin:4px 0 0;font-weight:400;color:var(--ink)}
+.model{background:var(--sun-soft);border-radius:12px;padding:12px 14px;margin-top:12px}
+.qfoot{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+
+.result{text-align:center;padding:20px 0}
+.result .score{font-family:var(--f-hand);font-size:44px;color:var(--blue)}
+.result .stars{font-size:40px}
+.rev{text-align:left;margin-top:16px}
+.rev li{margin-bottom:10px}
+
+/* Elternbereich */
+.parent{font-family:var(--f-ko);font-size:15.5px}
+.parent h2{font-size:19px;margin:26px 0 10px}
+.parent .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi b{display:block;font-size:26px;font-variant-numeric:tabular-nums;font-family:var(--f-body)}
+.kpi span{font-size:13px;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.tbl th{font-size:13px;color:var(--muted);font-weight:500}
+.scroll{overflow-x:auto}
+.meter{height:8px;border-radius:999px;background:var(--line);width:100px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:6px}
+.meter i{display:block;height:100%}
+.pill{display:inline-block;font-size:12.5px;padding:2px 9px;border-radius:999px;font-weight:700;white-space:nowrap}
+.p-none{background:var(--line);color:var(--muted)}.p-bad{background:var(--bad-soft);color:var(--bad)}
+.p-mid{background:var(--sun-soft);color:var(--ink)}.p-ok{background:var(--ok-soft);color:var(--ok)}
+.obs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.obs li{display:flex;gap:10px;align-items:flex-start}
+.obs .pill{margin-top:2px}
+.wrongitem{border-bottom:1px solid var(--line);padding:10px 0}
+.wrongitem:last-child{border-bottom:0}
+.de{font-family:var(--f-body)}
+details.unit{border-bottom:1px solid var(--line);padding:10px 0}
+details.unit summary{cursor:pointer;font-weight:700}
+.dict{display:grid;grid-template-columns:auto 1fr auto;gap:6px 12px;align-items:center;margin-top:8px}
+.dict .de{font-weight:700}
+.days{display:flex;gap:6px;align-items:flex-end;height:70px}
+.days div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
+.days i{display:block;width:100%;max-width:28px;background:var(--blue);border-radius:4px 4px 0 0;min-height:2px}
+.set{display:grid;gap:12px}
+.set label{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.set input{font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.gate{max-width:360px;margin:40px auto;text-align:center}
+.gate input{font-size:24px;width:140px;text-align:center;padding:8px;border:2px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.foot-link{display:block;margin:28px auto 0;border:0;background:none;color:var(--muted);text-decoration:underline;font-size:14px}
+@media (max-width:480px){.qtext{font-size:18px}.matchrow{grid-template-columns:1fr}.lined{padding-left:38px}.lined::before{left:24px}}
+@media (prefers-reduced-motion:no-preference){.opt,.chip,.blank{transition:background .15s,border-color .15s}}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ===== Inhalte: Reihenfolge = Lernreihenfolge ===== */
+const UNITS = [
+{
+  id:'u1', no:1, title:'Forschen wie im Labor', sub:'Vermutung und Beobachtung', ko:'실험 기록 방법', c:'forschen',
+  merk:[
+    'Bei einem [[Versuch]] probieren wir etwas aus und schauen genau hin.',
+    'Der [[Versuchsaufbau]] zeigt, was wir aufbauen. Wir zeichnen ihn.',
+    'Die [[Vermutung]] ist, was ich vorher glaube. Ich schreibe: „Ich vermute, dass …“',
+    'Eine Vermutung darf auch falsch sein. Das ist ganz normal!',
+    'Die [[Beobachtung]] ist, was ich wirklich sehe. Ich schreibe: „Ich beobachte, dass …“',
+    'Am Ende vergleiche ich: Hatte ich recht?'
+  ],
+  koSum:'실험 기록지 형식: Versuchsaufbau(실험 장치 그림) → Vermutung(예상, "Ich vermute, dass …") → Beobachtung(실제로 본 것). 시험에서 예상과 관찰을 구분하는 문제가 자주 나옵니다. 따님 기록지에는 관찰란에 실제 결과 대신 예상과 비슷한 문장을 쓴 곳이 있어, "눈으로 본 것만 쓰기"를 연습하면 좋습니다.',
+  words:[
+    {w:'der Versuch', s:'Ver·such', ko:'실험', d:'Wir probieren etwas aus.'},
+    {w:'der Versuchsaufbau', s:'Ver·suchs·auf·bau', ko:'실험 장치(그림)', d:'Was wir für den Versuch aufbauen.'},
+    {w:'die Vermutung', s:'Ver·mu·tung', ko:'예상, 가설', d:'Was ich vorher glaube.'},
+    {w:'die Beobachtung', s:'Be·ob·ach·tung', ko:'관찰', d:'Was ich wirklich sehe.'},
+    {w:'vermuten', s:'ver·mu·ten', ko:'예상하다', d:'Etwas vorher glauben.'},
+    {w:'beobachten', s:'be·ob·ach·ten', ko:'관찰하다', d:'Genau hinschauen.'}
+  ],
+  q:[
+    {id:'f1', t:'order', q:'Bring die Teile vom Versuchsprotokoll in die richtige Reihenfolge.', ko:'실험 기록 순서를 맞추세요.',
+      items:['Versuchsaufbau zeichnen','Vermutung aufschreiben','Versuch durchführen und genau hinschauen','Beobachtung aufschreiben'],
+      ex:'Erst aufbauen, dann vermuten, dann ausprobieren, dann aufschreiben, was man sieht.', exk:'장치 그리기 → 예상 쓰기 → 실험 → 관찰 쓰기 순서.'},
+    {id:'f2', t:'mc', q:'„Ich glaube, der Eiswürfel in der Sonne schmilzt schneller.“ Was ist das?', ko:'"햇빛 아래 얼음이 더 빨리 녹을 것 같다"는 무엇인가?',
+      o:['eine Vermutung','eine Beobachtung','ein Versuchsaufbau'], a:0, ex:'„Ich glaube …“ – das ist eine Vermutung.', exk:'"~일 것 같다"는 예상(Vermutung).'},
+    {id:'f3', t:'mc', q:'„Nach 10 Minuten ist der Eiswürfel in der Sonne schon geschmolzen.“ Was ist das?', ko:'"10분 뒤 얼음이 이미 녹았다"는 무엇인가?',
+      o:['eine Vermutung','eine Beobachtung','ein Versuchsaufbau'], a:1, ex:'Das hat man wirklich gesehen. Das ist eine Beobachtung.', exk:'실제로 본 것 = 관찰(Beobachtung).'},
+    {id:'f4', t:'tf', q:'Eine Vermutung muss immer richtig sein.', ko:'예상은 항상 맞아야 한다.', a:false,
+      ex:'Eine Vermutung darf falsch sein. Der Versuch zeigt uns, was stimmt.', exk:'예상은 틀려도 괜찮다.'},
+    {id:'f5', t:'mc', q:'Wie fängt eine Vermutung an?', ko:'예상 문장은 어떻게 시작하나?',
+      o:['„Ich vermute, dass …“','„Ich habe gesehen, dass …“','„Am Ende war …“'], a:0, ex:'Eine Vermutung beginnt mit „Ich vermute, dass …“.', exk:'"Ich vermute, dass …"로 시작.'}
+  ]
+},
+{
+  id:'u2', no:2, title:'Die drei Zustände von Wasser', sub:'fest · flüssig · gasförmig', ko:'물의 세 가지 상태', c:'zustand',
+  merk:[
+    'Wasser gibt es in drei [[Zuständen|Aggregatzustand]]: fest, flüssig und gasförmig.',
+    '[[fest]]: Das ist Eis. Eis ist hart und behält seine Form.',
+    '[[flüssig]]: Das ist Wasser. Es fließt und passt sich jedem Gefäß an.',
+    '[[gasförmig]]: Das ist [[Wasserdampf]]. Man kann ihn meistens nicht sehen.',
+    'Bei 0 °C [[gefriert|gefrieren]] Wasser zu Eis. Bei 0 °C [[schmilzt|schmelzen]] Eis auch wieder. 0 °C ist der [[Gefrierpunkt]] und der [[Schmelzpunkt]].',
+    'Bei 100 °C kocht Wasser. Es [[verdampft|verdampfen]]. 100 °C ist der [[Siedepunkt]].',
+    'Wasser kann auch ohne Kochen langsam zu Wasserdampf werden. Das heißt [[verdunsten]].',
+    'Wenn Wasserdampf abkühlt, wird er wieder zu Wasser. Das heißt [[kondensieren]].'
+  ],
+  koSum:'물의 세 상태: fest 고체 = Eis 얼음, flüssig 액체 = Wasser 물, gasförmig 기체 = Wasserdampf 수증기. 상태 변화: schmelzen 녹다(얼음→물), gefrieren 얼다(물→얼음), verdunsten 끓지 않고 천천히 증발, verdampfen 끓어서 기체가 됨(100 °C), kondensieren 응결(수증기→물). 0 °C = Gefrierpunkt/Schmelzpunkt, 100 °C = Siedepunkt. 공책에 verdunsten을 "verdusten"으로 쓴 곳이 있습니다.',
+  words:[
+    {w:'der Aggregatzustand', s:'Ag·gre·gat·zu·stand', ko:'물질의 상태', d:'fest, flüssig oder gasförmig.'},
+    {w:'fest', s:'fest', ko:'고체의', d:'Hart, behält seine Form – wie Eis.'},
+    {w:'flüssig', s:'flüs·sig', ko:'액체의', d:'Es fließt – wie Wasser.'},
+    {w:'gasförmig', s:'gas·för·mig', ko:'기체의', d:'Wie Luft – wie Wasserdampf.'},
+    {w:'der Wasserdampf', s:'Was·ser·dampf', ko:'수증기', d:'Wasser als Gas. Meistens unsichtbar.'},
+    {w:'schmelzen', s:'schmel·zen', ko:'녹다', d:'Eis wird zu Wasser.'},
+    {w:'gefrieren', s:'ge·frie·ren', ko:'얼다', d:'Wasser wird zu Eis.'},
+    {w:'verdunsten', s:'ver·duns·ten', ko:'(천천히) 증발하다', d:'Wasser wird langsam zu Wasserdampf, ohne Kochen.'},
+    {w:'verdampfen', s:'ver·damp·fen', ko:'끓어서 기체가 되다', d:'Wasser kocht und wird zu Wasserdampf.'},
+    {w:'kondensieren', s:'kon·den·sie·ren', ko:'응결하다', d:'Wasserdampf wird wieder zu Wasser.'},
+    {w:'der Gefrierpunkt', s:'Ge·frier·punkt', ko:'어는점 (0 °C)', d:'Hier gefriert Wasser: 0 °C.'},
+    {w:'der Schmelzpunkt', s:'Schmelz·punkt', ko:'녹는점 (0 °C)', d:'Hier schmilzt Eis: 0 °C.'},
+    {w:'der Siedepunkt', s:'Sie·de·punkt', ko:'끓는점 (100 °C)', d:'Hier kocht Wasser: 100 °C.'}
+  ],
+  q:[
+    {id:'z1', t:'mc', q:'Wie heißt Wasser, wenn es fest ist?', ko:'물이 고체일 때 이름은?', o:['Eis','Wasserdampf','Regen'], a:0, ex:'Festes Wasser ist Eis.', exk:'고체 = 얼음(Eis).'},
+    {id:'z2', t:'mc', q:'Wie heißt Wasser, wenn es gasförmig ist?', ko:'물이 기체일 때 이름은?', o:['Schnee','Wasserdampf','Eis'], a:1, ex:'Gasförmiges Wasser ist Wasserdampf.', exk:'기체 = 수증기(Wasserdampf).'},
+    {id:'z3', t:'mc', c:'temperatur', q:'Bei wie viel Grad gefriert Wasser zu Eis?', ko:'물은 몇 도에서 얼까?', o:['0 °C','10 °C','100 °C'], a:0, ex:'Wasser gefriert bei 0 °C.', exk:'어는점 0 °C.'},
+    {id:'z4', t:'mc', c:'temperatur', q:'Bei wie viel Grad kocht Wasser?', ko:'물은 몇 도에서 끓을까?', o:['0 °C','50 °C','100 °C'], a:2, ex:'Wasser kocht bei 100 °C.', exk:'끓는점 100 °C.'},
+    {id:'z5', t:'match', c:'uebergang', q:'Was passiert hier? Ordne zu.', ko:'상태 변화 이름을 연결하세요.',
+      pairs:[['Eis wird zu Wasser','schmelzen'],['Wasser wird zu Eis','gefrieren'],['Wasser wird zu Wasserdampf','verdunsten'],['Wasserdampf wird zu Wasser','kondensieren']],
+      ex:'schmelzen, gefrieren, verdunsten, kondensieren.', exk:'녹다·얼다·증발·응결의 방향을 헷갈리지 않는지 확인.'},
+    {id:'z6', t:'mc', c:'verdunsten', q:'Eine Pfütze trocknet in der Sonne. Was macht das Wasser?', ko:'햇빛에 웅덩이가 마른다. 물은?', o:['Es verdunstet.','Es gefriert.','Es kondensiert.'], a:0, ex:'Das Wasser verdunstet langsam.', exk:'웅덩이가 마르는 것 = 증발(verdunsten).'},
+    {id:'z7', t:'mc', c:'uebergang', q:'Was ist der Unterschied zwischen verdunsten und verdampfen?', ko:'verdunsten과 verdampfen의 차이는?',
+      o:['Verdunsten geht langsam ohne Kochen. Verdampfen passiert beim Kochen.','Das ist genau das Gleiche.','Verdampfen passiert im Gefrierfach.'], a:0,
+      ex:'Verdunsten: langsam, ohne Kochen. Verdampfen: beim Kochen, 100 °C.', exk:'verdunsten = 끓지 않고 천천히, verdampfen = 끓을 때.'},
+    {id:'z8', t:'cloze', c:'temperatur', q:'Setze ein.', ko:'빈칸 채우기: 어는점/끓는점',
+      text:'Wasser gefriert bei 0 °C. Das ist der {0}. Wasser kocht bei 100 °C. Das ist der {1}.', ans:['Gefrierpunkt','Siedepunkt'], bank:['Siedepunkt','Gefrierpunkt','Wasserdampf'],
+      ex:'0 °C: Gefrierpunkt. 100 °C: Siedepunkt.', exk:'0 °C 어는점, 100 °C 끓는점.'},
+    {id:'z9', t:'mc', c:'schreiben', q:'Welches Wort ist richtig geschrieben?', ko:'맞는 철자는? (공책에 verdusten으로 씀)', o:['verdusten','verdunsten','ferdunsten'], a:1, ex:'ver·duns·ten – mit n!', exk:'verdunsten (n 빠뜨리지 않기).'},
+    {id:'z10', t:'mc', c:'schreiben', q:'Welches Wort ist richtig geschrieben?', ko:'맞는 철자는?', o:['kondensieren','kondensiren','kondänsieren'], a:0, ex:'kon·den·sie·ren – mit ie.', exk:'kondensieren (ie).'}
+  ]
+},
+{
+  id:'u3', no:3, title:'Eis – festes Wasser', sub:'Versuch 2 und 4', ko:'얼음의 성질', c:'eis',
+  merk:[
+    'Im [[Gefrierfach]] ist es kälter als 0 °C. Dort gefriert Wasser zu Eis.',
+    'Eis ist fest. Ein [[Eiswürfel]] behält seine Form.',
+    'Eis braucht mehr Platz als flüssiges Wasser. Wasser [[dehnt sich aus|sich ausdehnen]], wenn es gefriert.',
+    'Darum steht das Eis im Becher höher als vorher das Wasser.',
+    'Darum darf man keine volle Glasflasche ins Gefrierfach legen. Sie kann [[platzen]]!',
+    'Eis ist leichter als gleich viel Wasser. Darum [[schwimmt|schwimmen]] Eis oben auf dem Wasser.',
+    'Im Warmen schmilzt Eis und wird wieder zu Wasser.'
+  ],
+  koSum:'물이 얼면 부피가 늘어남(sich ausdehnen) → 컵에 표시한 선보다 얼음이 높게 올라오고, 가득 찬 유리병은 깨질 수 있음. 얼음은 같은 양의 물보다 가벼워 물에 뜸(schwimmen). Versuch 4 "Mehr Eis als flüssiges Wasser?"의 핵심은 "얼음이 물보다 자리를 더 차지한다"인데, 따님 기록에는 "얼음이 녹아 물이 된다"만 있어 결론을 다시 짚어 주세요. 복수형은 "die Eiswürfel"(공책에 Eiswürfeln으로 씀).',
+  words:[
+    {w:'das Gefrierfach', s:'Ge·frier·fach', ko:'냉동실', d:'Der kalte Teil im Kühlschrank.'},
+    {w:'der Eiswürfel', s:'Eis·wür·fel', ko:'얼음 조각 (복수도 die Eiswürfel)', d:'Ein kleines Stück Eis. Viele: die Eiswürfel.'},
+    {w:'sich ausdehnen', s:'sich aus·deh·nen', ko:'부피가 늘어나다', d:'Mehr Platz brauchen, größer werden.'},
+    {w:'platzen', s:'plat·zen', ko:'터지다, 깨지다', d:'Plötzlich kaputtgehen.'},
+    {w:'schwimmen', s:'schwim·men', ko:'(물에) 뜨다', d:'Oben auf dem Wasser bleiben.'},
+    {w:'der Becher', s:'Be·cher', ko:'컵', d:'Ein Trinkgefäß.'}
+  ],
+  q:[
+    {id:'e1', t:'mc', img:'cup', q:'Ein Becher ist bis zum Strich mit Wasser gefüllt. Er bleibt über Nacht im Gefrierfach. Wie hoch steht das Eis am Morgen?', ko:'선까지 물을 채운 컵을 냉동실에 하룻밤 두면 얼음 높이는?',
+      o:['höher als der Strich','genau am Strich','tiefer als der Strich'], a:0, ex:'Eis braucht mehr Platz. Es steht höher.', exk:'얼면 부피가 늘어 선보다 높아짐.'},
+    {id:'e2', t:'mc', q:'Warum soll man keine volle Glasflasche ins Gefrierfach legen?', ko:'가득 찬 유리병을 냉동실에 넣으면 안 되는 이유?',
+      o:['Das Eis braucht mehr Platz. Die Flasche kann platzen.','Das Glas schmilzt.','Das Wasser verschwindet.'], a:0, ex:'Wasser dehnt sich beim Gefrieren aus.', exk:'얼면서 팽창 → 병이 깨질 수 있음.'},
+    {id:'e3', t:'tf', q:'Eis schwimmt auf dem Wasser.', ko:'얼음은 물에 뜬다.', a:true, ex:'Richtig! Eis ist leichter als gleich viel Wasser.', exk:'맞음. 얼음이 더 가벼움.'},
+    {id:'e4', t:'tf', q:'Eis ist schwerer als gleich viel Wasser.', ko:'얼음은 같은 양의 물보다 무겁다.', a:false, ex:'Eis ist leichter. Darum schwimmt es oben.', exk:'틀림. 더 가벼워서 뜸.'},
+    {id:'e5', t:'mc', c:'uebergang', q:'Eiswürfel liegen im warmen Zimmer auf einem Teller. Was passiert?', ko:'따뜻한 방의 접시 위 얼음은?',
+      o:['Sie schmelzen und werden zu Wasser.','Sie werden größer.','Sie bleiben für immer gleich.'], a:0, ex:'Im Warmen schmilzt Eis.', exk:'녹아서 물이 됨.'},
+    {id:'e6', t:'mc', c:'schreiben', q:'Welches Wort passt? „Die ___ schmelzen.“', ko:'"Die ___ schmelzen." 맞는 형태는? (공책에 Eiswürfeln으로 씀)',
+      o:['Eiswürfel','Eiswürfeln','Eiswürfels'], a:0, ex:'Ein Eiswürfel – viele Eiswürfel. Hier ohne -n.', exk:'주격 복수는 die Eiswürfel.'}
+  ]
+},
+{
+  id:'u4', no:4, title:'Verschwindet Wasser?', sub:'Versuch 7: Verdunsten', ko:'증발', c:'verdunsten',
+  merk:[
+    'Wasser in einem offenen Glas wird mit der Zeit weniger.',
+    'Das Wasser ist nicht weg. Es [[verdunstet|verdunsten]] und wird zu [[unsichtbarem|unsichtbar]] Wasserdampf in der Luft.',
+    'In der Sonne verdunstet Wasser schneller als im [[Schatten]]. Wärme hilft.',
+    'Ohne [[Deckel]] verdunstet viel Wasser. Mit Deckel kann der Wasserdampf nicht weg.',
+    'Am Deckel sieht man dann kleine [[Wassertropfen]]. Der Wasserdampf ist wieder zu Wasser geworden.',
+    'Auch Wind hilft beim Verdunsten. Darum trocknet Wäsche an einem warmen, windigen Tag am schnellsten.'
+  ],
+  koSum:'증발(verdunsten): 물이 끓지 않아도 천천히 보이지 않는 수증기가 되어 공기 중으로 감. 햇빛(따뜻함)·뚜껑 없음·바람이 있으면 빨리 증발. 뚜껑이 있으면 수증기가 못 빠져나가 뚜껑 안쪽에 물방울이 맺힘(응결). 따님 Versuch 7 기록은 결과를 잘 적었습니다.',
+  words:[
+    {w:'verschwinden', s:'ver·schwin·den', ko:'사라지다', d:'Nicht mehr da sein.'},
+    {w:'unsichtbar', s:'un·sicht·bar', ko:'눈에 보이지 않는', d:'Man kann es nicht sehen.'},
+    {w:'der Schatten', s:'Schat·ten', ko:'그늘', d:'Dort scheint keine Sonne.'},
+    {w:'der Deckel', s:'De·ckel', ko:'뚜껑', d:'Er macht ein Glas oben zu.'},
+    {w:'der Wassertropfen', s:'Was·ser·trop·fen', ko:'물방울', d:'Ein kleines bisschen Wasser.'},
+    {w:'die Luft', s:'Luft', ko:'공기', d:'Sie ist überall um uns herum.'}
+  ],
+  q:[
+    {id:'v1', t:'mc', img:'glasses', q:'Drei Gläser mit gleich viel Wasser: A ohne Deckel in der Sonne, B ohne Deckel im Schatten, C mit Deckel im Schatten. In welchem Glas ist nach drei Tagen am wenigsten Wasser?', ko:'A 햇빛·뚜껑 없음, B 그늘·뚜껑 없음, C 그늘·뚜껑 있음. 3일 뒤 물이 가장 적은 컵은?',
+      o:['Glas A','Glas B','Glas C'], a:0, ex:'Sonne und kein Deckel: Hier verdunstet am meisten.', exk:'햇빛+뚜껑 없음 = 가장 많이 증발.'},
+    {id:'v2', t:'mc', img:'glasses', q:'Und in welchem Glas ist nach drei Tagen am meisten Wasser?', ko:'3일 뒤 물이 가장 많이 남은 컵은?', o:['Glas A','Glas B','Glas C'], a:2, ex:'Mit Deckel kann der Wasserdampf nicht weg.', exk:'뚜껑 있는 C.'},
+    {id:'v3', t:'mc', c:'kondensieren', q:'Was siehst du innen am Deckel von Glas C?', ko:'C의 뚜껑 안쪽에 보이는 것은?', o:['kleine Wassertropfen','Eis','Sand'], a:0, ex:'Der Wasserdampf kondensiert am Deckel.', exk:'물방울(응결).'},
+    {id:'v4', t:'tf', q:'Das Wasser im offenen Glas ist einfach verschwunden.', ko:'열린 컵의 물은 그냥 사라졌다.', a:false, ex:'Es ist nicht weg. Es ist als Wasserdampf in der Luft.', exk:'틀림. 수증기가 되어 공기 중에 있음.'},
+    {id:'v5', t:'mc', q:'Wann trocknet nasse Wäsche am schnellsten?', ko:'젖은 빨래가 가장 빨리 마르는 날은?', o:['warm, sonnig und windig','kalt und ohne Wind','im geschlossenen Schrank'], a:0, ex:'Wärme und Wind helfen beim Verdunsten.', exk:'따뜻하고 바람 부는 날.'},
+    {id:'v6', t:'free', q:'Warum ist im Glas mit Deckel noch fast das ganze Wasser da?', ko:'뚜껑 있는 컵에 물이 거의 그대로 있는 이유를 쓰세요.',
+      model:'Der Wasserdampf kann nicht aus dem Glas heraus. Er wird am Deckel wieder zu Wasser und tropft zurück.', mk:'수증기가 빠져나가지 못하고 뚜껑에서 다시 물방울이 되어 떨어진다.'}
+  ]
+},
+{
+  id:'u5', no:5, title:'Wasser aus dem Nichts?', sub:'Versuch 3 und 5: Kondensieren', ko:'응결', c:'kondensieren',
+  merk:[
+    'In der [[Luft]] ist immer etwas Wasserdampf. Wir sehen ihn nicht.',
+    'Trifft der Wasserdampf auf etwas Kaltes, [[kühlt|abkühlen]] er ab.',
+    'Dann wird er wieder zu kleinen Wassertropfen. Das heißt [[kondensieren]].',
+    'Ein Glas mit Eiswürfeln wird außen nass. Das Wasser kommt aus der Luft, nicht aus dem Glas!',
+    'Nach dem Duschen ist der [[Spiegel]] im Bad [[beschlagen]].',
+    'Im Winter ist die kalte [[Fensterscheibe]] innen nass.'
+  ],
+  koSum:'응결(kondensieren): 공기 중의 보이지 않는 수증기가 차가운 물체에 닿으면 식어서 물방울이 됨. 얼음 넣은 컵 바깥의 물방울은 컵에서 새어 나온 것이 아니라 공기에서 온 것. 따님 Versuch 3 기록에는 "물이 얼음이 된다", Versuch 5에는 "수증기가 생겼다"고 적혀 있어 이 실험을 "얼기/녹기"로 이해했을 가능성이 있습니다(확인 필요). 가장 먼저 보충하면 좋은 개념입니다.',
+  words:[
+    {w:'abkühlen', s:'ab·küh·len', ko:'식다', d:'Kälter werden.'},
+    {w:'beschlagen', s:'be·schla·gen', ko:'김이 서리다', d:'Voller kleiner Wassertropfen sein.'},
+    {w:'der Spiegel', s:'Spie·gel', ko:'거울', d:'Darin sieht man sich selbst.'},
+    {w:'die Fensterscheibe', s:'Fens·ter·schei·be', ko:'유리창', d:'Das Glas im Fenster.'},
+    {w:'außen', s:'au·ßen', ko:'바깥쪽', d:'Nicht innen, sondern draußen am Glas.'}
+  ],
+  q:[
+    {id:'k1', t:'mc', img:'iced', q:'Ein Glas mit Eiswürfeln steht auf dem Tisch. Außen am Glas sind Wassertropfen. Woher kommt dieses Wasser?', ko:'얼음 컵 바깥에 맺힌 물방울은 어디서 왔나?',
+      o:['aus der Luft (Wasserdampf)','Das Glas hat ein Loch.','Das Eis ist durch das Glas gelaufen.'], a:0, ex:'Wasserdampf aus der Luft kondensiert am kalten Glas.', exk:'공기 중 수증기가 차가운 컵에서 응결.'},
+    {id:'k2', t:'mc', c:'uebergang', q:'Wie heißt es, wenn Wasserdampf wieder zu Wasser wird?', ko:'수증기가 다시 물이 되는 것은?', o:['kondensieren','verdunsten','schmelzen'], a:0, ex:'Das heißt kondensieren.', exk:'응결(kondensieren).'},
+    {id:'k3', t:'mc', q:'Nach dem Duschen ist der Spiegel nass. Warum?', ko:'샤워 후 거울이 젖는 이유?',
+      o:['Warmer Wasserdampf trifft auf den kalten Spiegel und kondensiert.','Jemand hat den Spiegel geputzt.','Der Spiegel schmilzt.'], a:0, ex:'Wasserdampf kühlt am Spiegel ab und wird zu Tropfen.', exk:'따뜻한 수증기가 차가운 거울에서 응결.'},
+    {id:'k4', t:'tf', q:'Wasserdampf in der Luft kann man immer sehen.', ko:'공기 중 수증기는 항상 보인다.', a:false, ex:'Wasserdampf ist unsichtbar.', exk:'틀림. 보이지 않음.'},
+    {id:'k5', t:'tf', q:'Wenn Wasserdampf abkühlt, wird er wieder zu Wasser.', ko:'수증기가 식으면 다시 물이 된다.', a:true, ex:'Richtig! Das ist kondensieren.', exk:'맞음.'},
+    {id:'k6', t:'tf', q:'Bei „Wasser aus dem Nichts“ entstehen die Tropfen, weil Wasser zu Eis wird.', ko:'"Wasser aus dem Nichts" 실험의 물방울은 물이 얼음이 되어 생긴다.', a:false,
+      ex:'Die Tropfen entstehen, weil Wasserdampf aus der Luft am kalten Glas kondensiert.', exk:'틀림. 공기 중 수증기의 응결 때문(따님이 헷갈린 부분).'}
+  ]
+},
+{
+  id:'u6', no:6, title:'Was löst sich in Wasser?', sub:'wasserlöslich oder nicht', ko:'물에 녹는 물질', c:'loesen',
+  merk:[
+    'Manche Stoffe [[lösen sich|sich lösen]] in Wasser auf. Sie sind [[wasserlöslich]].',
+    'Salz und Zucker sind wasserlöslich. Nach dem [[Rühren|rühren]] sieht man sie nicht mehr.',
+    'Aber sie sind noch da: Salzwasser schmeckt salzig, Zuckerwasser schmeckt süß.',
+    '[[Mehl]], Sand und [[Öl]] sind nicht wasserlöslich.',
+    'Sand [[sinkt|sinken]] nach unten. Öl schwimmt oben. Mehl macht das Wasser [[trüb]] und setzt sich langsam unten ab.',
+    'Merksatz: Gleiches löst sich in Gleichem.'
+  ],
+  koSum:'wasserlöslich(물에 녹는) = 소금, 설탕: 저으면 안 보이지만 물속에 그대로 있음(맛으로 확인). nicht wasserlöslich = 밀가루(뿌옇게 됐다가 가라앉음), 모래(가라앉음), 기름(위에 뜸). 공책 표는 정확하게 정리되어 있습니다.',
+  words:[
+    {w:'sich lösen', s:'sich lö·sen', ko:'(물에) 녹다', d:'Im Wasser verschwinden, aber noch da sein.'},
+    {w:'wasserlöslich', s:'was·ser·lös·lich', ko:'물에 녹는', d:'Es löst sich in Wasser.'},
+    {w:'der Stoff', s:'Stoff', ko:'물질', d:'Zum Beispiel Salz, Sand oder Öl.'},
+    {w:'das Mehl', s:'Mehl', ko:'밀가루', d:'Daraus backt man Brot.'},
+    {w:'das Öl', s:'Öl', ko:'기름', d:'Es schwimmt auf dem Wasser.'},
+    {w:'rühren', s:'rüh·ren', ko:'젓다', d:'Mit dem Löffel im Kreis bewegen.'},
+    {w:'trüb', s:'trüb', ko:'뿌연', d:'Nicht klar, man sieht nicht hindurch.'},
+    {w:'sinken', s:'sin·ken', ko:'가라앉다', d:'Nach unten gehen.'}
+  ],
+  q:[
+    {id:'l1', t:'sort', q:'Löst sich der Stoff in Wasser?', ko:'물에 녹는지 분류하세요.', cats:['wasserlöslich','nicht wasserlöslich'],
+      items:[['Salz',0],['Zucker',0],['Mehl',1],['Sand',1],['Öl',1]], ex:'Salz und Zucker lösen sich. Mehl, Sand und Öl nicht.', exk:'녹음: 소금·설탕 / 안 녹음: 밀가루·모래·기름.'},
+    {id:'l2', t:'mc', q:'Du rührst Salz in Wasser. Danach siehst du das Salz nicht mehr. Ist das Salz weg?', ko:'소금을 저으면 안 보인다. 사라졌나?',
+      o:['Nein, es ist noch im Wasser. Das Wasser schmeckt salzig.','Ja, es ist verschwunden.','Es ist zu Eis geworden.'], a:0, ex:'Gelöst heißt nicht weg!', exk:'녹은 것이지 사라진 것이 아님.'},
+    {id:'l3', t:'mc', q:'Was passiert mit Öl im Wasser?', ko:'기름을 물에 넣으면?', o:['Es schwimmt oben.','Es löst sich auf.','Es wird zu Salz.'], a:0, ex:'Öl schwimmt oben.', exk:'위에 뜸.'},
+    {id:'l4', t:'mc', q:'Was passiert mit Sand im Wasser?', ko:'모래를 물에 넣으면?', o:['Er sinkt nach unten.','Er löst sich auf.','Er schwimmt oben.'], a:0, ex:'Sand sinkt nach unten.', exk:'가라앉음.'},
+    {id:'l5', t:'cloze', q:'Ergänze den Merksatz.', ko:'공책의 문장을 완성하세요.', text:'Gleiches löst sich in {0}.', ans:['Gleichem'], bank:['Wasser','Gleichem','Öl'], ex:'Gleiches löst sich in Gleichem.', exk:'"비슷한 것끼리 녹는다."'}
+  ]
+},
+{
+  id:'u7', no:7, title:'Wie versickert Wasser?', sub:'Böden und Quellen', ko:'토양과 샘', c:'boden',
+  merk:[
+    'Regenwasser [[versickert|versickern]] im [[Boden]]. Es läuft langsam nach unten.',
+    'Durch [[Kies]] läuft Wasser sehr schnell. Kies hat große Lücken.',
+    'Durch [[Lehm]] und [[Ton]] kommt fast kein Wasser. Die Lücken sind winzig klein.',
+    'Böden können Wasser [[speichern]] oder [[durchlassen]].',
+    'Lehmböden speichern Wasser gut. Sie verlieren ihr Wasser nur langsam.',
+    'Grobe Sandböden speichern Wasser schlecht oder gar nicht.',
+    'So entsteht eine [[Quelle]]: Das Wasser versickert durch Sand und Kies. Unten trifft es auf eine Tonschicht. Dort kommt es nicht weiter. Es fließt zur Seite und kommt am Hang aus der Erde.'
+  ],
+  koSum:'Kies 자갈 = 물이 아주 빨리 통과, Lehm/Ton 점토 = 거의 통과 못 함(물을 저장), Humus/Erde 흙 = 똑똑 떨어짐. 공책: Lehmböden은 물을 잘 저장해 천천히 잃고, 굵은 Sandböden은 물을 잘 저장하지 못함. 샘(Quelle): 빗물이 모래·자갈층을 지나 점토층에 막히면 옆으로 흘러 경사면에서 땅 밖으로 나옴. 학습지의 "Eine Quelle entsteht" 그림 칸이 비어 있습니다.',
+  words:[
+    {w:'versickern', s:'ver·si·ckern', ko:'땅속으로 스며들다', d:'Wasser läuft in den Boden.'},
+    {w:'der Boden', s:'Bo·den', ko:'땅, 토양', d:'Die Erde unter unseren Füßen.'},
+    {w:'der Kies', s:'Kies', ko:'자갈', d:'Viele kleine Steine.'},
+    {w:'der Lehm', s:'Lehm', ko:'점토질 흙(양토)', d:'Schwere, klebrige Erde.'},
+    {w:'der Ton', s:'Ton', ko:'점토', d:'Sehr feine Erde. Daraus macht man Töpfe.'},
+    {w:'der Humus', s:'Hu·mus', ko:'부식토(검은 흙)', d:'Dunkle, fruchtbare Erde.'},
+    {w:'speichern', s:'spei·chern', ko:'저장하다, 머금다', d:'Festhalten und behalten.'},
+    {w:'durchlassen', s:'durch·las·sen', ko:'통과시키다', d:'Etwas hindurchgehen lassen.'},
+    {w:'die Quelle', s:'Quel·le', ko:'샘', d:'Hier kommt Wasser aus der Erde.'},
+    {w:'die Schicht', s:'Schicht', ko:'층', d:'Eine Lage, zum Beispiel aus Sand.'},
+    {w:'tröpfeln', s:'tröp·feln', ko:'똑똑 떨어지다', d:'In kleinen Tropfen fallen.'}
+  ],
+  q:[
+    {id:'b1', t:'mc', q:'Durch welche Schicht läuft Wasser am schnellsten?', ko:'물이 가장 빨리 통과하는 층은?', o:['Kies','Lehm und Ton','Humus'], a:0, ex:'Kies hat große Lücken.', exk:'자갈(Kies).'},
+    {id:'b2', t:'mc', q:'Durch welche Schicht kommt fast kein Wasser?', ko:'물이 거의 통과하지 못하는 층은?', o:['Kies','Sand','Lehm und Ton'], a:2, ex:'Lehm und Ton haben winzige Lücken.', exk:'점토(Lehm/Ton).'},
+    {id:'b3', t:'tf', q:'Lehmböden können Wasser gut speichern.', ko:'점토질 땅은 물을 잘 저장한다.', a:true, ex:'Richtig!', exk:'맞음.'},
+    {id:'b4', t:'tf', q:'Grobe Sandböden können Wasser sehr gut speichern.', ko:'굵은 모래땅은 물을 아주 잘 저장한다.', a:false, ex:'Grobe Sandböden speichern Wasser schlecht.', exk:'틀림.'},
+    {id:'b5', t:'cloze', q:'Ergänze den Text aus deinem Heft.', ko:'공책 문장 빈칸 채우기.',
+      text:'Böden können Wasser {0} oder durchlassen. Lehmböden verlieren ihr Wasser {1}, denn sie können Wasser gut speichern.', ans:['speichern','langsam'], bank:['schnell','speichern','trinken','langsam'],
+      ex:'speichern – langsam.', exk:'speichern, langsam.'},
+    {id:'b6', t:'mc', c:'quelle', img:'spring', q:'Wie entsteht eine Quelle?', ko:'샘은 어떻게 생기나?',
+      o:['Das Wasser versickert, trifft auf eine Tonschicht und fließt seitlich aus dem Hang.','Das Wasser fällt aus einer Wolke direkt in einen Brunnen.','Das Wasser fließt aus dem Meer den Berg hinauf.'], a:0, ex:'Die Tonschicht hält das Wasser auf. Es fließt zur Seite heraus.', exk:'점토층에 막혀 옆으로 흘러나옴.'},
+    {id:'b7', t:'free', q:'Nach dem Regen steht auf einem Lehmboden lange eine Pfütze. Warum?', ko:'비 온 뒤 점토 땅에 웅덩이가 오래 남는 이유를 쓰세요.',
+      model:'Lehm lässt fast kein Wasser durch. Das Wasser versickert nur sehr langsam und bleibt oben stehen.', mk:'점토는 물을 거의 통과시키지 않아 천천히만 스며들고 위에 고인다.'}
+  ]
+},
+{
+  id:'u8', no:8, title:'Der Wasserkreislauf', sub:'Alles hängt zusammen', ko:'물의 순환', c:'kreislauf',
+  merk:[
+    '1. Die Sonne scheint und [[erwärmt|erwärmen]] das Wasser in Meeren, Seen und Flüssen.',
+    '2. Das Wasser verdunstet. Wasserdampf [[steigt|aufsteigen]] in die Luft auf.',
+    '3. Oben ist es kalt. Der Wasserdampf kühlt ab und kondensiert zu winzigen Tröpfchen.',
+    '4. Aus den Tröpfchen bilden sich [[Wolken|Wolke]].',
+    '5. Die Tropfen werden schwer. Das Wasser fällt als [[Niederschlag]] auf die Erde: Regen, Schnee oder [[Hagel]].',
+    '6. Das Wasser versickert im Boden oder [[fließt|fließen]] in Bäche und Flüsse.',
+    '7. Als [[Fluss]] gelangt es ins [[Meer]]. Dann beginnt alles von vorn.',
+    'Das Wasser geht nicht verloren. Es ist immer im [[Kreislauf|Wasserkreislauf]].'
+  ],
+  koSum:'① 해가 물을 데움(erwärmt) ② 증발(verdunstet), 수증기 상승(steigt auf) ③ 위는 차가워서 식고(kühlt ab) 응결(kondensiert) ④ 구름(Wolken) ⑤ 강수(Niederschlag: 비·눈·우박) ⑥ 땅에 스며들거나(versickert) 흐름(fließt) ⑦ 강(Fluss)이 되어 바다로. 11월 2일 빈칸 학습지와 순환 그림은 모두 맞게 채웠습니다. 순서를 말로 설명하는 연습이 서술형 대비가 됩니다.',
+  words:[
+    {w:'der Wasserkreislauf', s:'Was·ser·kreis·lauf', ko:'물의 순환', d:'Das Wasser wandert immer im Kreis.'},
+    {w:'erwärmen', s:'er·wär·men', ko:'데우다', d:'Warm machen.'},
+    {w:'aufsteigen', s:'auf·stei·gen', ko:'올라가다', d:'Nach oben gehen.'},
+    {w:'die Wolke', s:'Wol·ke', ko:'구름', d:'Viele winzige Wassertröpfchen am Himmel.'},
+    {w:'der Niederschlag', s:'Nie·der·schlag', ko:'강수(비·눈·우박)', d:'Regen, Schnee oder Hagel.'},
+    {w:'der Hagel', s:'Ha·gel', ko:'우박', d:'Kleine Eiskugeln, die vom Himmel fallen.'},
+    {w:'fließen', s:'flie·ßen', ko:'흐르다', d:'Wasser bewegt sich weiter.'},
+    {w:'der Fluss', s:'Fluss', ko:'강', d:'Viel Wasser, das zum Meer fließt.'},
+    {w:'das Meer', s:'Meer', ko:'바다', d:'Ganz viel Salzwasser.'},
+    {w:'gelangen', s:'ge·lan·gen', ko:'도달하다', d:'Irgendwo ankommen.'}
+  ],
+  q:[
+    {id:'w1', t:'order', q:'Bring den Wasserkreislauf in die richtige Reihenfolge.', ko:'물의 순환 순서를 맞추세요.',
+      items:['Die Sonne erwärmt das Wasser.','Das Wasser verdunstet und steigt auf.','Der Wasserdampf kühlt ab und kondensiert.','Es bilden sich Wolken.','Niederschlag fällt auf die Erde.','Das Wasser fließt als Fluss ins Meer.'],
+      ex:'Sonne → verdunsten → kondensieren → Wolken → Niederschlag → Fluss → Meer.', exk:'순환 단계 순서.'},
+    {id:'w2', t:'cloze', q:'Setze die fehlenden Wörter ein.', ko:'공책 빈칸 학습지와 같은 문제.',
+      text:'Wenn die Sonne scheint, wird die Erde {0}. Dadurch {1} Wasser aus Flüssen, Seen und dem Meer. {2} steigt in die Luft. Es bilden sich {3} am Himmel. Das Wasser kommt als {4} auf die Erde zurück. Jetzt versickert das Wasser im {5}. Als {6} gelangt es ins Meer.',
+      ans:['erwärmt','verdunstet','Wasserdampf','Wolken','Niederschlag','Boden','Fluss'], bank:['Wolken','Fluss','erwärmt','Boden','Wasserdampf','Niederschlag','verdunstet'],
+      ex:'erwärmt, verdunstet, Wasserdampf, Wolken, Niederschlag, Boden, Fluss.', exk:'수업 학습지와 동일한 빈칸.'},
+    {id:'w3', t:'mc', q:'Was macht die Sonne im Wasserkreislauf?', ko:'물의 순환에서 해의 역할은?', o:['Sie erwärmt das Wasser.','Sie macht die Wolken kalt.','Sie macht Regen.'], a:0, ex:'Die Sonne erwärmt das Wasser.', exk:'물을 데움.'},
+    {id:'w4', t:'mc', q:'Was gehört alles zum Niederschlag?', ko:'강수(Niederschlag)에 해당하는 것은?', o:['Regen, Schnee und Hagel','nur Wolken','Wasserdampf und Wind'], a:0, ex:'Regen, Schnee und Hagel.', exk:'비·눈·우박.'},
+    {id:'w5', t:'mc', q:'Warum kondensiert der Wasserdampf hoch oben am Himmel?', ko:'수증기가 하늘 높은 곳에서 응결하는 이유?', o:['Weil es dort oben kalt ist.','Weil die Sonne dort heißer ist.','Weil dort Salz ist.'], a:0, ex:'Oben ist es kalt. Der Wasserdampf kühlt ab.', exk:'위쪽이 차갑기 때문.'},
+    {id:'w6', t:'mc', q:'Woraus bestehen Wolken?', ko:'구름은 무엇으로 되어 있나?', o:['aus ganz vielen winzigen Wassertröpfchen','aus Rauch','aus Watte'], a:0, ex:'Wolken sind viele winzige Wassertröpfchen.', exk:'아주 작은 물방울.'},
+    {id:'w7', t:'tf', q:'Im Wasserkreislauf geht kein Wasser verloren.', ko:'물의 순환에서 물은 없어지지 않는다.', a:true, ex:'Richtig! Das Wasser wird immer wieder benutzt.', exk:'맞음.'},
+    {id:'w8', t:'free', q:'Erkläre den Wasserkreislauf in drei oder vier Sätzen.', ko:'물의 순환을 3–4문장으로 설명하세요.',
+      model:'Die Sonne erwärmt das Wasser und es verdunstet. Der Wasserdampf steigt auf, kühlt oben ab und kondensiert. So entstehen Wolken. Das Wasser fällt als Niederschlag, versickert im Boden oder fließt als Fluss ins Meer.',
+      mk:'해가 물을 데워 증발 → 수증기 상승·냉각·응결 → 구름 → 강수 → 땅에 스며들거나 강이 되어 바다로.'}
+  ]
+},
+{
+  id:'u9', no:9, title:'Wie kommt das Trinkwasser ins Hochhaus?', sub:'Verbundene Gefäße', ko:'연결된 그릇과 급수탑', c:'gefaesse',
+  merk:[
+    'Sind zwei Rohre oder Gefäße unten verbunden, steht das Wasser in allen gleich hoch. Das sind [[verbundene Gefäße]].',
+    'Das gilt auch, wenn ein Rohr dünn und eines dick ist oder ein [[Trichter]] höher gehalten wird.',
+    'Ein [[Wasserturm]] oder [[Hochbehälter]] steht sehr hoch, auf einem Turm oder einem Berg.',
+    'Von dort fließt das [[Trinkwasser]] durch Rohre nach unten. In den Häusern steigt es wieder nach oben.',
+    'Es steigt fast so hoch, wie das Wasser im Hochbehälter steht.',
+    'Aus einem [[Wasserhahn]] kommt nur Wasser, wenn er tiefer liegt als der [[Wasserstand]] im Behälter.',
+    'Darum baut man Hochbehälter auf Bergen: Das Wasser kommt von selbst bis in die oberen [[Stockwerke|Stockwerk]].'
+  ],
+  koSum:'연결된 그릇(verbundene Gefäße): 아래가 연결된 관은 굵기·모양·높이와 관계없이 수면 높이가 같음. 급수탑(Wasserturm)·배수지(Hochbehälter)를 높은 곳에 두면 물이 높이와 압력으로 저절로 관을 따라 내려갔다가 집에서 다시 올라옴 → 수면보다 낮은 수도꼭지에서만 물이 나옴. 학습지 3번 서술 문제("왜 Hochbehälter를 산 위에 짓나")가 비어 있으니 꼭 연습시키세요. 1번 그림 중 두 번째 호스는 양쪽 수면이 같은 높이인지 함께 확인해 주세요.',
+  words:[
+    {w:'verbundene Gefäße', s:'ver·bun·de·ne Ge·fä·ße', ko:'연결된 그릇(연통관)', d:'Gefäße, die unten verbunden sind.'},
+    {w:'der Trichter', s:'Trich·ter', ko:'깔때기', d:'Oben weit, unten eng.'},
+    {w:'der Schlauch', s:'Schlauch', ko:'호스', d:'Ein weiches Rohr.'},
+    {w:'der Wasserturm', s:'Was·ser·turm', ko:'급수탑', d:'Ein Turm mit einem großen Wasserbehälter oben.'},
+    {w:'der Hochbehälter', s:'Hoch·be·häl·ter', ko:'고지 배수지(높은 곳 물탱크)', d:'Ein Wasserspeicher hoch oben, oft auf einem Berg.'},
+    {w:'das Trinkwasser', s:'Trink·was·ser', ko:'식수', d:'Wasser, das man trinken kann.'},
+    {w:'der Wasserhahn', s:'Was·ser·hahn', ko:'수도꼭지 (복수 die Hähne)', d:'Hier kommt das Wasser heraus.'},
+    {w:'der Wasserstand', s:'Was·ser·stand', ko:'수위', d:'Wie hoch das Wasser steht.'},
+    {w:'das Hochhaus', s:'Hoch·haus', ko:'고층 건물', d:'Ein sehr hohes Haus.'},
+    {w:'das Stockwerk', s:'Stock·werk', ko:'층', d:'Eine Etage im Haus.'},
+    {w:'der Druck', s:'Druck', ko:'압력', d:'Das Wasser drückt nach unten und zur Seite.'}
+  ],
+  q:[
+    {id:'h1', t:'mc', img:'utube', q:'Zwei Trichter sind mit einem Schlauch verbunden. Der rechte Trichter wird höher gehalten. Wie hoch steht das Wasser rechts?', ko:'호스로 연결된 깔때기. 오른쪽을 더 높이 들면 오른쪽 수면은?',
+      o:['genau so hoch wie links','höher als links','tiefer als links'], a:0, ex:'In verbundenen Gefäßen steht das Wasser überall gleich hoch.', exk:'연결된 관은 수면 높이가 같다.'},
+    {id:'h2', t:'mc', img:'taps2', q:'Der Wasserstand ist eingezeichnet. Aus wie vielen Hähnen fließt Wasser?', ko:'표시된 수위에서 물이 나오는 수도꼭지 수는?',
+      o:['aus keinem','aus einem','aus zwei','aus drei'], a:2, ex:'Nur Hähne unter dem Wasserstand geben Wasser: zwei.', exk:'수면보다 낮은 꼭지 2개.'},
+    {id:'h3', t:'mc', img:'taps0', q:'Und hier? Aus wie vielen Hähnen fließt Wasser?', ko:'이번에는 몇 개에서 나오나?', o:['aus keinem','aus einem','aus zwei','aus drei'], a:0,
+      ex:'Der Wasserstand ist unter allen Hähnen. Es fließt nichts.', exk:'모든 꼭지가 수면보다 높아 안 나옴.'},
+    {id:'h4', t:'mc', q:'Warum baut man Hochbehälter auf Bergen?', ko:'고지 배수지를 산 위에 짓는 이유?',
+      o:['Damit das Wasser von selbst bis in die Häuser fließt, auch nach oben.','Damit das Wasser im Sommer kalt bleibt.','Damit die Fische Platz haben.'], a:0, ex:'Das Wasser fließt von selbst und steigt im Haus bis fast zur gleichen Höhe.', exk:'물이 저절로 집 위층까지 감.'},
+    {id:'h5', t:'tf', q:'Im Haus kann das Wasser höher steigen als der Wasserstand im Wasserturm.', ko:'집 안에서 물이 급수탑 수면보다 높이 올라갈 수 있다.', a:false, ex:'Nein. Höchstens fast gleich hoch.', exk:'틀림.'},
+    {id:'h6', t:'free', q:'Erkläre, warum man Hochbehälter zur Trinkwasserversorgung baut oder Wasserspeicher auf Bergen errichtet.', ko:'학습지 3번(비어 있던 문제): 왜 Hochbehälter를 짓거나 산 위에 물저장소를 만드나?',
+      model:'In verbundenen Rohren steht das Wasser überall gleich hoch. Steht der Hochbehälter weit oben, fließt das Wasser durch die Höhe und den Druck von selbst in die Häuser und steigt dort bis in die oberen Stockwerke. Man braucht keine Pumpe.',
+      mk:'연결된 관에서는 수면 높이가 같다. 배수지가 높은 곳에 있으면 높이와 압력 때문에 물이 저절로 집으로 흘러가 위층까지 올라온다. 펌프가 필요 없다.'}
+  ]
+},
+{
+  id:'u10', no:10, extra:true, title:'Im Dschungel wird gewählt', sub:'Extra: Demokratie und Wahl', ko:'(추가) 민주주의와 선거', c:'demokratie',
+  merk:[
+    '[[Demokratie]]: Die [[Mehrheit]] der [[Bevölkerung]] bestimmt durch eine Wahl, wer das Land regieren soll.',
+    '[[Kandidat]]: Menschen, die sich um einen Job in der Regierung bewerben.',
+    '[[Wahl]]: So wird in einer Demokratie der „Anführer“ gewählt.',
+    '[[Wählerschaft]]: alle Wähler, die bei der Wahl ihre Stimme abgeben.',
+    'Wahlregeln: Die Wahl ist frei, [[geheim]] und gleich.',
+    '[[Wahlurne]]: ein Kasten, in den die [[Stimmzettel]] gesteckt werden.'
+  ],
+  koSum:'9월 25일 공책 내용(Sachunterricht 사회 영역). 이번 과학 시험 범위인지 확실하지 않아 추가 단원으로 넣었습니다. 공책에 Regierungsform을 "Renierungsform"으로 쓴 곳이 있습니다.',
+  words:[
+    {w:'die Demokratie', s:'De·mo·kra·tie', ko:'민주주의', d:'Die Menschen wählen, wer regiert.'},
+    {w:'die Regierungsform', s:'Re·gie·rungs·form', ko:'정부 형태', d:'Wie ein Land regiert wird.'},
+    {w:'die Mehrheit', s:'Mehr·heit', ko:'다수', d:'Mehr als die Hälfte.'},
+    {w:'die Bevölkerung', s:'Be·völ·ke·rung', ko:'국민, 인구', d:'Alle Menschen in einem Land.'},
+    {w:'der Kandidat', s:'Kan·di·dat', ko:'후보', d:'Jemand, der gewählt werden möchte.'},
+    {w:'die Wahl', s:'Wahl', ko:'선거', d:'Alle stimmen ab.'},
+    {w:'die Wählerschaft', s:'Wäh·ler·schaft', ko:'유권자 전체', d:'Alle Menschen, die wählen.'},
+    {w:'geheim', s:'ge·heim', ko:'비밀의', d:'Niemand sieht, was du wählst.'},
+    {w:'die Wahlurne', s:'Wahl·ur·ne', ko:'투표함', d:'Kasten für die Stimmzettel.'},
+    {w:'der Stimmzettel', s:'Stimm·zet·tel', ko:'투표용지', d:'Darauf kreuzt man an, wen man wählt.'}
+  ],
+  q:[
+    {id:'d1', t:'mc', q:'Was ist eine Demokratie?', ko:'민주주의란?', o:['Die Mehrheit bestimmt durch eine Wahl, wer regiert.','Ein König bestimmt alles allein.','Nur Kinder dürfen wählen.'], a:0, ex:'Die Mehrheit bestimmt durch eine Wahl.', exk:'다수가 선거로 결정.'},
+    {id:'d2', t:'mc', q:'Was ist ein Kandidat?', ko:'후보(Kandidat)란?', o:['ein Mensch, der sich um einen Job in der Regierung bewirbt','ein Kasten für Stimmzettel','eine Wahlregel'], a:0, ex:'Ein Kandidat möchte gewählt werden.', exk:'정부 일을 하려고 나서는 사람.'},
+    {id:'d3', t:'mc', q:'Wie heißen die Wahlregeln?', ko:'선거 규칙 세 가지는?', o:['frei, geheim und gleich','laut, schnell und bunt','teuer, geheim und schwer'], a:0, ex:'frei, geheim und gleich.', exk:'자유·비밀·평등.'},
+    {id:'d4', t:'mc', q:'Was ist eine Wahlurne?', ko:'투표함(Wahlurne)이란?', o:['ein Kasten, in den die Stimmzettel gesteckt werden','eine Blume','ein Kandidat'], a:0, ex:'Darin landen die Stimmzettel.', exk:'투표용지를 넣는 상자.'},
+    {id:'d5', t:'mc', c:'schreiben', q:'Welches Wort ist richtig geschrieben?', ko:'맞는 철자는? (공책에 Renierungsform으로 씀)', o:['Regierungsform','Renierungsform','Regirungsform'], a:0, ex:'Re·gie·rungs·form.', exk:'Regierungsform.'}
+  ]
+}
+];
+
+const CONCEPTS = {
+  forschen:'실험 기록(예상·관찰 구분)', zustand:'물의 세 가지 상태', temperatur:'어는점·끓는점', uebergang:'상태 변화 이름',
+  eis:'얼음의 성질(부피·뜨기)', verdunsten:'증발', kondensieren:'응결', loesen:'물에 녹는 물질', boden:'토양과 물 빠짐',
+  quelle:'샘이 생기는 원리', kreislauf:'물의 순환', gefaesse:'연결된 그릇·급수탑', schreiben:'철자·용어', demokratie:'민주주의·선거', hoeren:'단어 듣기'
+};
+
+const OBSERVATIONS = {
+  todo:[
+    ['우선순위 높음','학습지 "Wie kommt das Trinkwasser ins Hochhaus?" 3번 서술 문제가 비어 있습니다. 서술형으로 나올 가능성이 높아 9단원 마지막 문제로 연습하게 했습니다.'],
+    ['개념 확인','Versuch 3·5 "Wasser aus dem Nichts?"에서 물방울이 생긴 이유를 "물이 얼음이 된다", "수증기가 생겼다"로 적었습니다. 실제 핵심은 공기 중 수증기가 차가운 컵에서 물이 되는 응결입니다. 5단원에서 보충합니다.'],
+    ['결론 누락','Versuch 4 "Mehr Eis als flüssiges Wasser?"의 결론(물이 얼면 부피가 커진다)이 기록에 없습니다.'],
+    ['미완성','학습지 "Eine Quelle entsteht"의 컵 그림 칸이 비어 있습니다. 샘이 생기는 원리를 7단원에서 연습합니다.'],
+    ['확인 필요','"Trinkwasser" 학습지 1번 두 번째 호스 그림에서 양쪽 수면 높이가 다르게 칠해져 있는 것으로 보입니다.'],
+    ['철자','verdusten → verdunsten, Die Eiswürfeln → Die Eiswürfel, Renierungsform → Regierungsform']
+  ],
+  good:[
+    '물의 순환 빈칸 학습지(11월 2일)와 순환 그림 이름표를 모두 맞게 채웠습니다.',
+    '물에 녹는/안 녹는 물질 표(소금·설탕 / 밀가루·모래·기름)가 정확합니다.',
+    'Versuch 7 "Verschwindet Wasser?"에서 햇빛+뚜껑 없음이 가장 많이 증발하고, 뚜껑 안쪽에 물방울이 생긴다는 관찰을 잘 적었습니다.',
+    '흙·점토·자갈·모래 물 빠짐 관찰을 문장으로 잘 기록했습니다.'
+  ]
+};
+
+</script>
+<script>
+(function(){
+'use strict';
+const $app = document.getElementById('app');
+const KEY = 'wasserforscher-v1';
+const ICON = {
+  spk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
+};
+
+/* ---------- Speicher ---------- */
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && s.log) return s; }catch(e){} return {name:'', log:[], free:{}, best:{}, exam:'', koHint:false, extra:true}; }
+let S = load();
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- Daten aufbereiten ---------- */
+const QBY = {}, UBY = {}, GLOSS = {};
+UNITS.forEach(u=>{ UBY[u.id]=u; u.q.forEach(q=>{ q.u=u.id; q.c=q.c||u.c; QBY[q.id]=q; });
+  u.words.forEach(w=>{ const base=w.w.replace(/^(der|die|das)\s+/,''); GLOSS[base.toLowerCase()]=w; w.u=u.id; }); });
+const ALLWORDS = UNITS.flatMap(u=>u.words);
+
+/* ---------- Hilfen ---------- */
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const plain = s => String(s).replace(/\[\[([^\]|]+)(\|[^\]]+)?\]\]/g,'$1');
+function rich(s){
+  return esc(s).replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(m,txt,key)=>`<button class="w" data-word="${esc(key||txt)}" data-say="${esc(txt)}">${txt}</button>`);
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function toast(t){ const d=document.createElement('div'); d.className='toast'; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(),2600); }
+const spk = (say,cls='') => `<button class="icon-btn ${cls}" data-speak="${esc(say)}" aria-label="Vorlesen">${ICON.spk}</button>`;
+
+/* ---------- Vorlesen ---------- */
+let voice=null, warned=false;
+function pickVoice(){
+  if(!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices().filter(v=>/^de/i.test(v.lang));
+  voice = vs.find(v=>/de-DE/i.test(v.lang) && /google|anna|katja|helena|hedda|petra|marlene|vicki/i.test(v.name)) || vs.find(v=>/de-DE/i.test(v.lang)) || vs[0] || null;
+}
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text, slow){
+  if(!('speechSynthesis' in window)){ toast('Vorlesen geht auf diesem Gerät leider nicht.'); return; }
+  let t = plain(text).replace(/(\d+)\s*°C/g,'$1 Grad Celsius').replace(/·/g,'').replace(/[„“]/g,'').replace(/___/g,'Lücke').replace(/\s…/g,' ');
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(t);
+  u.lang='de-DE'; if(voice) u.voice=voice; u.rate = slow?0.6:0.88; u.pitch=1.05;
+  if(!voice && !warned){ warned=true; toast('Keine deutsche Stimme gefunden. Das Gerät liest vielleicht mit Akzent.'); }
+  speechSynthesis.speak(u);
+}
+
+/* ---------- Statistik ---------- */
+function record(q, ok, ans, mode, extra){
+  S.log.push({q:q.id, u:q.u, c:q.c, ok:!!ok, a:ans, m:mode, t:Date.now(), ...(extra||{})});
+  if(S.log.length>3000) S.log=S.log.slice(-3000);
+  save();
+}
+function latestByQ(){ const m={}; S.log.forEach(r=>{ if(r.m!=='hoer') m[r.q]=r; }); return m; }
+function unitStats(uid){
+  const u=UBY[uid], L=latestByQ(); let seen=0, ok=0;
+  u.q.forEach(q=>{ if(L[q.id]){ seen++; if(L[q.id].ok) ok++; } });
+  const tries = S.log.filter(r=>r.u===uid && r.m!=='hoer').length;
+  return {seen, ok, total:u.q.length, pct: seen? Math.round(ok/seen*100):null, tries};
+}
+function starsFor(uid){ const b=S.best[uid]; if(b==null) return 0; return b>=90?3: b>=70?2: b>=40?1:0; }
+const starHTML = n => `<span class="stars" aria-label="${n} von 3 Sternen">${'★'.repeat(n)}<span class="off">${'★'.repeat(3-n)}</span></span>`;
+function daysLeft(){ if(!S.exam) return null; const d=new Date(S.exam+'T08:00:00'); const n=new Date(); n.setHours(0,0,0,0); return Math.round((d-n)/86400000); }
+
+/* ---------- SVG-Bilder ---------- */
+const FIG = {
+cup:`<svg viewBox="0 0 220 150" width="220" role="img" aria-label="Becher mit Wasser bis zum Strich im Gefrierfach">
+  <text x="160" y="40" font-size="30" fill="var(--blue)">❄</text><text x="20" y="34" font-size="24" fill="var(--blue)">❄</text>
+  <path d="M70 30 L80 135 L140 135 L150 30" fill="none" stroke="var(--ink)" stroke-width="3"/>
+  <path d="M75.5 85 L80 135 L140 135 L144.5 85 Z" fill="var(--water)"/>
+  <line x1="60" y1="85" x2="160" y2="85" stroke="var(--bad)" stroke-width="2.5" stroke-dasharray="6 4"/>
+  <text x="165" y="90" font-size="14" fill="var(--ink)">Strich</text></svg>`,
+glasses:(()=>{ const g=(x,l,lid,sun)=>`<g transform="translate(${x},0)">
+  ${sun?'<circle cx="40" cy="22" r="14" fill="var(--sun)"/>':'<rect x="0" y="8" width="80" height="22" rx="11" fill="var(--line)"/><text x="40" y="24" font-size="12" text-anchor="middle" fill="var(--ink)">Schatten</text>'}
+  ${lid?'<rect x="14" y="46" width="52" height="7" rx="2" fill="var(--ink)"/>':''}
+  <path d="M18 54 L24 128 L56 128 L62 54" fill="none" stroke="var(--ink)" stroke-width="3"/>
+  <path d="M20.5 84 L24 128 L56 128 L59.5 84 Z" fill="var(--water)"/>
+  <text x="40" y="148" font-size="16" font-weight="700" text-anchor="middle" fill="var(--ink)">${l}</text></g>`;
+  return `<svg viewBox="0 0 300 156" width="300" role="img" aria-label="Glas A in der Sonne ohne Deckel, Glas B im Schatten ohne Deckel, Glas C im Schatten mit Deckel">${g(10,'A',0,1)}${g(110,'B',0,0)}${g(210,'C',1,0)}</svg>`; })(),
+iced:`<svg viewBox="0 0 200 150" width="200" role="img" aria-label="Glas mit Eiswürfeln, außen Wassertropfen">
+  <path d="M60 20 L70 135 L130 135 L140 20" fill="none" stroke="var(--ink)" stroke-width="3"/>
+  <path d="M63 50 L70 135 L130 135 L137 50 Z" fill="var(--water)" opacity=".6"/>
+  <rect x="78" y="45" width="22" height="22" rx="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2"/>
+  <rect x="104" y="58" width="22" height="22" rx="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2"/>
+  <rect x="86" y="80" width="22" height="22" rx="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2"/>
+  ${[[52,60],[50,92],[55,118],[146,48],[149,84],[144,112]].map(p=>`<path d="M${p[0]} ${p[1]} q-4 7 0 9 q4 -2 0 -9z" fill="var(--blue)"/>`).join('')}</svg>`,
+spring:`<svg viewBox="0 0 320 170" width="320" role="img" aria-label="Hang mit Schichten Humus, Sand, Kies und Ton; Quelle am Hang über der Tonschicht">
+  ${[0,1,2,3,4,5].map(i=>`<line x1="${40+i*22}" y1="6" x2="${34+i*22}" y2="22" stroke="var(--blue)" stroke-width="2"/>`).join('')}
+  <path d="M10 40 L190 40 L300 150 L10 150 Z" fill="var(--line)"/>
+  <path d="M10 40 L190 40 L203 53 L10 53 Z" fill="#6B4E31"/>
+  <path d="M10 53 L203 53 L228 78 L10 78 Z" fill="#E3C98A"/>
+  <path d="M10 78 L228 78 L250 100 L10 100 Z" fill="#A9A49A"/>
+  <path d="M10 100 L250 100 L300 150 L10 150 Z" fill="#B5806A"/>
+  <text x="20" y="50" font-size="11" fill="#fff">Humus</text><text x="20" y="70" font-size="12" fill="#3a2e10">Sand</text>
+  <text x="20" y="93" font-size="12" fill="#222">Kies</text><text x="20" y="130" font-size="12" fill="#fff">Ton</text>
+  <path d="M120 58 v30 M150 58 v30" stroke="var(--blue)" stroke-width="2.5" marker-end="url(#ar)"/>
+  <path d="M160 96 L246 96" stroke="var(--blue)" stroke-width="3" marker-end="url(#ar)"/>
+  <path d="M250 100 q14 4 22 20 q4 10 16 14" fill="none" stroke="var(--blue)" stroke-width="4"/>
+  <text x="252" y="92" font-size="13" font-weight="700" fill="var(--ink)">Quelle</text>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--blue)"/></marker></defs></svg>`,
+utube:`<svg viewBox="0 0 260 190" width="260" role="img" aria-label="Zwei Trichter an einem Schlauch, rechter Trichter höher, links Wasserstand markiert">
+  <path d="M40 60 L55 85 L55 150 Q55 175 80 175 L180 175 Q205 175 205 150 L205 45" fill="none" stroke="var(--ink)" stroke-width="14" stroke-linecap="round"/>
+  <path d="M40 60 L55 85 L55 150 Q55 175 80 175 L180 175 Q205 175 205 150 L205 45" fill="none" stroke="var(--card)" stroke-width="9" stroke-linecap="round"/>
+  <path d="M55 105 L55 150 Q55 175 80 175 L180 175 Q205 175 205 150 L205 140" fill="none" stroke="var(--water)" stroke-width="9"/>
+  <path d="M25 50 L55 85 L85 50 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>
+  <path d="M190 10 L205 30 L220 10 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>
+  <line x1="20" y1="105" x2="240" y2="105" stroke="var(--bad)" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="200" y="125" font-size="26" font-weight="700" fill="var(--blue)">?</text></svg>`,
+taps2:'', taps0:''
+};
+function tapsFig(level){ // level y
+  const taps=[45,85,125];
+  return `<svg viewBox="0 0 240 190" width="240" role="img" aria-label="Behälter mit Rohr und drei Wasserhähnen">
+  <rect x="${20}" y="${level}" width="90" height="${150-level}" fill="var(--water)"/>
+  <path d="M20 20 L20 150 L110 150 L110 20" fill="none" stroke="var(--ink)" stroke-width="4"/>
+  <rect x="58" y="150" width="14" height="25" fill="var(--water)"/><rect x="72" y="161" width="104" height="14" fill="var(--water)"/>
+  <rect x="164" y="${level}" width="14" height="${175-level}" fill="var(--water)"/>
+  <path d="M58 150 L58 175 L178 175 L178 20 M72 150 L72 161 L164 161 L164 20" fill="none" stroke="var(--ink)" stroke-width="3"/>
+  ${taps.map(y=>`<path d="M178 ${y} h22 v10" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/><circle cx="190" cy="${y-6}" r="4" fill="var(--ink)"/>`).join('')}
+  <line x1="10" y1="${level}" x2="230" y2="${level}" stroke="var(--bad)" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="26" y="${level-6}" font-size="12" fill="var(--bad)">Wasserstand</text></svg>`; }
+FIG.taps2 = tapsFig(65); FIG.taps0 = tapsFig(138);
+
+/* ---------- Router ---------- */
+let view={name:'home'};
+function go(v){ view=v; if('speechSynthesis' in window) speechSynthesis.cancel(); render(); window.scrollTo(0,0); }
+function render(){
+  closePop();
+  const v=view.name;
+  if(v==='home') return home();
+  if(v==='unit') return unitView();
+  if(v==='quiz') return quizView();
+  if(v==='result') return resultView();
+  if(v==='dict') return dictView();
+  if(v==='hoer') return hoerView();
+  if(v==='gate') return gateView();
+  if(v==='parent') return parentView();
+}
+
+/* ---------- Start ---------- */
+function home(){
+  const units = UNITS.filter(u=>!u.extra || S.extra);
+  const dl = daysLeft();
+  const L = latestByQ();
+  const wrongCount = Object.values(L).filter(r=>!r.ok).length;
+  const next = units.find(u=>starsFor(u.id)<2) || units[0];
+  $app.innerHTML = `
+  <header class="top">
+    <div><div class="kicker">Forscher-Insel · Klasse 3 · Sachunterricht · Wasser</div>
+    <h1>${S.name?`Hallo ${esc(S.name)}!`:'Forscher-Insel'}</h1></div>
+    ${dl!=null && dl>=0 ? `<div class="countdown"><b>${dl}</b>${dl===1?'Tag':'Tage'} bis zum Test</div>`:''}
+  </header>
+  ${S.name?'':`<div class="tile hl row" style="margin-bottom:14px"><label for="nm" style="flex:1;min-width:160px">Wie heißt du?</label><input id="nm" style="font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);flex:2;min-width:0"><button class="btn" id="nmok">Los!</button></div>`}
+  <div class="tiles">
+    <button class="tile hl" data-go-unit="${next.id}"><b>Weiterlernen</b><span>${next.no}. ${esc(next.title)}</span></button>
+    <button class="tile" id="test"><b>Probetest</b><span>12 gemischte Aufgaben</span></button>
+    <button class="tile" id="fehler" ${wrongCount?'':'disabled style="opacity:.55"'}><b>Fehlerkiste</b><span>${wrongCount} Aufgabe${wrongCount===1?'':'n'} nochmal üben</span></button>
+    <button class="tile" id="dict"><b>Wörter hören</b><span>${ALLWORDS.length} schwere Wörter mit Ton</span></button>
+  </div>
+  <h2 class="hand" style="font-size:22px;color:var(--blue);margin:8px 0 6px">Dein Lernweg</h2>
+  <ol class="path">${units.map(u=>{
+    const st=unitStats(u.id), n=starsFor(u.id);
+    const fill = n>=2?'var(--blue)':st.seen?'var(--water)':'var(--line)';
+    const tc = n>=2?'var(--card)':'var(--ink)';
+    return `<li class="stop"><div class="drop"><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M28 3 C28 3 8 26 8 37 a20 20 0 0 0 40 0 C48 26 28 3 28 3z" fill="${fill}"/></svg><span style="color:${tc}">${u.no}</span></div>
+      <button class="main" data-go-unit="${u.id}"><div style="flex:1;min-width:0"><div class="t">${esc(u.title)} ${u.extra?'<span class="tag">Extra</span>':''}</div><div class="s">${esc(u.sub)}</div></div>${starHTML(n)}</button></li>`;}).join('')}
+  </ol>
+  <button class="foot-link ko" id="parent">부모님 화면 (Für Eltern)</button>`;
+  const nm=document.getElementById('nmok');
+  if(nm) nm.onclick=()=>{ const v=document.getElementById('nm').value.trim(); if(v){ S.name=v.slice(0,20); save(); render(); } };
+  bindCommon();
+  document.getElementById('test').onclick=()=>startQuiz('test');
+  const f=document.getElementById('fehler'); if(wrongCount) f.onclick=()=>startQuiz('fehler');
+  document.getElementById('dict').onclick=()=>go({name:'dict'});
+  document.getElementById('parent').onclick=()=>go({name:'gate'});
+}
+
+/* ---------- Einheit ---------- */
+function unitView(){
+  const u=UBY[view.id], tab=view.tab||'lernen', st=unitStats(u.id);
+  let body='';
+  if(tab==='lernen'){
+    body=`<div class="row" style="justify-content:space-between;margin-bottom:10px"><span class="muted">Tippe auf gelbe Wörter: Du hörst sie und siehst, was sie bedeuten.</span>
+      <button class="btn ghost" data-speak="${esc(u.merk.join(' '))}">Alles vorlesen</button></div>
+      <div class="lined"><ul class="merk">${u.merk.map(m=>`<li>${spk(m)}<span class="txt">${rich(m)}</span></li>`).join('')}</ul></div>
+      <div class="qfoot"><button class="btn ghost" data-tab="woerter">Wörter</button><button class="btn" id="start">Jetzt üben</button></div>`;
+  } else if(tab==='woerter'){
+    body=`<p class="muted">Hör zu und sprich nach. Mit „langsam“ hörst du das Wort ganz deutlich.</p>${wordCards(u.words)}
+      <div class="qfoot"><button class="btn" id="start">Jetzt üben</button></div>`;
+  } else {
+    body=`<div class="lined" style="padding-top:20px"><p style="margin:0;line-height:34px"><b>${u.q.length} Aufgaben</b> warten auf dich.<br>
+      ${st.seen?`Zuletzt: ${st.ok} von ${st.seen} richtig.`:'Du hast hier noch nicht geübt.'}</p></div>
+      <div class="qfoot"><button class="btn" id="start">Los geht’s</button></div>`;
+  }
+  $app.innerHTML=`<button class="back" id="bk">‹ Zurück</button>
+    <header class="top" style="margin-top:6px"><div><div class="kicker">Station ${u.no}${u.extra?' · Extra':''}</div><h1>${esc(u.title)}</h1><div class="muted">${esc(u.sub)}</div></div>${starHTML(starsFor(u.id))}</header>
+    <div class="tabs" role="tablist">${[['lernen','Lernen'],['woerter','Wörter'],['ueben','Üben']].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
+  document.getElementById('bk').onclick=()=>go({name:'home'});
+  $app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ view.tab=b.dataset.tab; render(); });
+  const s=document.getElementById('start'); if(s) s.onclick=()=>startQuiz('practice',u.id);
+  bindCommon();
+}
+function wordCards(ws){
+  return `<div class="words">${ws.map(w=>`<div class="wcard"><div class="wt">${esc(w.w)}</div><div class="syl">${esc(w.s)}</div><div class="muted" style="font-size:15px">${esc(w.d)}</div>
+    ${S.koHint?`<div class="ko muted" style="font-size:14px">${esc(w.ko)}</div>`:''}
+    <div class="row">${spk(w.w)}<button class="icon-btn slow" data-speak="${esc(w.w)}" data-slow="1">langsam</button></div></div>`).join('')}</div>`;
+}
+
+/* ---------- Wörterbuch & Hörspiel ---------- */
+function dictView(){
+  const units=UNITS.filter(u=>!u.extra||S.extra);
+  $app.innerHTML=`<button class="back" id="bk">‹ Zurück</button>
+   <header class="top" style="margin-top:6px"><div><div class="kicker">Alle Stationen</div><h1>Wörter hören</h1></div></header>
+   <div class="tiles"><button class="tile hl" id="hoer"><b>Hör-Spiel</b><span>Hör ein Wort und finde es</span></button></div>
+   ${units.map(u=>`<h2 style="font-size:18px;margin:20px 0 8px">${u.no}. ${esc(u.title)}</h2>${wordCards(u.words)}`).join('')}`;
+  document.getElementById('bk').onclick=()=>go({name:'home'});
+  document.getElementById('hoer').onclick=()=>go({name:'hoer', n:0, ok:0});
+  bindCommon();
+}
+function hoerView(){
+  const pool=UNITS.filter(u=>!u.extra||S.extra).flatMap(u=>u.words);
+  if(view.n>=10){
+    $app.innerHTML=`<div class="result"><div class="score">${view.ok} / 10</div><p>${view.ok>=8?'Super Ohren!':'Übe die Wörter noch ein bisschen.'}</p>
+     <div class="row" style="justify-content:center"><button class="btn" id="again">Nochmal</button><button class="btn ghost" id="bk">Fertig</button></div></div>`;
+    document.getElementById('again').onclick=()=>go({name:'hoer',n:0,ok:0});
+    document.getElementById('bk').onclick=()=>go({name:'dict'}); return;
+  }
+  if(!view.cur){ const t=pool[Math.floor(Math.random()*pool.length)]; const opts=shuffle([t,...shuffle(pool.filter(w=>w!==t)).slice(0,3)]); view.cur={t,opts,done:false}; }
+  const {t,opts,done}=view.cur;
+  $app.innerHTML=`<button class="back" id="bk">‹ Zurück</button>
+   <div class="qhead"><div class="bar"><i style="width:${view.n*10}%"></i></div><span class="muted">${view.n+1}/10</span></div>
+   <div class="qcard"><div class="qtext"><span class="txt">Welches Wort hörst du?</span></div>
+   <div class="row" style="justify-content:center;margin:18px 0"><button class="btn sun" id="play" style="font-size:20px">▶ Anhören</button><button class="btn ghost" id="playslow">langsam</button></div>
+   <div class="opts">${opts.map((o,i)=>`<button class="opt ${done?(o===t?'right':(i===done.i?'wrong':'')):''}" data-i="${i}" ${done?'disabled':''}>${esc(o.w)}</button>`).join('')}</div>
+   ${done?`<div class="qfoot"><button class="btn" id="nx">Weiter</button></div>`:''}</div>`;
+  document.getElementById('bk').onclick=()=>go({name:'dict'});
+  document.getElementById('play').onclick=()=>speak(t.w);
+  document.getElementById('playslow').onclick=()=>speak(t.w,true);
+  if(!done){ setTimeout(()=>speak(t.w),250);
+    $app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ const i=+b.dataset.i, ok=opts[i]===t; view.cur.done={i}; if(ok) view.ok++;
+      S.log.push({q:'hoer:'+t.w,u:t.u,c:'hoeren',ok,a:opts[i].w,m:'hoer',t:Date.now(),word:t.w}); save(); render(); }); }
+  else document.getElementById('nx').onclick=()=>{ view.n++; view.cur=null; render(); };
+}
+
+/* ---------- Quiz ---------- */
+let Q=null;
+function startQuiz(mode, uid){
+  let list;
+  const active=UNITS.filter(u=>!u.extra||S.extra);
+  if(mode==='practice') list=UBY[uid].q.slice();
+  else if(mode==='fehler'){ const L=latestByQ(); list=Object.values(L).filter(r=>!r.ok).map(r=>QBY[r.q]).filter(Boolean); }
+  else if(mode==='retry') list=uid;
+  else { list=shuffle(active.filter(u=>!u.extra).flatMap(u=>u.q.filter(q=>q.t!=='free'))).slice(0,12); }
+  Q={mode, uid:mode==='practice'?uid:null, list, i:0, res:[], state:null};
+  go({name:'quiz'});
+}
+function newState(q){
+  if(q.t==='order') return {pool:shuffle(q.items), seq:[]};
+  if(q.t==='sort') return {sel:{}};
+  if(q.t==='match') return {sel:{}, rights:shuffle(q.pairs.map(p=>p[1]))};
+  if(q.t==='cloze') return {fill:q.ans.map(()=>null), act:0, bank:shuffle(q.bank)};
+  if(q.t==='free') return {text:'', shown:false};
+  return {sel:null};
+}
+function quizView(){
+  const q=Q.list[Q.i];
+  if(!q){ return go({name:'result'}); }
+  if(!Q.state) Q.state=newState(q);
+  const st=Q.state, checked=st.checked, test=Q.mode==='test';
+  let inner='';
+  if(q.t==='mc'||q.t==='tf'){
+    const opts=q.t==='tf'?['Richtig','Falsch']:q.o, ans=q.t==='tf'?(q.a?0:1):q.a;
+    inner=`<div class="opts ${q.t==='tf'?'tf':''}">${opts.map((o,i)=>{
+      let cls=''; if(checked && !test){ if(i===ans) cls='right'; else if(i===st.sel) cls='wrong'; }
+      return `<button class="opt ${cls}" data-i="${i}" aria-pressed="${st.sel===i}" ${checked?'disabled':''}>${rich(o)}</button>`;}).join('')}</div>`;
+  } else if(q.t==='order'){
+    inner=`<p class="muted" style="margin:10px 0 0">Tippe die Sätze der Reihe nach an. Tippe unten nochmal, um einen Satz zurückzulegen.</p>
+      <div class="opts">${st.pool.filter(x=>!st.seq.includes(x)).map(x=>`<button class="opt" data-pick="${esc(x)}" ${checked?'disabled':''}>${esc(x)}</button>`).join('')}</div>
+      <div class="seq">${st.seq.length?st.seq.map((x,i)=>{ let cls=''; if(checked&&!test) cls= x===q.items[i]?'right':'wrong';
+        return `<button class="opt ${cls}" data-unpick="${i}" ${checked?'disabled':''}><span class="n">${i+1}</span>${esc(x)}</button>`;}).join(''):'<span class="muted">Deine Reihenfolge erscheint hier.</span>'}</div>`;
+  } else if(q.t==='sort'){
+    inner=q.items.map(([it,c],i)=>`<div class="sortrow"><span class="item">${esc(it)} ${checked&&!test?(st.sel[i]===c?'✓':'✗'):''}</span>${q.cats.map((cat,k)=>`<button class="chip" data-row="${i}" data-cat="${k}" aria-pressed="${st.sel[i]===k}" ${checked?'disabled':''}>${esc(cat)}</button>`).join('')}</div>`).join('');
+  } else if(q.t==='match'){
+    inner=q.pairs.map(([l,r],i)=>`<div class="matchrow"><span><b>${esc(l)}</b> ${checked&&!test?(st.sel[i]===r?'✓':'✗ '+esc(r)):''}</span>
+      <select id="m-${q.id}-${i}" data-m="${i}" ${checked?'disabled':''}><option value="">– wählen –</option>${st.rights.map(x=>`<option ${st.sel[i]===x?'selected':''}>${esc(x)}</option>`).join('')}</select></div>`).join('');
+  } else if(q.t==='cloze'){
+    let k=0;
+    const html=esc(q.text).replace(/\{(\d)\}/g,(m,n)=>{ n=+n; const v=st.fill[n]; let cls=''; if(checked&&!test) cls= v===q.ans[n]?'right':'wrong'; else if(st.act===n) cls='active';
+      return `<button class="blank ${cls}" data-blank="${n}" ${checked?'disabled':''}>${v?esc(v):'&nbsp;'}</button>`; });
+    const used=st.fill.filter(Boolean);
+    inner=`<div class="cloze">${html}</div><div class="bank">${st.bank.map(b=>`<button class="chip" data-bank="${esc(b)}" ${checked||used.includes(b)?'disabled':''}>${esc(b)}</button>`).join('')}</div>
+      ${checked&&!test?`<p class="muted">Richtig: ${q.ans.map(esc).join(', ')}</p>`:''}`;
+  } else if(q.t==='free'){
+    inner=`<textarea id="free-${q.id}" placeholder="Schreibe hier deine Antwort …" ${st.shown?'readonly':''}>${esc(st.text)}</textarea>
+      ${st.shown?`<div class="model"><b>So kann man es schreiben:</b><div class="row" style="align-items:flex-start;margin-top:6px">${spk(q.model)}<span style="flex:1;min-width:0">${esc(q.model)}</span></div></div>
+      <p style="margin:14px 0 6px;font-weight:700">Hattest du das Wichtigste auch?</p>
+      <div class="row">${[['ja','Ja'],['teil','Teilweise'],['nein','Nein']].map(([k,l])=>`<button class="chip" data-self="${k}">${l}</button>`).join('')}</div>`:''}`;
+  }
+  let fb='';
+  if(checked && !test && q.t!=='free'){ fb=`<div class="fb ${st.ok?'ok':'no'}">${st.ok?'Richtig, super!':'Fast! Schau noch einmal:'}<p>${rich(q.ex)}</p></div>`; }
+  const canCheck = ready(q,st);
+  const title = Q.mode==='test'?'Probetest':Q.mode==='fehler'||Q.mode==='retry'?'Fehlerkiste':`${UBY[q.u].no}. ${UBY[q.u].title}`;
+  $app.innerHTML=`<button class="back" id="bk">‹ Abbrechen</button>
+   <div class="qhead"><span class="muted" style="font-size:14px">${esc(title)}</span></div>
+   <div class="qhead"><div class="bar"><i style="width:${Q.i/Q.list.length*100}%"></i></div><span class="muted">${Q.i+1}/${Q.list.length}</span></div>
+   <div class="qcard"><div class="qtext">${spk(q.q)}<span class="txt">${rich(q.q)}</span></div>
+   ${q.img?`<div class="fig">${FIG[q.img]}</div>`:''}${inner}${fb}
+   <div class="qfoot">${q.t==='free'? (st.shown?'':`<button class="btn" id="show" ${st.text.trim().length<3?'disabled':''}>Musterlösung zeigen</button>`)
+     : checked? `<button class="btn" id="next">${Q.i+1<Q.list.length?'Weiter':'Fertig'}</button>`
+     : `<button class="btn" id="check" ${canCheck?'':'disabled'}>${test?'Weiter':'Prüfen'}</button>`}</div></div>`;
+  document.getElementById('bk').onclick=()=>go(Q.mode==='practice'?{name:'unit',id:Q.uid,tab:'ueben'}:{name:'home'});
+  bindCommon();
+  // Interaktion
+  $app.querySelectorAll('.opt[data-i]').forEach(b=>b.onclick=()=>{ st.sel=+b.dataset.i; render(); });
+  $app.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{ st.seq.push(b.dataset.pick); render(); });
+  $app.querySelectorAll('[data-unpick]').forEach(b=>b.onclick=()=>{ st.seq.splice(+b.dataset.unpick,1); render(); });
+  $app.querySelectorAll('[data-row]').forEach(b=>b.onclick=()=>{ st.sel[+b.dataset.row]=+b.dataset.cat; render(); });
+  $app.querySelectorAll('select[data-m]').forEach(s=>s.onchange=()=>{ st.sel[+s.dataset.m]=s.value||undefined; render(); });
+  $app.querySelectorAll('[data-blank]').forEach(b=>b.onclick=()=>{ const n=+b.dataset.blank; if(st.fill[n]) st.fill[n]=null; st.act=n; render(); });
+  $app.querySelectorAll('[data-bank]').forEach(b=>b.onclick=()=>{ let n=st.act; if(n==null||st.fill[n]) n=st.fill.findIndex(x=>!x); if(n<0) return; st.fill[n]=b.dataset.bank; const nx=st.fill.findIndex(x=>!x); st.act=nx<0?null:nx; render(); });
+  const ta=document.getElementById('free-'+q.id);
+  if(ta && !st.shown){ ta.oninput=()=>{ st.text=ta.value; const s=document.getElementById('show'); if(s) s.disabled=st.text.trim().length<3; }; }
+  const sh=document.getElementById('show'); if(sh) sh.onclick=()=>{ st.shown=true; render(); };
+  $app.querySelectorAll('[data-self]').forEach(b=>b.onclick=()=>{ const k=b.dataset.self; const ok=k==='ja';
+    record(q, ok, st.text.trim(), Q.mode, {self:k}); S.free[q.id]={text:st.text.trim(), self:k, t:Date.now()}; save();
+    Q.res.push({q, ok, part:k==='teil'}); Q.i++; Q.state=null; render(); });
+  const ck=document.getElementById('check'); if(ck) ck.onclick=()=>{ const r=evaluate(q,st); st.ok=r.ok; st.checked=true; record(q,r.ok,r.ans,Q.mode); Q.res.push({q,ok:r.ok,ans:r.ans});
+    if(test){ Q.i++; Q.state=null; } render(); };
+  const nx=document.getElementById('next'); if(nx) nx.onclick=()=>{ Q.i++; Q.state=null; render(); };
+}
+function ready(q,st){
+  if(q.t==='mc'||q.t==='tf') return st.sel!=null;
+  if(q.t==='order') return st.seq.length===q.items.length;
+  if(q.t==='sort') return q.items.every((_,i)=>st.sel[i]!=null);
+  if(q.t==='match') return q.pairs.every((_,i)=>st.sel[i]);
+  if(q.t==='cloze') return st.fill.every(Boolean);
+  return false;
+}
+function evaluate(q,st){
+  if(q.t==='mc') return {ok:st.sel===q.a, ans:q.o[st.sel]};
+  if(q.t==='tf') return {ok:(st.sel===0)===q.a, ans:st.sel===0?'Richtig':'Falsch'};
+  if(q.t==='order') return {ok:st.seq.every((x,i)=>x===q.items[i]), ans:st.seq.join(' → ')};
+  if(q.t==='sort') return {ok:q.items.every(([_,c],i)=>st.sel[i]===c), ans:q.items.map(([it],i)=>it+': '+q.cats[st.sel[i]]).join(', ')};
+  if(q.t==='match') return {ok:q.pairs.every(([_,r],i)=>st.sel[i]===r), ans:q.pairs.map(([l],i)=>l+' = '+st.sel[i]).join('; ')};
+  if(q.t==='cloze') return {ok:st.fill.every((v,i)=>v===q.ans[i]), ans:st.fill.join(', ')};
+}
+function correctText(q){
+  if(q.t==='mc') return q.o[q.a];
+  if(q.t==='tf') return q.a?'Richtig':'Falsch';
+  if(q.t==='order') return q.items.join(' → ');
+  if(q.t==='sort') return q.items.map(([it,c])=>it+': '+q.cats[c]).join(', ');
+  if(q.t==='match') return q.pairs.map(p=>p.join(' = ')).join('; ');
+  if(q.t==='cloze') return q.ans.join(', ');
+  if(q.t==='free') return q.model;
+}
+function resultView(){
+  const n=Q.res.length, ok=Q.res.filter(r=>r.ok).length + Q.res.filter(r=>r.part).length*0.5;
+  const pct = n? Math.round(ok/n*100):0;
+  let stars=0;
+  if(Q.mode==='practice'){ S.best[Q.uid]=Math.max(S.best[Q.uid]||0,pct); save(); stars=starsFor(Q.uid); }
+  else stars = pct>=90?3:pct>=70?2:pct>=40?1:0;
+  const wrong=Q.res.filter(r=>!r.ok);
+  const msg = pct>=90?'Spitze! Du bist ein echter Wasser-Forscher.':pct>=70?'Sehr gut! Nur noch ein paar Kleinigkeiten.':pct>=40?'Gut gemacht! Übe die Fehler noch einmal.':'Nicht schlimm! Lies die Lernkarte noch einmal und probier es wieder.';
+  $app.innerHTML=`<div class="result"><div class="stars">${starHTML(stars)}</div><div class="score">${Number.isInteger(ok)?ok:ok.toFixed(1)} von ${n}</div><p style="font-size:19px">${msg}</p>
+   <div class="row" style="justify-content:center">${wrong.length?'<button class="btn sun" id="retry">Fehler nochmal üben</button>':''}<button class="btn ghost" id="home">Zum Lernweg</button></div></div>
+   ${wrong.length?`<div class="qcard rev"><b>Das solltest du dir merken:</b><ul>${wrong.map(r=>`<li>${rich(r.q.q)}<br><span style="color:var(--ok);font-weight:700">${esc(correctText(r.q))}</span></li>`).join('')}</ul></div>`:''}`;
+  bindCommon();
+  document.getElementById('home').onclick=()=>go({name:'home'});
+  const rt=document.getElementById('retry'); if(rt) rt.onclick=()=>startQuiz('retry', wrong.map(r=>r.q));
+}
+
+/* ---------- Wort-Popup ---------- */
+let popEl=null;
+function closePop(){ if(popEl){ popEl.remove(); popEl=null; } }
+function openPop(key, say){
+  closePop();
+  const w=GLOSS[key.toLowerCase()];
+  popEl=document.createElement('div'); popEl.className='pop'; popEl.setAttribute('role','dialog');
+  popEl.innerHTML= w? `<div class="row" style="justify-content:space-between"><div class="big">${esc(w.w)}</div><button class="icon-btn" data-close aria-label="Schließen">✕</button></div>
+    <div class="syl">${esc(w.s)}</div><p style="margin:8px 0">${esc(w.d)}</p>${S.koHint?`<p class="ko muted" style="margin:0 0 8px">${esc(w.ko)}</p>`:''}
+    <div class="row">${spk(w.w)}<button class="icon-btn slow" data-speak="${esc(w.w)}" data-slow="1">langsam</button></div>`
+   : `<div class="row" style="justify-content:space-between"><div class="big">${esc(say)}</div><button class="icon-btn" data-close aria-label="Schließen">✕</button></div><div class="row" style="margin-top:8px">${spk(say)}<button class="icon-btn slow" data-speak="${esc(say)}" data-slow="1">langsam</button></div>`;
+  document.body.appendChild(popEl);
+  popEl.querySelector('[data-close]').onclick=closePop;
+  popEl.querySelectorAll('[data-speak]').forEach(b=>b.onclick=()=>speak(b.dataset.speak, !!b.dataset.slow));
+  speak(w?w.w:say);
+}
+function bindCommon(){
+  $app.querySelectorAll('[data-speak]').forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); speak(b.dataset.speak, !!b.dataset.slow); });
+  $app.querySelectorAll('.w').forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); openPop(b.dataset.word, b.dataset.say); });
+  $app.querySelectorAll('[data-go-unit]').forEach(b=>b.onclick=()=>go({name:'unit',id:b.dataset.goUnit,tab:'lernen'}));
+}
+
+/* ---------- Eltern ---------- */
+function gateView(){
+  const a=12+Math.floor(Math.random()*8), b=13+Math.floor(Math.random()*6);
+  $app.innerHTML=`<div class="gate ko"><h2 style="font-size:20px">부모님 확인</h2><p class="muted">아래 계산의 답을 입력하세요.</p>
+   <p style="font-size:28px;font-weight:700" class="de">${a} × ${b} = ?</p><input id="ga" inputmode="numeric" autocomplete="off" aria-label="답">
+   <p id="gerr" style="color:var(--bad)" hidden>답이 맞지 않습니다. 다시 입력하세요.</p>
+   <div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost" id="bk">돌아가기</button><button class="btn" id="ok">확인</button></div></div>`;
+  const chk=()=>{ if(+document.getElementById('ga').value===a*b) go({name:'parent'}); else document.getElementById('gerr').hidden=false; };
+  document.getElementById('ok').onclick=chk;
+  document.getElementById('ga').onkeydown=e=>{ if(e.key==='Enter') chk(); };
+  document.getElementById('bk').onclick=()=>go({name:'home'});
+}
+function statusPill(st){
+  if(!st.seen) return '<span class="pill p-none">미학습</span>';
+  if(st.seen<st.total) return `<span class="pill p-mid">진행 중 ${st.seen}/${st.total}</span>`;
+  if(st.pct>=85) return '<span class="pill p-ok">잘 이해함</span>';
+  if(st.pct>=60) return '<span class="pill p-mid">거의 이해</span>';
+  return '<span class="pill p-bad">연습 필요</span>';
+}
+function meter(p){ const c=p==null?'var(--line)':p>=85?'var(--ok)':p>=60?'var(--sun)':'var(--bad)'; return `<span class="meter"><i style="width:${p||0}%;background:${c}"></i></span>${p==null?'–':p+'%'}`; }
+function fmt(t){ const d=new Date(t); return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function parentView(){
+  const units=UNITS.filter(u=>!u.extra||S.extra);
+  const L=latestByQ(), latest=Object.values(L);
+  const totalQ=units.reduce((s,u)=>s+u.q.length,0);
+  const seen=latest.filter(r=>UBY[r.u] && (!UBY[r.u].extra||S.extra)).length, okN=latest.filter(r=>r.ok && UBY[r.u] && (!UBY[r.u].extra||S.extra)).length;
+  const last=S.log.length?fmt(S.log[S.log.length-1].t):'–';
+  // Konzepte
+  const cc={}; latest.forEach(r=>{ (cc[r.c]=cc[r.c]||{n:0,ok:0}); cc[r.c].n++; if(r.ok) cc[r.c].ok++; });
+  const hoer=S.log.filter(r=>r.m==='hoer'); if(hoer.length){ cc.hoeren={n:hoer.length, ok:hoer.filter(r=>r.ok).length}; }
+  const weak=Object.entries(cc).map(([c,v])=>({c,n:v.n,pct:Math.round(v.ok/v.n*100)})).filter(x=>x.pct<85).sort((a,b)=>a.pct-b.pct).slice(0,6);
+  const wrongs=S.log.filter(r=>!r.ok && r.m!=='hoer').slice(-12).reverse();
+  const hoerWrong=[...new Set(hoer.filter(r=>!r.ok).map(r=>r.word))].slice(-10);
+  // 7 Tage
+  const days=[]; for(let i=6;i>=0;i--){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); const e=d.getTime()+86400000; days.push({lab:['일','월','화','수','목','금','토'][d.getDay()], n:S.log.filter(r=>r.t>=d.getTime()&&r.t<e).length}); }
+  const maxD=Math.max(1,...days.map(d=>d.n));
+  // Plan
+  const dl=daysLeft(); let plan='';
+  if(dl!=null && dl>0){
+    const todo=units.filter(u=>!u.extra).filter(u=>{ const s=unitStats(u.id); return !(s.seen===s.total && s.pct>=85); });
+    const studyDays=Math.max(1,dl-1); const per=Math.ceil(todo.length/studyDays);
+    const rows=[]; for(let d=0; d<studyDays && d*per<todo.length; d++){ const dt=new Date(); dt.setDate(dt.getDate()+d); rows.push(`<tr><td class="de">${dt.getMonth()+1}/${dt.getDate()}</td><td>${todo.slice(d*per,d*per+per).map(u=>`${u.no}. ${u.ko}`).join(', ')}</td></tr>`); }
+    const pd=new Date(S.exam); pd.setDate(pd.getDate()-1);
+    plan=`<table class="tbl"><thead><tr><th>날짜</th><th>할 일</th></tr></thead><tbody>${rows.join('')||'<tr><td colspan="2">모든 단원을 잘 이해했습니다. 모의시험으로 마무리하세요.</td></tr>'}
+      <tr><td class="de">${pd.getMonth()+1}/${pd.getDate()}</td><td>앱 Probetest + 출력한 모의시험 B, 틀린 문제는 Fehlerkiste로 복습</td></tr></tbody></table>`;
+  }
+  $app.innerHTML=`<div class="parent">
+  <button class="back" id="bk">‹ 아이 화면으로</button>
+  <header class="top" style="margin-top:6px"><div><div class="kicker">부모님 화면</div><h1 style="font-family:var(--f-ko);font-weight:700;color:var(--ink);font-size:26px">${S.name?esc(S.name)+'의 ':''}과학(물) 학습 현황</h1></div>
+   ${dl!=null&&dl>=0?`<div class="countdown"><b class="de">D-${dl}</b>시험</div>`:''}</header>
+
+  <div class="kpis">
+    <div class="card kpi"><b>${seen}/${totalQ}</b><span>풀어 본 문제</span></div>
+    <div class="card kpi"><b>${seen?Math.round(okN/seen*100)+'%':'–'}</b><span>현재 정답률(문제별 최근 답)</span></div>
+    <div class="card kpi"><b>${units.filter(u=>starsFor(u.id)>=2).length}/${units.length}</b><span>별 2개 이상 단원</span></div>
+    <div class="card kpi"><b style="font-size:18px;line-height:1.9">${last}</b><span>마지막 학습</span></div>
+  </div>
+
+  <h2>최근 7일 학습량</h2>
+  <div class="card"><div class="days">${days.map(d=>`<div><i style="height:${Math.round(d.n/maxD*50)}px" title="${d.n}문제"></i><span class="de" style="color:var(--ink);font-size:12px">${d.n}</span>${d.lab}</div>`).join('')}</div></div>
+
+  <h2>단원별 이해도 <span class="muted" style="font-size:13px;font-weight:400">(공부 순서대로)</span></h2>
+  <div class="card scroll"><table class="tbl"><thead><tr><th>단원</th><th>정답률</th><th>상태</th><th>시도</th></tr></thead><tbody>
+   ${units.map(u=>{ const st=unitStats(u.id); return `<tr><td><b>${u.no}. ${esc(u.ko)}</b><br><span class="de muted" style="font-size:13px">${esc(u.title)}</span></td><td style="white-space:nowrap">${meter(st.pct)}</td><td>${statusPill(st)}</td><td class="de">${st.tries}</td></tr>`;}).join('')}
+  </tbody></table></div>
+
+  <h2>보충이 필요한 개념</h2>
+  <div class="card">${weak.length? `<ul class="obs">${weak.map(w=>`<li><span class="pill ${w.pct<60?'p-bad':'p-mid'} de">${w.pct}%</span><div><b>${CONCEPTS[w.c]||w.c}</b> <span class="muted">(${w.n}문제 기준)</span>${conceptHelp(w.c)}</div></li>`).join('')}</ul>`
+    : `<p class="muted" style="margin:0">${seen?'정답률 85% 미만인 개념이 없습니다.':'아직 푼 문제가 없습니다. 아이가 문제를 풀면 여기에 약한 개념이 표시됩니다.'}</p>`}</div>
+
+  <h2>사진(공책·학습지) 분석 소견</h2>
+  <div class="card"><ul class="obs">${OBSERVATIONS.todo.map(([k,t])=>`<li><span class="pill ${k==='우선순위 높음'?'p-bad':'p-mid'}">${k}</span><span>${esc(t)}</span></li>`).join('')}</ul>
+   <p style="margin:14px 0 6px;font-weight:700">잘한 점</p><ul class="obs">${OBSERVATIONS.good.map(t=>`<li><span class="pill p-ok">잘함</span><span>${esc(t)}</span></li>`).join('')}</ul></div>
+
+  <h2>최근 틀린 문제</h2>
+  <div class="card">${wrongs.length? wrongs.map(r=>{ const q=QBY[r.q]; if(!q) return ''; return `<div class="wrongitem"><div class="muted" style="font-size:13px">${UBY[q.u].no}. ${esc(UBY[q.u].ko)} · ${fmt(r.t)}${r.m==='test'?' · 모의시험':''}</div>
+     <div><b>${esc(q.ko)}</b></div><div class="de muted" style="font-size:14px">${esc(plain(q.q))}</div>
+     <div style="margin-top:4px">아이 답: <span class="de" style="color:var(--bad)">${esc(r.a||'')}</span></div>
+     <div>정답: <span class="de" style="color:var(--ok)">${esc(correctText(q))}</span></div>
+     ${q.exk?`<div class="muted">설명: ${esc(q.exk)}</div>`:''}</div>`;}).join('') : '<p class="muted" style="margin:0">틀린 문제가 없습니다.</p>'}</div>
+
+  <h2>서술형 답안</h2>
+  <div class="card">${units.flatMap(u=>u.q.filter(q=>q.t==='free')).map(q=>{ const f=S.free[q.id];
+     return `<div class="wrongitem"><b>${esc(q.ko)}</b><div style="margin-top:4px">${f?`아이 답: <span class="de">${esc(f.text)}</span> <span class="pill ${f.self==='ja'?'p-ok':f.self==='teil'?'p-mid':'p-bad'}">스스로 평가: ${f.self==='ja'?'다 씀':f.self==='teil'?'일부':'못 씀'}</span>`:'<span class="muted">아직 안 씀</span>'}</div>
+     <div class="muted" style="margin-top:4px">모범 답안: <span class="de">${esc(q.model)}</span><br>뜻: ${esc(q.mk)}</div></div>`;}).join('')}
+   <p class="muted" style="margin:8px 0 0;font-size:13px">서술형은 아이가 스스로 모범 답안과 비교해 평가합니다. 실제 내용은 위 답안을 직접 확인해 주세요.</p></div>
+
+  ${hoerWrong.length?`<h2>듣기 게임에서 틀린 단어</h2><div class="card"><div class="dict">${hoerWrong.map(wd=>{ const w=ALLWORDS.find(x=>x.w===wd); return `<span class="de">${esc(wd)}</span><span>${esc(w?w.ko:'')}</span>${spk(wd)}`;}).join('')}</div></div>`:''}
+
+  ${plan?`<h2>시험까지 추천 계획</h2><div class="card scroll">${plan}</div>`:''}
+
+  <h2>단원별 설명과 단어 (부모님용)</h2>
+  <div class="card">${units.map(u=>`<details class="unit"><summary>${u.no}. ${esc(u.ko)} <span class="de muted" style="font-weight:400">· ${esc(u.title)}</span></summary>
+    <p>${esc(u.koSum)}</p><div class="dict">${u.words.map(w=>`<span class="de">${esc(w.w)}</span><span>${esc(w.ko)}</span>${spk(w.w)}`).join('')}</div></details>`).join('')}</div>
+
+  <h2>모의시험 출력</h2>
+  <div class="card"><p style="margin:0 0 10px">아래 PDF를 열어 인쇄하세요. 정답지는 아이가 보지 않게 따로 보관하세요.</p>
+   <div class="row"><a class="btn" href="pdf/Probetest_Wasser_A_B.pdf" target="_blank" rel="noopener" style="text-decoration:none">모의시험 A·B 열기</a>
+   <a class="btn ghost" href="pdf/Loesungen_Eltern.pdf" target="_blank" rel="noopener" style="text-decoration:none">부모용 정답지 열기</a></div>
+   <p class="muted" style="margin:10px 0 0;font-size:13px">앱 안의 <span class="de">Probetest</span>는 매번 12문제를 무작위로 냅니다.</p></div>
+
+  <h2>설정</h2>
+  <div class="card set">
+    <label>아이 이름 (아이 화면 인사말)<input id="s-name" value="${esc(S.name)}"></label>
+    <label>시험 날짜<input id="s-exam" type="date" value="${esc(S.exam)}"></label>
+    <label style="flex-direction:row;align-items:center;gap:8px"><input id="s-ko" type="checkbox" ${S.koHint?'checked':''}> 아이 화면 단어 카드에 한국어 뜻도 표시</label>
+    <label style="flex-direction:row;align-items:center;gap:8px"><input id="s-extra" type="checkbox" ${S.extra?'checked':''}> 추가 단원(민주주의·선거) 보이기</label>
+    <div class="row"><button class="btn" id="s-save">저장</button><span id="s-msg" class="muted" hidden>저장했습니다.</span></div>
+    <div class="row" style="border-top:1px solid var(--line);padding-top:12px"><button class="btn ghost" id="s-reset" style="border-color:var(--bad);color:var(--bad)">학습 기록 지우기</button>
+      <span id="s-confirm" hidden>정말 지울까요? <button class="btn" id="s-yes" style="background:var(--bad);border-color:var(--bad)">지우기</button> <button class="btn ghost" id="s-no">취소</button></span></div>
+    <p class="muted" style="margin:0;font-size:13px">학습 기록은 이 기기의 이 브라우저에만 저장됩니다. 아이가 쓰는 기기에서 이 화면을 열어 확인하세요.</p>
+  </div></div>`;
+  bindCommon();
+  document.getElementById('bk').onclick=()=>go({name:'home'});
+  document.getElementById('s-save').onclick=()=>{ S.name=document.getElementById('s-name').value.trim().slice(0,20); S.exam=document.getElementById('s-exam').value; S.koHint=document.getElementById('s-ko').checked; S.extra=document.getElementById('s-extra').checked; save(); render(); setTimeout(()=>{const m=document.getElementById('s-msg'); if(m) m.hidden=false;},10); };
+  document.getElementById('s-reset').onclick=()=>{ document.getElementById('s-confirm').hidden=false; };
+  document.getElementById('s-no').onclick=()=>{ document.getElementById('s-confirm').hidden=true; };
+  document.getElementById('s-yes').onclick=()=>{ S.log=[]; S.free={}; S.best={}; save(); render(); };
+}
+function conceptHelp(c){
+  const H={
+    forschen:'"Vermutung = 하기 전에 생각한 것, Beobachtung = 눈으로 본 것"을 실제 실험(얼음 녹이기)으로 구분해 말해 보게 하세요.',
+    zustand:'얼음·물·수증기를 냉동실, 컵, 끓는 냄비로 직접 보여 주며 fest/flüssig/gasförmig를 말하게 하세요.',
+    temperatur:'"0도 얼고 녹고, 100도 끓는다" 두 숫자만 확실히.',
+    uebergang:'화살표 그림(공책 12.10.)을 보며 방향마다 동사(schmelzen, gefrieren, verdunsten, kondensieren)를 말하게 하세요.',
+    eis:'물을 컵에 선까지 채워 얼려 보면 바로 이해합니다(얼음이 선보다 높아짐).',
+    verdunsten:'빨래가 마르는 것, 웅덩이가 사라지는 것이 모두 verdunsten.',
+    kondensieren:'찬 음료 컵 바깥, 샤워 후 거울을 함께 보며 "물은 공기에서 왔다"를 강조하세요.',
+    loesen:'소금·모래·기름을 물에 직접 넣어 보세요.',
+    boden:'자갈은 빨리, 점토는 거의 안 통과. 점토는 물을 저장한다.',
+    quelle:'점토층이 물을 막아 옆으로 흘러나온다는 그림을 같이 그려 보세요.',
+    kreislauf:'순서 7단계를 아이가 손가락으로 짚으며 독일어로 말하게 하세요.',
+    gefaesse:'투명 호스나 빨대 두 개로 수면 높이가 같아지는 것을 보여 주세요. 서술형 답: "Das Wasser steht in verbundenen Rohren überall gleich hoch."',
+    schreiben:'틀린 단어를 3번씩 써 보게 하세요.', demokratie:'공책 정의를 소리 내 읽게 하세요.', hoeren:'단어장에서 "langsam" 버튼으로 듣고 따라 말하게 하세요.'
+  };
+  return H[c]?`<div class="muted" style="font-size:14px">${esc(H[c])}</div>`:'';
+}
+
+document.addEventListener('click',e=>{ if(popEl && !popEl.contains(e.target) && !e.target.closest('.w')) closePop(); });
+render();
+if('serviceWorker' in navigator && location.protocol==='https:' && !/claude|anthropic/.test(location.hostname)){ try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){} }
+})();
+
+</script>
+
+</body>
+</html>
