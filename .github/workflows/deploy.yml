@@ -22,7 +22,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: App prüfen
+      - name: Themen bündeln
+        run: cat $(ls site/topics/[0-9]*.js | sort) > site/topics.bundle.js
+      - name: App und Themen prüfen
         run: node tools/check.mjs
       - name: Cache-Version setzen
         run: sed -i "s/__BUILD__/${GITHUB_SHA::8}/" site/sw.js
