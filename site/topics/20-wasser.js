@@ -190,7 +190,44 @@
      "ex": "Eine Vermutung beginnt mit „Ich vermute, dass …“.",
      "exk": "\"Ich vermute, dass …\"로 시작."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Forscher fragen zuerst",
+      "txt": "Am Anfang steht eine Frage. Zum Beispiel: „Schmilzt ein Eiswürfel in der Sonne schneller als im Schatten?“",
+      "ko": "과학자는 먼저 질문을 해요. 예: \"얼음은 그늘보다 햇빛에서 더 빨리 녹을까?\""
+     },
+     {
+      "t": "Vermuten",
+      "txt": "Bevor wir anfangen, überlegen wir: Was wird passieren? Das ist die Vermutung. Ich schreibe: „Ich vermute, dass der Eiswürfel in der Sonne schneller schmilzt.“",
+      "ko": "실험 전에 무슨 일이 일어날지 생각해요. 이것이 예상(Vermutung)이에요. \"Ich vermute, dass …\"로 써요."
+     },
+     {
+      "t": "Ausprobieren",
+      "txt": "Wir legen einen Eiswürfel in die Sonne und einen in den Schatten. Alle fünf Minuten schauen wir genau hin.",
+      "ko": "얼음 하나는 햇빛에, 하나는 그늘에 두고 5분마다 자세히 봐요."
+     },
+     {
+      "t": "Beobachten",
+      "txt": "Jetzt schreiben wir nur auf, was wir wirklich sehen: „Ich beobachte, dass der Eiswürfel in der Sonne nach zehn Minuten geschmolzen ist. Der im Schatten ist noch halb da.“",
+      "ko": "이제 눈으로 실제 본 것만 써요. 이것이 관찰(Beobachtung)이에요. 예상을 그대로 다시 쓰면 안 돼요."
+     },
+     {
+      "t": "Vergleichen",
+      "txt": "Hatte ich recht? Wenn nicht, ist das nicht schlimm. So lernen Forscher etwas Neues.",
+      "ko": "내 예상이 맞았나요? 틀려도 괜찮아요. 과학자도 그렇게 새로운 것을 배워요."
+     }
+    ],
+    "try": {
+     "txt": "Mach den Eiswürfel-Versuch zu Hause: zwei Teller, einer am sonnigen Fenster, einer im Schatten. Schreib Vermutung und Beobachtung auf.",
+     "ko": "집에서 접시 두 개로 얼음 실험을 해 보고 예상과 관찰을 따로 써 보세요."
+    },
+    "fehler": {
+     "txt": "Bei der Beobachtung nicht die Vermutung wiederholen. Schreib nur, was du wirklich gesehen hast.",
+     "ko": "관찰 칸에 예상을 반복해 쓰지 않기. 실제로 본 것만!"
+    }
+   }
   },
   {
    "id": "u2",
@@ -454,7 +491,46 @@
      "ex": "kon·den·sie·ren – mit ie.",
      "exk": "kondensieren (ie)."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Wasser kann sich verwandeln",
+      "sim": "thermo",
+      "txt": "Schieb den Regler. Wird es kalt, wird Wasser zu Eis. Wird es sehr heiß, wird es zu Wasserdampf. Es bleibt immer Wasser, nur seine Form ändert sich.",
+      "ko": "온도 막대를 움직여 보세요. 차가우면 얼음, 아주 뜨거우면 수증기가 돼요. 모양만 바뀔 뿐 모두 물이에요."
+     },
+     {
+      "t": "Die winzigen Teilchen",
+      "sim": "thermo",
+      "txt": "Wasser besteht aus winzig kleinen Teilchen. Im Eis halten sie sich fest und zittern nur ein bisschen. Im Wasser rutschen sie durcheinander. Im Wasserdampf fliegen sie schnell und weit auseinander.",
+      "ko": "물은 아주 작은 알갱이로 되어 있어요. 얼음에서는 꽉 붙어 있고, 물에서는 미끄러지듯 섞여 움직이고, 수증기에서는 멀리 빠르게 날아다녀요."
+     },
+     {
+      "t": "Zwei wichtige Zahlen",
+      "txt": "0 °C: Hier gefriert Wasser zu Eis, und hier schmilzt Eis auch wieder. 100 °C: Hier kocht Wasser und verdampft.",
+      "ko": "0 °C: 물이 얼고, 얼음이 녹는 온도. 100 °C: 물이 끓는 온도."
+     },
+     {
+      "t": "Verdunsten oder verdampfen?",
+      "txt": "Eine Pfütze verschwindet auch ohne Kochen, ganz langsam. Das heißt verdunsten. Im Kochtopf geht es schnell und es blubbert. Das heißt verdampfen.",
+      "ko": "웅덩이가 끓지 않아도 천천히 마르는 것 = verdunsten. 냄비에서 보글보글 끓으며 빨리 기체가 되는 것 = verdampfen."
+     },
+     {
+      "t": "Und wieder zurück",
+      "txt": "Wasserdampf, der abkühlt, wird wieder zu Wasser. Er kondensiert. Wasser, das sehr kalt wird, gefriert zu Eis.",
+      "ko": "수증기가 식으면 다시 물이 돼요(kondensieren). 물이 아주 차가워지면 얼음이 돼요(gefrieren)."
+     }
+    ],
+    "try": {
+     "txt": "Leg einen Eiswürfel auf einen Teller und schau zu, wie er schmilzt. Mit einem Erwachsenen: Wasser kochen und den Dampf an einem kalten Deckel beobachten.",
+     "ko": "얼음이 녹는 것을 보고, 어른과 함께 물을 끓여 차가운 뚜껑에 맺히는 물방울을 관찰해 보세요."
+    },
+    "fehler": {
+     "txt": "schmelzen (Eis wird Wasser) und gefrieren (Wasser wird Eis) nicht verwechseln. Merktrick: Schokolade schmilzt in der warmen Hand.",
+     "ko": "schmelzen(녹다)과 gefrieren(얼다)을 헷갈리지 않기. \"초콜릿이 손에서 녹는다(schmilzt)\"로 기억해요."
+    }
+   }
   },
   {
    "id": "u3",
@@ -588,7 +664,40 @@
      "ex": "Ein Eiswürfel – viele Eiswürfel. Hier ohne -n.",
      "exk": "주격 복수는 die Eiswürfel."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Eis braucht mehr Platz",
+      "sim": "icecup",
+      "txt": "Drück auf den Knopf. Der Becher kommt über Nacht ins Gefrierfach. Schau, wo das Eis am Morgen steht!",
+      "ko": "버튼을 눌러 컵을 냉동실에 넣어 보세요. 아침에 얼음이 어디까지 올라왔는지 보세요."
+     },
+     {
+      "t": "Warum ist das so?",
+      "txt": "Beim Gefrieren stellen sich die Wasserteilchen in einem Muster mit Lücken auf. Darum braucht Eis mehr Platz als Wasser. Das Wasser dehnt sich aus.",
+      "ko": "얼 때 물 알갱이들이 틈이 있는 모양으로 줄을 서요. 그래서 얼음은 물보다 자리를 더 차지해요(sich ausdehnen)."
+     },
+     {
+      "t": "Achtung, Flasche!",
+      "txt": "Eine volle Glasflasche im Gefrierfach kann platzen. Das Eis braucht mehr Platz, als in der Flasche ist.",
+      "ko": "가득 찬 유리병을 얼리면 깨질 수 있어요. 얼음이 병보다 더 큰 자리가 필요하니까요."
+     },
+     {
+      "t": "Eis schwimmt",
+      "txt": "Weil im Eis Lücken sind, ist es leichter als gleich viel Wasser. Darum schwimmen Eiswürfel im Glas oben und Eisberge im Meer.",
+      "ko": "얼음에는 틈이 있어서 같은 양의 물보다 가벼워요. 그래서 얼음 조각과 빙산은 물에 떠요."
+     }
+    ],
+    "try": {
+     "txt": "Füll einen Plastikbecher halb mit Wasser, mach einen Strich mit einem Filzstift und stell ihn über Nacht ins Gefrierfach.",
+     "ko": "플라스틱 컵에 물을 반쯤 넣고 펜으로 선을 그은 뒤 하룻밤 얼려 보세요."
+    },
+    "fehler": {
+     "txt": "Viele denken, Eis ist kleiner als Wasser. Es ist umgekehrt: Eis braucht mehr Platz!",
+     "ko": "얼음이 물보다 작아진다고 생각하기 쉬워요. 반대로 얼음이 더 커요!"
+    }
+   }
   },
   {
    "id": "u4",
@@ -720,7 +829,40 @@
      "model": "Der Wasserdampf kann nicht aus dem Glas heraus. Er wird am Deckel wieder zu Wasser und tropft zurück.",
      "mk": "수증기가 빠져나가지 못하고 뚜껑에서 다시 물방울이 되어 떨어진다."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Drei Gläser, drei Tage",
+      "sim": "evap",
+      "txt": "Schieb den Regler und schau, wie viel Wasser nach jedem Tag noch in den Gläsern ist.",
+      "ko": "막대를 움직여 하루하루 컵에 물이 얼마나 남는지 보세요."
+     },
+     {
+      "t": "Wohin geht das Wasser?",
+      "txt": "Das Wasser verschwindet nicht. Die Teilchen fliegen oben aus dem Glas in die Luft. Wir sehen sie nicht, denn Wasserdampf ist unsichtbar.",
+      "ko": "물은 사라진 게 아니에요. 알갱이들이 컵 위로 날아가 공기 속으로 가요. 수증기는 보이지 않아서 우리가 못 볼 뿐이에요."
+     },
+     {
+      "t": "Was hilft beim Verdunsten?",
+      "txt": "Wärme von der Sonne, kein Deckel und Wind. Darum trocknet Wäsche an einem warmen, windigen Tag am schnellsten.",
+      "ko": "햇빛(따뜻함), 뚜껑 없음, 바람이 증발을 도와요. 그래서 따뜻하고 바람 부는 날 빨래가 가장 빨리 말라요."
+     },
+     {
+      "t": "Der Deckel hält den Dampf fest",
+      "txt": "Mit Deckel stoßen die Teilchen oben an. Am Deckel kühlen sie ab und werden wieder zu kleinen Tropfen. Die tropfen zurück ins Glas.",
+      "ko": "뚜껑이 있으면 알갱이가 위에 부딪혀 식고, 다시 작은 물방울이 되어 컵으로 떨어져요."
+     }
+    ],
+    "try": {
+     "txt": "Mal mit einem nassen Pinsel ein Bild auf eine Steinplatte in der Sonne und eins im Schatten. Wo verschwindet es schneller?",
+     "ko": "젖은 붓으로 햇빛과 그늘의 돌 위에 그림을 그려 보세요. 어디가 먼저 마를까요?"
+    },
+    "fehler": {
+     "txt": "Nicht schreiben „Das Wasser ist weg.“ Besser: „Das Wasser ist verdunstet und als Wasserdampf in der Luft.“",
+     "ko": "\"물이 없어졌다\" 대신 \"물이 증발해서 수증기로 공기 중에 있다\"라고 써요."
+    }
+   }
   },
   {
    "id": "u5",
@@ -841,7 +983,40 @@
      "ex": "Die Tropfen entstehen, weil Wasserdampf aus der Luft am kalten Glas kondensiert.",
      "exk": "틀림. 공기 중 수증기의 응결 때문(따님이 헷갈린 부분)."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Wasser aus der Luft",
+      "sim": "condense",
+      "txt": "Drück auf „Eiswürfel ins Glas“. Schau genau auf die Außenseite vom Glas.",
+      "ko": "\"얼음 넣기\"를 누르고 컵 바깥쪽을 자세히 보세요."
+     },
+     {
+      "t": "Woher kommen die Tropfen?",
+      "txt": "In der Luft sind immer unsichtbare Wasserteilchen. Kommen sie an das kalte Glas, kühlen sie ab und werden langsamer. Sie halten sich aneinander fest und werden zu Tropfen. Das heißt kondensieren.",
+      "ko": "공기 속에는 늘 보이지 않는 물 알갱이가 있어요. 차가운 컵에 닿으면 식고 느려져서 서로 붙어 물방울이 돼요. 이것이 응결(kondensieren)이에요."
+     },
+     {
+      "t": "Kein Loch im Glas",
+      "txt": "Das Wasser kommt nicht aus dem Glas heraus. Auch ein Glas mit kaltem Saft wird außen nur mit klarem Wasser nass.",
+      "ko": "물이 컵에서 새어 나온 게 아니에요. 차가운 주스 컵도 바깥에는 맑은 물만 맺혀요."
+     },
+     {
+      "t": "Kondensieren im Alltag",
+      "txt": "Beschlagener Spiegel nach dem Duschen, nasse Fensterscheibe im Winter, Tropfen am Topfdeckel, Wolken am Himmel: Überall kondensiert Wasserdampf.",
+      "ko": "샤워 후 거울, 겨울 유리창, 냄비 뚜껑의 물방울, 하늘의 구름 모두 응결이에요."
+     }
+    ],
+    "try": {
+     "txt": "Nimm eine Flasche direkt aus dem Kühlschrank und stell sie auf den Tisch. Nach ein paar Minuten ist sie außen nass.",
+     "ko": "냉장고에서 막 꺼낸 병을 식탁에 두면 몇 분 뒤 바깥이 젖어요."
+    },
+    "fehler": {
+     "txt": "Die Tropfen entstehen nicht, weil Eis schmilzt oder Wasser zu Eis wird. Sie entstehen, weil Wasserdampf aus der Luft am kalten Glas kondensiert.",
+     "ko": "물방울은 얼음이 녹거나 물이 얼어서 생기는 게 아니라, 공기 중 수증기가 차가운 컵에서 응결해서 생겨요. (따님이 헷갈린 부분)"
+    }
+   }
   },
   {
    "id": "u6",
@@ -1002,7 +1177,35 @@
      "ex": "Gleiches löst sich in Gleichem.",
      "exk": "\"비슷한 것끼리 녹는다.\""
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Was passiert im Wasser?",
+      "sim": "dissolve",
+      "txt": "Tippe auf einen Stoff und schau, was im Glas passiert.",
+      "ko": "물질을 눌러 컵 안에서 무슨 일이 일어나는지 보세요."
+     },
+     {
+      "t": "Gelöst heißt nicht weg",
+      "txt": "Salz und Zucker zerfallen im Wasser in winzige Teilchen. Sie verteilen sich zwischen den Wasserteilchen. Wir sehen sie nicht mehr, aber wir schmecken sie.",
+      "ko": "소금과 설탕은 물속에서 아주 작은 알갱이로 나뉘어 물 알갱이 사이로 퍼져요. 안 보여도 맛으로 알 수 있어요."
+     },
+     {
+      "t": "Nicht wasserlöslich",
+      "txt": "Sand ist schwer und sinkt nach unten. Öl ist leichter und schwimmt oben. Mehl macht das Wasser trüb und setzt sich später unten ab.",
+      "ko": "모래는 무거워 가라앉고, 기름은 가벼워 위에 뜨고, 밀가루는 물을 뿌옇게 했다가 나중에 가라앉아요."
+     }
+    ],
+    "try": {
+     "txt": "Rühre einen Teelöffel Zucker in ein Glas Wasser und probier. Rühre einen Löffel Sand in ein anderes Glas. Den nicht trinken!",
+     "ko": "설탕물을 만들어 맛보고, 다른 컵에는 모래를 저어 보세요(마시지 않기)."
+    },
+    "fehler": {
+     "txt": "„Das Salz ist verschwunden“ stimmt nicht. Richtig: „Das Salz hat sich im Wasser gelöst.“",
+     "ko": "\"소금이 사라졌다\"가 아니라 \"소금이 물에 녹았다\"."
+    }
+   }
   },
   {
    "id": "u7",
@@ -1178,7 +1381,41 @@
      "model": "Lehm lässt fast kein Wasser durch. Das Wasser versickert nur sehr langsam und bleibt oben stehen.",
      "mk": "점토는 물을 거의 통과시키지 않아 천천히만 스며들고 위에 고인다."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Durch welchen Boden läuft Wasser?",
+      "sim": "soil",
+      "txt": "Tippe auf eine Bodenart. Schau, wie schnell unten Wasser heraustropft.",
+      "ko": "흙 종류를 눌러 아래로 물이 얼마나 빨리 떨어지는지 보세요."
+     },
+     {
+      "t": "Große und kleine Lücken",
+      "txt": "Zwischen Kies-Steinchen sind große Lücken. Das Wasser rauscht hindurch. Zwischen Ton-Krümeln sind die Lücken winzig. Das Wasser kommt kaum durch.",
+      "ko": "자갈 사이에는 큰 틈이 있어 물이 쏟아지듯 지나가요. 점토 알갱이 사이 틈은 아주 작아서 물이 거의 못 지나가요."
+     },
+     {
+      "t": "Boden als Schwamm",
+      "txt": "Lehm und Ton halten das Wasser fest wie ein Schwamm. Darum bleibt Lehmboden lange nass und Pfützen bleiben lange stehen. Grober Sand hält kaum Wasser.",
+      "ko": "점토는 스펀지처럼 물을 붙잡아요. 그래서 점토 땅은 오래 젖어 있고 웅덩이가 오래 남아요. 굵은 모래는 물을 거의 못 붙잡아요."
+     },
+     {
+      "t": "So entsteht eine Quelle",
+      "fig": "spring",
+      "txt": "Regenwasser versickert durch Humus, Sand und Kies nach unten. Unten liegt eine Tonschicht. Dort kommt das Wasser nicht weiter. Es fließt auf dem Ton zur Seite, bis es am Hang aus der Erde kommt. Das ist eine Quelle.",
+      "ko": "빗물이 흙·모래·자갈을 지나 내려가다 점토층에 막혀요. 점토 위를 따라 옆으로 흐르다 비탈에서 땅 밖으로 나오는 곳이 샘(Quelle)이에요."
+     }
+    ],
+    "try": {
+     "txt": "Beim nächsten Spaziergang nach dem Regen: Wo stehen die Pfützen lange, wo verschwindet das Wasser schnell?",
+     "ko": "비 온 뒤 산책하며 웅덩이가 오래 남는 곳과 빨리 마르는 곳을 찾아보세요."
+    },
+    "fehler": {
+     "txt": "Nicht verwechseln: Kies = Wasser läuft schnell durch. Ton = fast kein Wasser kommt durch.",
+     "ko": "자갈 = 빨리 통과, 점토 = 거의 통과 못 함. 거꾸로 외우지 않기."
+    }
+   }
   },
   {
    "id": "u8",
@@ -1376,7 +1613,35 @@
      "model": "Die Sonne erwärmt das Wasser und es verdunstet. Der Wasserdampf steigt auf, kühlt oben ab und kondensiert. So entstehen Wolken. Das Wasser fällt als Niederschlag, versickert im Boden oder fließt als Fluss ins Meer.",
      "mk": "해가 물을 데워 증발 → 수증기 상승·냉각·응결 → 구름 → 강수 → 땅에 스며들거나 강이 되어 바다로."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Die Reise eines Wassertropfens",
+      "sim": "cycle",
+      "txt": "Tippe auf „Weiter“ und begleite einen Wassertropfen auf seiner Reise.",
+      "ko": "\"Weiter\"를 눌러 물방울의 여행을 따라가 보세요."
+     },
+     {
+      "t": "Ein Kreis ohne Ende",
+      "txt": "Der Wasserkreislauf hat keinen Anfang und kein Ende. Das Wasser, das du heute trinkst, war vielleicht schon einmal in einer Wolke oder im Meer.",
+      "ko": "물의 순환은 시작도 끝도 없어요. 오늘 마신 물도 언젠가 구름이나 바다에 있었을지 몰라요."
+     },
+     {
+      "t": "Du kennst schon alles",
+      "txt": "Im Wasserkreislauf steckt alles, was du gelernt hast: verdunsten (Station 4), kondensieren (Station 5) und versickern (Station 7).",
+      "ko": "물의 순환에는 지금까지 배운 증발(4단원), 응결(5단원), 스며듦(7단원)이 모두 들어 있어요."
+     }
+    ],
+    "try": {
+     "txt": "Zeichne den Wasserkreislauf auswendig und erkläre ihn deiner Familie mit den Fachwörtern.",
+     "ko": "물의 순환을 보지 않고 그린 뒤 가족에게 독일어 용어로 설명해 보세요."
+    },
+    "fehler": {
+     "txt": "Die Reihenfolge ist wichtig: erst verdunsten, dann abkühlen und kondensieren, dann Wolken, dann Niederschlag.",
+     "ko": "순서가 중요해요: 증발 → 식고 응결 → 구름 → 강수."
+    }
+   }
   },
   {
    "id": "u9",
@@ -1541,7 +1806,46 @@
      "model": "In verbundenen Rohren steht das Wasser überall gleich hoch. Steht der Hochbehälter weit oben, fließt das Wasser durch die Höhe und den Druck von selbst in die Häuser und steigt dort bis in die oberen Stockwerke. Man braucht keine Pumpe.",
      "mk": "연결된 관에서는 수면 높이가 같다. 배수지가 높은 곳에 있으면 높이와 압력 때문에 물이 저절로 집으로 흘러가 위층까지 올라온다. 펌프가 필요 없다."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Zwei Trichter, ein Schlauch",
+      "sim": "utube",
+      "txt": "Schieb den rechten Trichter hoch und runter. Was macht das Wasser?",
+      "ko": "오른쪽 깔때기를 위아래로 움직여 보세요. 물은 어떻게 될까요?"
+     },
+     {
+      "t": "Immer gleich hoch",
+      "txt": "In Gefäßen, die unten verbunden sind, steht das Wasser überall gleich hoch. Egal ob ein Rohr dick oder dünn, hoch oder tief ist.",
+      "ko": "아래가 연결된 그릇에서는 물 높이가 어디서나 같아요. 관이 굵든 가늘든, 높든 낮든 상관없어요."
+     },
+     {
+      "t": "Aus welchem Hahn fließt Wasser?",
+      "sim": "taps",
+      "txt": "Schieb den Wasserstand hoch und runter. Nur Hähne, die tiefer liegen als der Wasserstand, geben Wasser.",
+      "ko": "수위를 움직여 보세요. 수면보다 낮은 꼭지에서만 물이 나와요."
+     },
+     {
+      "t": "Der Hochbehälter",
+      "txt": "Ein Hochbehälter auf dem Berg ist wie der hohe Trichter. Die Wasserleitungen sind wie der Schlauch. Die Wohnungen im Hochhaus sind wie die Wasserhähne. Weil der Behälter höher steht als die Wohnungen, kommt das Wasser von selbst aus dem Hahn.",
+      "ko": "산 위 배수지는 높은 깔때기, 수도관은 호스, 고층 건물의 집들은 수도꼭지와 같아요. 배수지가 집보다 높으니 물이 저절로 나와요."
+     },
+     {
+      "t": "So schreibst du die Antwort",
+      "txt": "„In verbundenen Rohren steht das Wasser überall gleich hoch. Der Hochbehälter steht weit oben. Darum fließt das Wasser von selbst bis in die oberen Stockwerke. Man braucht keine Pumpe.“",
+      "ko": "서술형 모범 답안: 연결된 관에서는 물 높이가 같다. 배수지가 높은 곳에 있어 물이 저절로 위층까지 간다. 펌프가 필요 없다."
+     }
+    ],
+    "try": {
+     "txt": "Probier es in der Badewanne mit einem durchsichtigen Schlauch aus: Halte beide Enden hoch und senke ein Ende langsam.",
+     "ko": "욕조에서 투명 호스로 해 보세요. 양 끝을 들고 한쪽을 천천히 내려 보세요."
+    },
+    "fehler": {
+     "txt": "Das Wasser kann im Haus nicht höher steigen als der Wasserstand im Hochbehälter.",
+     "ko": "집 안의 물은 배수지 수면보다 높이 올라갈 수 없어요."
+    }
+   }
   }
  ]
 });

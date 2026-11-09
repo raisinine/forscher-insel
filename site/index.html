@@ -153,6 +153,24 @@ textarea{width:100%;min-height:120px;font:inherit;font-size:18px;border:2px soli
 .rev{text-align:left;margin-top:16px}
 .rev li{margin-bottom:10px}
 
+
+/* Verstehen */
+.dots{display:flex;gap:6px;justify-content:center;margin:4px 0 12px}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.done{background:var(--water)} .dots i.on{background:var(--blue);width:26px;border-radius:999px}
+.ltitle{font-size:22px;color:var(--blue);margin:4px 0 6px;line-height:1.4}
+.ltext{display:flex;gap:10px;align-items:flex-start;font-size:18px;line-height:1.6}
+.ltext p{margin:2px 0 0;flex:1;min-width:0}
+.ko-toggle{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 12px;font-size:14px;color:var(--muted);margin-top:10px}
+.kotext{background:var(--blue-soft);border-radius:10px;padding:10px 12px;margin:8px 0 0;font-size:15.5px;line-height:1.6}
+.sim{background:var(--paper);border-radius:12px;padding:10px;text-align:center}
+.sim svg{max-width:100%;height:auto}
+.simctl{display:flex;flex-direction:column;gap:6px;align-items:center;font-size:16px;margin-top:6px}
+.simctl input{width:min(320px,100%);accent-color:var(--blue)}
+.simcap{margin-top:8px;font-size:16px;min-height:2.6em}
+.tipcard{border-color:var(--ok);background:var(--ok-soft)} .warncard{border-color:var(--sun);background:var(--sun-soft)}
+.tipcard .ltitle{color:var(--ok)}
+
 /* Elternbereich */
 .parent{font-family:var(--f-ko);font-size:15.5px}
 .parent h2{font-size:19px;margin:26px 0 10px}
@@ -334,11 +352,234 @@ function tapsFig(level){ // level y
   <text x="26" y="${level-6}" font-size="12" fill="var(--bad)">Wasserstand</text></svg>`; }
 FIG.taps2 = tapsFig(65); FIG.taps0 = tapsFig(138);
 
+/* ---------- Mini-Experimente (interaktiv) ---------- */
+let simCleanups=[];
+function stopSims(){ simCleanups.forEach(f=>{ try{f();}catch(e){} }); simCleanups=[]; }
+const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function loop(el, fn){ let id; const tick=t=>{ if(!document.body.contains(el)) return; fn(t); id=requestAnimationFrame(tick); }; id=requestAnimationFrame(tick); simCleanups.push(()=>cancelAnimationFrame(id)); }
+function every(ms, fn){ const id=setInterval(fn, ms); simCleanups.push(()=>clearInterval(id)); return id; }
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const NS='http://www.w3.org/2000/svg';
+function svgEl(tag, attrs){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
+
+const SIM = {
+thermo:{
+ html:()=>`<svg viewBox="0 0 300 200" width="300" role="img" aria-label="Becher mit Wasserteilchen und Thermometer">
+   <rect x="40" y="20" width="160" height="160" rx="6" fill="var(--blue-soft)" stroke="var(--ink)" stroke-width="3"/>
+   <g class="parts"></g>
+   <rect x="240" y="20" width="22" height="150" rx="11" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/>
+   <circle cx="251" cy="178" r="16" fill="var(--bad)" stroke="var(--ink)" stroke-width="2"/>
+   <rect class="merc" x="246" y="100" width="10" height="70" fill="var(--bad)"/>
+   <line x1="236" y1="128" x2="266" y2="128" stroke="var(--ink)"/><text x="270" y="132" font-size="12" fill="var(--ink)">0°</text>
+   <line x1="236" y1="35" x2="266" y2="35" stroke="var(--ink)"/><text x="270" y="39" font-size="12" fill="var(--ink)">100°</text></svg>
+  <label class="simctl" for="thermo-r">Temperatur: <b class="tv">20 °C</b><input id="thermo-r" type="range" min="-20" max="120" value="20"></label>
+  <div class="simcap"></div>`,
+ init(el){
+  const g=el.querySelector('.parts'), r=el.querySelector('input'), tv=el.querySelector('.tv'), cap=el.querySelector('.simcap'), merc=el.querySelector('.merc');
+  const P=[]; for(let i=0;i<30;i++){ const c=svgEl('circle',{r:6,fill:'var(--blue)'}); g.appendChild(c); P.push({c,x:rnd(50,190),y:rnd(120,170),vx:rnd(-1,1),vy:rnd(-1,1)}); }
+  let state='', T=20;
+  const toY=t=>128-(t)*0.93;
+  function upd(){ T=+r.value; tv.textContent=T+' °C'; const y=Math.max(22,Math.min(170,toY(T))); merc.setAttribute('y',y); merc.setAttribute('height',170-y);
+    const s= T<=0?'fest':T>=100?'gas':'fl';
+    if(s!==state){ const from=state; state=s;
+      const txt={fest:'<b>fest – Eis.</b> Die Teilchen halten sich fest und zittern nur.', fl:'<b>flüssig – Wasser.</b> Die Teilchen rutschen durcheinander.', gas:'<b>gasförmig – Wasserdampf.</b> Die Teilchen fliegen schnell und weit auseinander.'}[s];
+      const tr = !from?'': from==='fl'&&s==='fest'?' Das Wasser <b>gefriert</b>.' : from==='fest'?' Das Eis <b>schmilzt</b>.' : s==='gas'?' Das Wasser <b>verdampft</b>.' : from==='gas'?' Der Dampf <b>kondensiert</b>.' : '';
+      cap.innerHTML=txt+tr; }
+  }
+  r.oninput=upd; upd();
+  loop(el,()=>{ P.forEach((p,i)=>{
+    if(state==='fest'){ const gx=70+(i%6)*20, gy=110+Math.floor(i/6)*15; p.x+=(gx-p.x)*0.15+(RM?0:rnd(-0.6,0.6)); p.y+=(gy-p.y)*0.15+(RM?0:rnd(-0.6,0.6)); }
+    else { const sp= state==='gas'?(RM?1:3.2):(RM?0.4:1.1), top= state==='gas'?28:100;
+      p.vx+=rnd(-0.3,0.3); p.vy+=rnd(-0.3,0.3)+(state==='fl'?0.05:0); const m=Math.hypot(p.vx,p.vy)||1; p.vx=p.vx/m*sp; p.vy=p.vy/m*sp;
+      p.x+=p.vx; p.y+=p.vy; if(p.x<48||p.x>192) p.vx*=-1; if(p.y<top){ p.vy=Math.abs(p.vy); p.y=Math.max(p.y,top-2);} if(p.y>172) p.vy=-Math.abs(p.vy);
+      p.x=Math.max(47,Math.min(193,p.x)); }
+    p.c.setAttribute('cx',p.x.toFixed(1)); p.c.setAttribute('cy',p.y.toFixed(1)); }); });
+ }
+},
+icecup:{
+ html:()=>`<svg viewBox="0 0 220 160" width="220" role="img" aria-label="Becher mit Strich">
+   <path class="fill" d="" fill="var(--water)"/>
+   <path d="M70 20 L80 145 L140 145 L150 20" fill="none" stroke="var(--ink)" stroke-width="3"/>
+   <line x1="58" y1="90" x2="162" y2="90" stroke="var(--bad)" stroke-width="2.5" stroke-dasharray="6 4"/><text x="166" y="94" font-size="13" fill="var(--ink)">Strich</text>
+   <text class="snow" x="20" y="40" font-size="26" fill="var(--blue)" opacity="0">❄</text><text class="snow" x="176" y="140" font-size="22" fill="var(--blue)" opacity="0">❄</text></svg>
+  <div class="row" style="justify-content:center"><button class="btn sun" id="ice-b">Ins Gefrierfach</button></div><div class="simcap">Das Wasser steht genau am Strich.</div>`,
+ init(el){
+  const f=el.querySelector('.fill'), b=el.querySelector('button'), cap=el.querySelector('.simcap'), sn=el.querySelectorAll('.snow');
+  let y=90, target=90, frozen=false;
+  const xAt=yy=>70+(yy-20)*10/125;
+  const draw=()=>{ f.setAttribute('d',`M${xAt(y)} ${y} L80 145 L140 145 L${220-xAt(y)} ${y} Z`); f.setAttribute('fill', frozen&&Math.abs(y-target)<1?'var(--blue-soft)':'var(--water)'); };
+  draw();
+  b.onclick=()=>{ frozen=!frozen; target=frozen?72:90; b.textContent=frozen?'Wieder auftauen':'Ins Gefrierfach'; sn.forEach(s=>s.setAttribute('opacity',frozen?1:0));
+    cap.innerHTML=frozen?'Das Eis steht <b>höher als der Strich</b>. Eis braucht mehr Platz als Wasser.':'Das Eis ist geschmolzen. Das Wasser steht wieder genau am Strich.'; };
+  loop(el,()=>{ if(Math.abs(y-target)>0.2){ y+=(target-y)*(RM?1:0.04); draw(); } });
+ }
+},
+evap:{
+ html:()=>{ const g=(x,l,lid,sun)=>`<g transform="translate(${x},0)">${sun?'<circle cx="40" cy="20" r="13" fill="var(--sun)"/>':'<rect x="2" y="8" width="76" height="22" rx="11" fill="var(--line)"/><text x="40" y="24" font-size="11" text-anchor="middle" fill="var(--ink)">Schatten</text>'}
+   ${lid?'<rect x="14" y="46" width="52" height="7" rx="2" fill="var(--ink)"/><g class="drops"></g>':''}<path class="w" d="" fill="var(--water)"/>
+   <path d="M18 54 L24 138 L56 138 L62 54" fill="none" stroke="var(--ink)" stroke-width="3"/><text x="40" y="156" font-size="15" font-weight="700" text-anchor="middle" fill="var(--ink)">${l}</text></g>`;
+   return `<svg viewBox="0 0 300 162" width="300" role="img" aria-label="Glas A Sonne ohne Deckel, B Schatten ohne Deckel, C Schatten mit Deckel">${g(10,'A',0,1)}${g(110,'B',0,0)}${g(210,'C',1,0)}</svg>
+   <label class="simctl" for="evap-r">Tag <b class="dv">0</b><input id="evap-r" type="range" min="0" max="3" step="1" value="0"></label><div class="simcap"></div>`; },
+ init(el){
+  const r=el.querySelector('input'), dv=el.querySelector('.dv'), cap=el.querySelector('.simcap'), ws=el.querySelectorAll('.w'), drops=el.querySelector('.drops');
+  const loss=[[0,18,34,48],[0,7,13,19],[0,1,1.5,2]];
+  const xAt=y=>18+(y-54)*6/84;
+  function upd(){ const d=+r.value; dv.textContent=d;
+    ws.forEach((w,i)=>{ const y=78+loss[i][d]; w.setAttribute('d',`M${xAt(y)} ${y} L24 138 L56 138 L${80-xAt(y)} ${y} Z`); });
+    drops.innerHTML=''; for(let k=0;k<d*3;k++){ drops.appendChild(svgEl('circle',{cx:20+k*5,cy:57,r:2,fill:'var(--blue)'})); }
+    cap.innerHTML=[ 'Alle drei Gläser haben gleich viel Wasser.','Nach einem Tag: In <b>A</b> (Sonne, ohne Deckel) ist schon viel Wasser verdunstet.',
+      'In B verdunstet es langsamer, weil es im Schatten kühler ist. In C bleiben Tropfen am Deckel hängen.','Nach drei Tagen: <b>A</b> hat am wenigsten, <b>C</b> am meisten Wasser. Der Deckel hält den Wasserdampf fest.'][d]; }
+  r.oninput=upd; upd();
+ }
+},
+condense:{
+ html:()=>`<svg viewBox="0 0 240 170" width="240" role="img" aria-label="Glas, Wasserdampf aus der Luft kondensiert außen">
+   <g class="air"></g>
+   <path d="M80 30 L90 150 L150 150 L160 30" fill="none" stroke="var(--ink)" stroke-width="3"/>
+   <path d="M83 60 L90 150 L150 150 L157 60 Z" fill="var(--water)" opacity=".55"/>
+   <g class="ice" opacity="0"><rect x="96" y="55" width="20" height="20" rx="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2"/><rect x="120" y="66" width="20" height="20" rx="3" fill="var(--card)" stroke="var(--blue)" stroke-width="2"/></g>
+   <g class="drops"></g></svg>
+  <div class="row" style="justify-content:center"><button class="btn sun">Eiswürfel ins Glas</button></div><div class="simcap">Die kleinen Punkte sind unsichtbarer Wasserdampf in der Luft. (In echt kann man ihn nicht sehen!)</div>`,
+ init(el){
+  const air=el.querySelector('.air'), ice=el.querySelector('.ice'), drops=el.querySelector('.drops'), b=el.querySelector('button'), cap=el.querySelector('.simcap');
+  let cold=false, n=0; const P=[];
+  for(let i=0;i<14;i++){ const c=svgEl('circle',{r:3,fill:'var(--muted)',opacity:.6}); air.appendChild(c); P.push({c,x:rnd(10,230),y:rnd(10,160),vx:rnd(-.6,.6),vy:rnd(-.6,.6)}); }
+  b.onclick=()=>{ cold=!cold; ice.setAttribute('opacity',cold?1:0); b.textContent=cold?'Neu starten':'Eiswürfel ins Glas'; if(!cold){ drops.innerHTML=''; n=0; cap.textContent='Die kleinen Punkte sind unsichtbarer Wasserdampf in der Luft.'; } else cap.innerHTML='Das Glas ist jetzt kalt. Schau, was mit dem Wasserdampf passiert …'; };
+  loop(el,()=>{ P.forEach(p=>{
+    if(cold){ const side=p.x<120?-1:1, tx=side<0?82:158, d=tx-p.x; p.vx+=Math.sign(d)*0.04; }
+    p.vx+=rnd(-.08,.08); p.vy+=rnd(-.08,.08); p.vx=Math.max(-1.2,Math.min(1.2,p.vx)); p.vy=Math.max(-1,Math.min(1,p.vy)); p.x+=RM?p.vx*.3:p.vx; p.y+=RM?p.vy*.3:p.vy;
+    if(p.y<8||p.y>162) p.vy*=-1; if(p.x<5||p.x>235) p.vx*=-1;
+    const inside=p.x>78&&p.x<162&&p.y>28&&p.y<152;
+    if(cold && (Math.abs(p.x-81)<5||Math.abs(p.x-159)<5) && p.y>40 && p.y<148){
+      if(n<16){ const left=p.x<120; drops.appendChild(svgEl('path',{d:`M${left?77:163} ${p.y} q-4 7 0 9 q4 -2 0 -9z`,fill:'var(--blue)'})); n++;
+        if(n===4) cap.innerHTML='Wasserdampf trifft auf das kalte Glas, kühlt ab und wird zu <b>Tropfen</b>. Das heißt <b>kondensieren</b>.'; }
+      p.x=rnd(5,40)*(Math.random()<.5?1:0)+ (Math.random()<.5?0:200); p.y=rnd(10,160); }
+    if(inside && !cold){ p.vx*=-1; p.x+= p.x<120?-6:6; }
+    p.c.setAttribute('cx',p.x.toFixed(1)); p.c.setAttribute('cy',p.y.toFixed(1)); }); });
+ }
+},
+dissolve:{
+ html:()=>`<svg viewBox="0 0 200 170" width="200" role="img" aria-label="Glas mit Wasser">
+   <path d="M50 20 L60 155 L140 155 L150 20" fill="none" stroke="var(--ink)" stroke-width="3"/>
+   <path d="M53 50 L60 155 L140 155 L147 50 Z" fill="var(--water)" opacity=".55"/>
+   <path class="cloud" d="M53 50 L60 155 L140 155 L147 50 Z" fill="var(--card)" opacity="0"/>
+   <rect class="oil" x="54" y="40" width="92" height="0" fill="var(--sun)" opacity=".8"/>
+   <g class="grains"></g></svg>
+  <div class="row" style="justify-content:center">${['Salz','Zucker','Sand','Öl','Mehl'].map(s=>`<button class="chip" data-s="${s}">${s}</button>`).join('')}</div>
+  <div class="simcap">Tippe auf einen Stoff.</div>`,
+ init(el){
+  const g=el.querySelector('.grains'), cap=el.querySelector('.simcap'), cloud=el.querySelector('.cloud'), oil=el.querySelector('.oil');
+  let G=[], kind='', t0=0;
+  const txt={Salz:'Das Salz <b>löst sich</b>. Man sieht es nicht mehr, aber das Wasser schmeckt salzig. <b>wasserlöslich</b>',
+   Zucker:'Der Zucker <b>löst sich</b>. Man sieht ihn nicht mehr, aber das Wasser schmeckt süß. <b>wasserlöslich</b>',
+   Sand:'Der Sand <b>sinkt nach unten</b> und bleibt dort liegen. <b>nicht wasserlöslich</b>',
+   Öl:'Das Öl <b>schwimmt oben</b>. Es mischt sich nicht mit Wasser. <b>nicht wasserlöslich</b>',
+   Mehl:'Das Wasser wird <b>trüb</b>. Nach einer Weile setzt sich das Mehl unten ab. <b>nicht wasserlöslich</b>'};
+  el.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{ kind=b.dataset.s; t0=performance.now(); g.innerHTML=''; G=[]; cloud.setAttribute('opacity',0); oil.setAttribute('height',0); oil.setAttribute('y',50);
+    el.querySelectorAll('[data-s]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    if(kind!=='Öl') for(let i=0;i<24;i++){ const c=svgEl('rect',{width:3.5,height:3.5,fill: kind==='Sand'?'#B08A4E':kind==='Mehl'?'var(--muted)':'var(--ink)'}); g.appendChild(c); G.push({c,x:rnd(75,125),y:rnd(5,30),v:rnd(1,2),o:1}); }
+    cap.innerHTML='…'; setTimeout(()=>{ if(kind===b.dataset.s) cap.innerHTML=txt[kind]; }, RM?0:1600); });
+  loop(el,t=>{ if(!kind) return; const dt=(t-t0)/1000;
+    if(kind==='Öl'){ const h=Math.min(12, dt*8); oil.setAttribute('height',h); oil.setAttribute('y',50-h+ (dt<1?0:0)); return; }
+    if(kind==='Mehl'){ cloud.setAttribute('opacity', dt<1.5? Math.min(.55,dt*.4) : Math.max(.12,.55-(dt-1.5)*.08)); }
+    G.forEach((p,i)=>{ const floor= 150-(i%6)*2.4; const inW=p.y>50;
+      p.y+= inW ? (kind==='Sand'?p.v*1.2: kind==='Mehl'? (dt<2?.25:.5) : p.v*.6) : p.v*1.8;
+      if(p.y>floor) p.y=floor;
+      if((kind==='Salz'||kind==='Zucker') && inW) p.o=Math.max(0,p.o-0.012);
+      if(kind==='Mehl' && inW && dt<2) p.x+=rnd(-1,1);
+      p.c.setAttribute('x',p.x.toFixed(1)); p.c.setAttribute('y',p.y.toFixed(1)); p.c.setAttribute('opacity',p.o.toFixed(2)); }); });
+ }
+},
+soil:{
+ html:()=>`<svg viewBox="0 0 220 210" width="220" role="img" aria-label="Trichter mit Bodenprobe, darunter ein Becher">
+   <path d="M50 20 L170 20 L120 90 L120 110 L100 110 L100 90 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>
+   <path class="layer" d="M57 30 L163 30 L127 80 L93 80 Z" fill="var(--line)"/>
+   <g class="rain"></g><g class="drips"></g>
+   <path d="M75 150 L80 205 L140 205 L145 150" fill="none" stroke="var(--ink)" stroke-width="3"/>
+   <rect class="cupw" x="80" y="205" width="60" height="0" fill="var(--water)"/></svg>
+  <div class="row" style="justify-content:center">${[['kies','Kies'],['sand','Sand'],['humus','Humus/Erde'],['ton','Lehm/Ton']].map(([k,l])=>`<button class="chip" data-k="${k}">${l}</button>`).join('')}</div>
+  <div class="simcap">Tippe auf eine Bodenart. Oben gießen wir Wasser hinein.</div>`,
+ init(el){
+  const layer=el.querySelector('.layer'), drips=el.querySelector('.drips'), cap=el.querySelector('.simcap'), cupw=el.querySelector('.cupw');
+  const cfg={kies:{c:'#A9A49A',ms:120,t:'<b>Kies:</b> große Lücken. Das Wasser läuft <b>sehr schnell</b> durch.'},
+    sand:{c:'#E3C98A',ms:450,t:'<b>Sand:</b> Das Wasser läuft durch. Grober Sand kann Wasser <b>schlecht speichern</b>.'},
+    humus:{c:'#6B4E31',ms:1100,t:'<b>Humus/Erde:</b> Das Wasser <b>tröpfelt</b> langsam.'},
+    ton:{c:'#B5806A',ms:0,t:'<b>Lehm/Ton:</b> winzige Lücken. Es kommt <b>fast kein Wasser</b> durch. Ton hält das Wasser fest.'}};
+  let timer=null, D=[], lvl=0;
+  el.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{ const c=cfg[b.dataset.k]; el.querySelectorAll('[data-k]').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    layer.setAttribute('fill',c.c); cap.innerHTML=c.t; if(timer) clearInterval(timer); timer=null; drips.innerHTML=''; D=[]; lvl=0; cupw.setAttribute('height',0); cupw.setAttribute('y',205);
+    if(c.ms) timer=every(c.ms,()=>{ const d=svgEl('path',{d:'M0 0 q-4 7 0 9 q4 -2 0 -9z',fill:'var(--blue)'}); drips.appendChild(d); D.push({d,y:112}); }); });
+  loop(el,()=>{ D=D.filter(p=>{ p.y+= RM?6:3; p.d.setAttribute('transform',`translate(110 ${p.y})`); if(p.y>200-lvl){ p.d.remove(); lvl=Math.min(45,lvl+0.6); cupw.setAttribute('height',lvl); cupw.setAttribute('y',205-lvl); return false; } return true; }); });
+ }
+},
+cycle:{
+ html:()=>`<svg viewBox="0 0 520 240" width="520" role="img" aria-label="Wasserkreislauf: Sonne, Meer, Wolke, Regen, Berg, Fluss">
+   <defs><marker id="cy-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ink)"/></marker></defs>
+   <g data-st="1"><circle cx="60" cy="50" r="26" fill="var(--sun)"/></g>
+   <path d="M0 190 L220 190 L220 240 L0 240Z" fill="var(--water)"/><text x="80" y="222" font-size="14" fill="var(--ink)">Meer</text>
+   <path d="M220 190 L320 120 L380 70 L430 115 L520 160 L520 240 L220 240Z" fill="var(--line)"/>
+   <g data-st="2"><path d="M150 180 L165 85" stroke="var(--ink)" stroke-width="2.5" stroke-dasharray="5 4" marker-end="url(#cy-a)"/><text x="100" y="140" font-size="12" fill="var(--ink)">Wasserdampf</text></g>
+   <g data-st="3"><path d="M180 70 L255 48" stroke="var(--ink)" stroke-width="2.5" marker-end="url(#cy-a)"/><text x="170" y="40" font-size="12" fill="var(--ink)">kalt</text></g>
+   <g data-st="4">${[[290,45],[320,35],[350,45]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="22" fill="var(--card)" stroke="var(--ink)" stroke-width="1.5"/>`).join('')}<rect x="272" y="40" width="96" height="26" fill="var(--card)"/><path d="M270 66 L370 66" stroke="var(--ink)"/></g>
+   <g data-st="5">${[0,1,2,3,4,5].map(i=>`<line x1="${290+i*12}" y1="80" x2="${284+i*12}" y2="102" stroke="var(--blue)" stroke-width="2.5"/>`).join('')}</g>
+   <g data-st="6"><path d="M500 165 Q450 205 380 197 Q300 192 225 202" fill="none" stroke="var(--blue)" stroke-width="4"/><path d="M420 135 L420 170" stroke="var(--ink)" stroke-width="2" stroke-dasharray="3 3" marker-end="url(#cy-a)"/></g>
+   <circle class="drop" r="9" fill="var(--blue)" stroke="var(--card)" stroke-width="2"/></svg>
+  <div class="simcap"></div>
+  <div class="row" style="justify-content:center"><button class="btn ghost" data-d="-1">‹ Zurück</button><span class="cyn muted">1 / 6</span><button class="btn" data-d="1">Weiter ›</button></div>`,
+ init(el){
+  const cap=el.querySelector('.simcap'), dr=el.querySelector('.drop'), n=el.querySelector('.cyn');
+  const S=[[60,50,'<b>1. Die Sonne erwärmt</b> das Wasser im Meer, in Seen und Flüssen.'],[160,130,'<b>2. Das Wasser verdunstet.</b> Unsichtbarer Wasserdampf steigt auf.'],
+    [220,58,'<b>3. Oben ist es kalt.</b> Der Wasserdampf kühlt ab und <b>kondensiert</b> zu winzigen Tröpfchen.'],[320,45,'<b>4. Es bilden sich Wolken</b> aus vielen winzigen Tröpfchen.'],
+    [310,95,'<b>5. Niederschlag fällt:</b> Die Tropfen werden schwer und fallen als Regen, Schnee oder Hagel.'],[420,185,'<b>6. Das Wasser versickert</b> im Boden oder <b>fließt</b> in Bächen und Flüssen zurück ins Meer. Dann geht alles von vorn los.']];
+  let i=0, x=S[0][0], y=S[0][1];
+  function upd(){ cap.innerHTML=S[i][2]; n.textContent=(i+1)+' / 6'; el.querySelectorAll('[data-st]').forEach(g=>g.setAttribute('opacity', +g.dataset.st===i+1?1:.35)); }
+  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{ i=(i+ +b.dataset.d+6)%6; upd(); });
+  upd(); loop(el,()=>{ x+=(S[i][0]-x)*(RM?1:.08); y+=(S[i][1]-y)*(RM?1:.08); dr.setAttribute('cx',x.toFixed(1)); dr.setAttribute('cy',y.toFixed(1)); });
+ }
+},
+utube:{
+ html:()=>`<svg viewBox="0 0 260 200" width="260" role="img" aria-label="Zwei verbundene Trichter"><g class="tube"></g></svg>
+  <label class="simctl" for="ut-r">Rechter Trichter: tiefer ↔ höher<input id="ut-r" type="range" min="0" max="100" value="60"></label><div class="simcap"></div>`,
+ init(el){
+  const g=el.querySelector('.tube'), r=el.querySelector('input'), cap=el.querySelector('.simcap'), L=105;
+  function upd(){ const top=150-r.value*1.3; const lvl=Math.max(L, top+4);
+    const path=`M55 85 L55 155 Q55 180 80 180 L180 180 Q205 180 205 155 L205 ${top+18}`;
+    g.innerHTML=`<path d="${path}" fill="none" stroke="var(--ink)" stroke-width="14" stroke-linecap="round"/><path d="${path}" fill="none" stroke="var(--card)" stroke-width="9" stroke-linecap="round"/>
+     <path d="M55 ${lvl} L55 155 Q55 180 80 180 L180 180 Q205 180 205 155 L205 ${lvl}" fill="none" stroke="var(--water)" stroke-width="9"/>
+     <path d="M25 50 L55 85 L85 50 Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>
+     <path d="M188 ${top} L205 ${top+20} L222 ${top} Z" fill="var(--card)" stroke="var(--ink)" stroke-width="3"/>
+     <line x1="15" y1="${lvl}" x2="250" y2="${lvl}" stroke="var(--bad)" stroke-width="2" stroke-dasharray="6 4"/>
+     ${lvl>L?`<path d="M222 ${top} q12 10 10 40" fill="none" stroke="var(--blue)" stroke-width="3"/>`:''}`;
+    cap.innerHTML = lvl>L? 'Der rechte Trichter ist tiefer als der Wasserstand. Das Wasser <b>läuft rechts heraus</b>, bis es auf beiden Seiten gleich hoch steht.'
+      : 'Egal wie hoch du den rechten Trichter hältst: Das Wasser steht <b>links und rechts gleich hoch</b> (rote Linie).'; }
+  r.oninput=upd; upd();
+ }
+},
+taps:{
+ html:()=>`<svg viewBox="0 0 250 190" width="250" role="img" aria-label="Behälter mit drei Wasserhähnen"><g class="tk"></g></svg>
+  <label class="simctl" for="tp-r">Wasserstand<input id="tp-r" type="range" min="0" max="100" value="60"></label><div class="simcap"></div>`,
+ init(el){
+  const g=el.querySelector('.tk'), r=el.querySelector('input'), cap=el.querySelector('.simcap'), taps=[45,85,125];
+  function upd(){ const lv=150-r.value*1.25; let n=0;
+    const st=taps.map(y=>{ if(y>lv+4){ n++; return `<path d="M200 ${y+12} q2 20 -2 40" fill="none" stroke="var(--blue)" stroke-width="4"/>`; } return ''; }).join('');
+    g.innerHTML=`<rect x="20" y="${lv}" width="90" height="${150-lv}" fill="var(--water)"/><rect x="58" y="150" width="120" height="25" fill="var(--water)"/><rect x="164" y="${lv}" width="14" height="${175-lv}" fill="var(--water)"/>
+     <path d="M20 20 L20 150 L110 150 L110 20" fill="none" stroke="var(--ink)" stroke-width="4"/>
+     <rect x="73" y="151" width="90" height="9" fill="var(--paper)"/>
+     <path d="M58 150 L58 175 L178 175 L178 20 M72 150 L72 161 L164 161 L164 20" fill="none" stroke="var(--ink)" stroke-width="3"/>
+     ${taps.map(y=>`<path d="M178 ${y} h22 v10" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/><circle cx="190" cy="${y-6}" r="4" fill="var(--ink)"/>`).join('')}${st}
+     <line x1="10" y1="${lv}" x2="240" y2="${lv}" stroke="var(--bad)" stroke-width="2" stroke-dasharray="5 4"/>`;
+    cap.innerHTML=`Aus <b>${['keinem','einem','zwei','drei'][n]} ${n===1?'Hahn':'Hähnen'}</b> fließt Wasser. Nur Hähne <b>unter</b> dem Wasserstand geben Wasser.`; }
+  r.oninput=upd; upd();
+ }
+}
+};
+function initSims(root){ root.querySelectorAll('[data-sim]').forEach(el=>{ const s=SIM[el.dataset.sim]; if(s) s.init(el); }); }
+
 /* ---------- Router ---------- */
 let view={name:'home'};
 function go(v){ view=v; if('speechSynthesis' in window) speechSynthesis.cancel(); render(); window.scrollTo(0,0); }
 function render(){
-  closePop();
+  closePop(); stopSims();
   const v=view.name;
   if(v==='home') return home();
   if(v==='unit') return unitView();
@@ -393,9 +634,10 @@ function home(){
 
 /* ---------- Einheit ---------- */
 function unitView(){
-  const u=UBY[view.id], tab=view.tab||'lernen', st=unitStats(u.id);
+  const u=UBY[view.id], tab=view.tab||(u.lesson?'verstehen':'lernen'), st=unitStats(u.id);
   let body='';
-  if(tab==='lernen'){
+  if(tab==='verstehen' && u.lesson){ body=lessonHTML(u); }
+  else if(tab==='lernen'){
     body=`<div class="row" style="justify-content:space-between;margin-bottom:10px"><span class="muted">Tippe auf gelbe Wörter: Du hörst sie und siehst, was sie bedeuten.</span>
       <button class="btn ghost" data-speak="${esc(u.merk.join(' '))}">Alles vorlesen</button></div>
       <div class="lined"><ul class="merk">${u.merk.map(m=>`<li>${spk(m)}<span class="txt">${rich(m)}</span></li>`).join('')}</ul></div>
@@ -410,11 +652,27 @@ function unitView(){
   }
   $app.innerHTML=`<button class="back" id="bk">‹ Zurück</button>
     <header class="top" style="margin-top:6px"><div><div class="kicker">Station ${u.no}${u.extra?' · Extra':''}</div><h1>${esc(u.title)}</h1><div class="muted">${esc(u.sub)}</div></div>${starHTML(starsFor(u.id))}</header>
-    <div class="tabs" role="tablist">${[['lernen','Lernen'],['woerter','Wörter'],['ueben','Üben']].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
+    <div class="tabs" role="tablist">${[...(u.lesson?[['verstehen','Verstehen']]:[]),['lernen','Merken'],['woerter','Wörter'],['ueben','Üben']].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
   document.getElementById('bk').onclick=()=>go({name:'home'});
-  $app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ view.tab=b.dataset.tab; render(); });
+  $app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ view.tab=b.dataset.tab; view.step=0; render(); window.scrollTo(0,0); });
   const s=document.getElementById('start'); if(s) s.onclick=()=>startQuiz('practice',u.id);
-  bindCommon();
+  $app.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{ view.step=+b.dataset.step; render(); const c=document.getElementById('lcard'); if(c) c.scrollIntoView({block:'start'}); });
+  $app.querySelectorAll('.ko-toggle').forEach(b=>b.onclick=()=>{ const p=b.nextElementSibling; p.hidden=!p.hidden; b.setAttribute('aria-expanded',!p.hidden); });
+  bindCommon(); initSims($app);
+}
+function lessonHTML(u){
+  const L=u.lesson, n=L.steps.length, i=Math.min(view.step||0, n);
+  const dots=`<div class="dots" aria-hidden="true">${Array.from({length:n+1},(_,k)=>`<i class="${k===i?'on':k<i?'done':''}"></i>`).join('')}</div>`;
+  const ko=(t)=>`<button class="ko-toggle ko" aria-expanded="${S.koHint}">한국어</button><p class="ko kotext" ${S.koHint?'':'hidden'}>${esc(t)}</p>`;
+  if(i<n){ const st=L.steps[i];
+    return `${dots}<div class="qcard lcard" id="lcard"><div class="kicker">Schritt ${i+1} von ${n}</div><h2 class="hand ltitle">${esc(st.t)}</h2>
+      ${st.sim?`<div class="sim fig" data-sim="${st.sim}">${SIM[st.sim].html()}</div>`:st.fig?`<div class="fig">${FIG[st.fig]}</div>`:''}
+      <div class="ltext">${spk(st.txt)}<p>${rich(st.txt)}</p></div>${ko(st.ko)}
+      <div class="qfoot">${i>0?`<button class="btn ghost" data-step="${i-1}">‹ Zurück</button>`:''}<button class="btn" data-step="${i+1}">Weiter ›</button></div></div>`; }
+  return `${dots}<div class="stack" id="lcard">
+    ${L.try?`<div class="qcard tipcard"><div class="kicker">Zu Hause</div><h2 class="hand ltitle">Probier es aus!</h2><div class="ltext">${spk(L.try.txt)}<p>${rich(L.try.txt)}</p></div>${ko(L.try.ko)}</div>`:''}
+    ${L.fehler?`<div class="qcard warncard"><div class="kicker">Pass auf!</div><h2 class="hand ltitle">Typischer Fehler</h2><div class="ltext">${spk(L.fehler.txt)}<p>${rich(L.fehler.txt)}</p></div>${ko(L.fehler.ko)}</div>`:''}
+    <div class="qfoot"><button class="btn ghost" data-step="${n-1}">‹ Zurück</button><button class="btn ghost" data-tab="lernen">Merkkarte</button><button class="btn" id="start">Jetzt üben</button></div></div>`;
 }
 function wordCards(ws){
   return `<div class="words">${ws.map(w=>`<div class="wcard"><div class="wt">${esc(w.w)}</div><div class="syl">${esc(w.s)}</div><div class="muted" style="font-size:15px">${esc(w.d)}</div>
@@ -604,7 +862,7 @@ function openPop(key, say){
 function bindCommon(){
   $app.querySelectorAll('[data-speak]').forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); speak(b.dataset.speak, !!b.dataset.slow); });
   $app.querySelectorAll('.w').forEach(b=>b.onclick=(e)=>{ e.stopPropagation(); openPop(b.dataset.word, b.dataset.say); });
-  $app.querySelectorAll('[data-go-unit]').forEach(b=>b.onclick=()=>go({name:'unit',id:b.dataset.goUnit,tab:'lernen'}));
+  $app.querySelectorAll('[data-go-unit]').forEach(b=>b.onclick=()=>go({name:'unit',id:b.dataset.goUnit,tab:UBY[b.dataset.goUnit].lesson?'verstehen':'lernen',step:0}));
 }
 
 /* ---------- Eltern ---------- */
@@ -702,7 +960,7 @@ function parentView(){
 
   <h2>단원별 설명과 단어 (부모님용)</h2>
   <div class="card">${units.map(u=>`<details class="unit"><summary>${u.no}. ${esc(u.ko)} <span class="de muted" style="font-weight:400">· ${esc(u.title)}</span></summary>
-    <p>${esc(u.koSum)}</p><div class="dict">${u.words.map(w=>`<span class="de">${esc(w.w)}</span><span>${esc(w.ko)}</span>${spk(w.w)}`).join('')}</div></details>`).join('')}</div>
+    <p>${esc(u.koSum)}</p>${u.lesson?`<p style="margin:8px 0 4px;font-weight:700">아이 앱 설명 카드 (한국어)</p><ol style="margin:0;padding-left:20px">${u.lesson.steps.map(s=>`<li><b>${esc(s.t)}</b> – ${esc(s.ko)}</li>`).join('')}</ol>${u.lesson.try?`<p style="margin:6px 0 0">집에서 해 보기: ${esc(u.lesson.try.ko)}</p>`:''}${u.lesson.fehler?`<p style="margin:4px 0 8px">자주 하는 실수: ${esc(u.lesson.fehler.ko)}</p>`:''}`:''}<div class="dict">${u.words.map(w=>`<span class="de">${esc(w.w)}</span><span>${esc(w.ko)}</span>${spk(w.w)}`).join('')}</div></details>`).join('')}</div>
 
   <h2>모의시험 출력</h2>
   <div class="card">${(T.pdfs||[]).length?`<p style="margin:0 0 10px">PDF를 열어 인쇄하세요. 정답지는 아이가 보지 않게 따로 보관하세요.</p>

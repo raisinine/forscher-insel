@@ -179,7 +179,34 @@
      "ex": "Re·gie·rungs·form.",
      "exk": "Regierungsform."
     }
-   ]
+   ],
+   "lesson": {
+    "steps": [
+     {
+      "t": "Wer bestimmt?",
+      "txt": "In einer Demokratie bestimmt nicht einer allein. Alle dürfen wählen. Wer die meisten Stimmen bekommt, hat gewonnen. Das ist die Mehrheit.",
+      "ko": "민주주의에서는 한 사람이 혼자 정하지 않아요. 모두 투표하고 가장 많은 표를 받은 사람이 이겨요. 이것이 다수(Mehrheit)예요."
+     },
+     {
+      "t": "Wie in der Klasse",
+      "txt": "Bei der Klassensprecherwahl ist es genauso: Es gibt Kandidaten. Alle schreiben einen Namen auf einen Stimmzettel und werfen ihn in die Wahlurne.",
+      "ko": "반장 선거와 같아요. 후보(Kandidat)가 있고, 모두 투표용지(Stimmzettel)에 이름을 써서 투표함(Wahlurne)에 넣어요."
+     },
+     {
+      "t": "Drei Wahlregeln",
+      "txt": "frei: Niemand darf dich zwingen. geheim: Niemand sieht, was du wählst. gleich: Jede Stimme zählt gleich viel.",
+      "ko": "frei(자유): 아무도 강요할 수 없어요. geheim(비밀): 누구를 뽑았는지 아무도 몰라요. gleich(평등): 모든 표는 똑같이 한 표예요."
+     }
+    ],
+    "try": {
+     "txt": "Macht zu Hause eine Wahl: Was gibt es am Sonntag zum Essen? Mit Stimmzetteln und einer Schachtel als Wahlurne.",
+     "ko": "집에서 \"일요일 메뉴 투표\"를 해 보세요. 종이 투표용지와 상자 투표함으로."
+    },
+    "fehler": {
+     "txt": "Wählerschaft = alle, die wählen. Kandidat = jemand, der gewählt werden möchte.",
+     "ko": "Wählerschaft는 투표하는 사람 전체, Kandidat는 뽑히고 싶은 사람."
+    }
+   }
   }
  ]
 });
