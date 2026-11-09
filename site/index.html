@@ -171,6 +171,19 @@ textarea{width:100%;min-height:120px;font:inherit;font-size:18px;border:2px soli
 .tipcard{border-color:var(--ok);background:var(--ok-soft)} .warncard{border-color:var(--sun);background:var(--sun-soft)}
 .tipcard .ltitle{color:var(--ok)}
 
+
+/* Wer lernt? */
+.av{display:inline-grid;place-items:center;border-radius:50%;color:var(--card);font-weight:700;flex:none;line-height:1}
+.av.plus{width:64px;height:64px;font-size:34px;background:var(--card);color:var(--blue);border:3px dashed var(--blue)}
+.who{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.whobtn{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px 12px;text-align:center}
+.whobtn:hover{border-color:var(--blue)}
+.whobtn b{font-size:20px;line-height:1.2;word-break:break-word}
+.whobtn .muted{font-size:13px}
+.newname{display:flex;flex-direction:column;gap:10px}
+.newname input{font:inherit;font-size:20px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);flex:1;min-width:0}
+.swap{border:0;background:none;color:var(--muted);text-decoration:underline;font-size:14px;padding:4px 0;margin-top:4px}
+
 /* Elternbereich */
 .parent{font-family:var(--f-ko);font-size:15.5px}
 .parent h2{font-size:19px;margin:26px 0 10px}
@@ -225,17 +238,39 @@ const ICON = {
 };
 
 /* ---------- Speicher ---------- */
-function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && s.log) return s; }catch(e){} return {name:'', log:[], free:{}, best:{}, exams:{}, koHint:false, topic:''}; }
-let S = load();
-(function migrate(){ // v1 (nur Thema Wasser, IDs ohne Präfix) -> v2
+const PKEY = 'forscher-insel-profile-v1';
+const blank = name => ({id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), name:name||'', log:[], free:{}, best:{}, exams:{}, koHint:false, topic:'', created:Date.now(), used:0});
+function migrateOne(S){ // v1 (nur Thema Wasser, IDs ohne Präfix) -> v2
   if(!S.exams) S.exams={}; if(S.exam){ S.exams.wasser=S.exam; delete S.exam; }
   const fx=id=> (id && !/^(hoer:|[a-z]+-)/.test(id)) ? ((/^(u10|d\d)$/.test(id))?'demokratie-':'wasser-')+id.replace(/^u10$/,'u1') : id;
-  S.log.forEach(r=>{ if(r.m!=='hoer'){ r.q=fx(r.q); } r.u=fx(r.u); });
+  (S.log||[]).forEach(r=>{ if(r.m!=='hoer'){ r.q=fx(r.q); } r.u=fx(r.u); });
   const nf={}; Object.keys(S.free||{}).forEach(k=>nf[fx(k)]=S.free[k]); S.free=nf;
   const nb={}; Object.keys(S.best||{}).forEach(k=>nb[fx(k)]=S.best[k]); S.best=nb;
   if('extra' in S) delete S['extra'];
-})();
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+  return S;
+}
+function loadDB(){
+  let db=null; try{ db=JSON.parse(localStorage.getItem(PKEY)); }catch(e){}
+  if(!db || !Array.isArray(db.profiles)) db={profiles:[]};
+  if(!db.profiles.length){ // altes Einzelprofil übernehmen
+    let old=null; try{ old=JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+    if(old && old.log){ const p=Object.assign(blank(old.name||'Kind 1'), migrateOne(old)); if(!p.name) p.name='Kind 1'; if(!p.id) p.id=blank().id; p.used=Date.now(); db.profiles.push(p); }
+  }
+  db.profiles.forEach(migrateOne);
+  return db;
+}
+const DB = loadDB();
+let S = blank('');   // aktives Profil; wird auf dem Startbildschirm gewählt
+function save(){ if(!DB.profiles.includes(S)) return; try{ localStorage.setItem(PKEY, JSON.stringify(DB)); }catch(e){} }
+function useProfile(p){ S=p; S.used=Date.now(); save(); }
+function addProfile(name){
+  name=name.trim().slice(0,20); if(!name) return null;
+  const ex=DB.profiles.find(p=>p.name.toLowerCase()===name.toLowerCase()); if(ex) return ex;
+  const p=blank(name); DB.profiles.push(p); return p;
+}
+const AV=['var(--blue)','var(--ok)','var(--sun)','var(--bad)','var(--water)'];
+function avatar(p,size=56){ const i=Math.max(0,DB.profiles.indexOf(p)); const c=AV[i%AV.length];
+  return `<span class="av" style="width:${size}px;height:${size}px;background:${c};font-size:${Math.round(size*.42)}px" aria-hidden="true">${esc((p.name||'?').charAt(0).toUpperCase())}</span>`; }
 
 /* ---------- Daten aufbereiten ---------- */
 const TOPICS = (window.TOPICS||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
@@ -576,11 +611,12 @@ taps:{
 function initSims(root){ root.querySelectorAll('[data-sim]').forEach(el=>{ const s=SIM[el.dataset.sim]; if(s) s.init(el); }); }
 
 /* ---------- Router ---------- */
-let view={name:'home'};
+let view={name:'who'};
 function go(v){ view=v; if('speechSynthesis' in window) speechSynthesis.cancel(); render(); window.scrollTo(0,0); }
 function render(){
   closePop(); stopSims();
   const v=view.name;
+  if(v==='who') return whoView();
   if(v==='home') return home();
   if(v==='unit') return unitView();
   if(v==='quiz') return quizView();
@@ -589,6 +625,28 @@ function render(){
   if(v==='hoer') return hoerView();
   if(v==='gate') return gateView();
   if(v==='parent') return parentView();
+}
+
+/* ---------- Wer lernt? ---------- */
+function whoView(){
+  const ps=DB.profiles.slice().sort((a,b)=>(b.used||0)-(a.used||0));
+  const adding = view.add || !ps.length;
+  $app.innerHTML=`<header class="top"><div><div class="kicker">Forscher-Insel</div><h1>Wer lernt heute?</h1></div></header>
+   ${ps.length?`<div class="who">${ps.map(p=>{ const ls=p.log.length?p.log[p.log.length-1].t:0;
+     return `<button class="whobtn" data-pid="${p.id}">${avatar(p,64)}<b>${esc(p.name)}</b><span class="muted">${ls?'zuletzt '+fmt(ls).split(' ')[0]:'noch nicht geübt'}</span></button>`; }).join('')}
+     ${adding?'':`<button class="whobtn add" id="add"><span class="av plus" aria-hidden="true">+</span><b>Neuer Name</b><span class="muted">Ich bin neu hier</span></button>`}</div>`:''}
+   ${adding?`<form class="tile hl newname" id="nf" autocomplete="off"><label for="nm"><b>${ps.length?'Wie heißt du?':'Hallo! Wie heißt du?'}</b></label>
+     <div class="row" style="flex-wrap:nowrap"><input id="nm" maxlength="20" placeholder="Vorname"><button class="btn" type="submit">Los!</button></div>
+     <p id="nmerr" class="muted" hidden></p>
+     ${ps.length?'<button type="button" class="back" id="cancel">Abbrechen</button>':''}</form>`:''}`;
+  $app.querySelectorAll('[data-pid]').forEach(b=>b.onclick=()=>{ useProfile(DB.profiles.find(p=>p.id===b.dataset.pid)); go({name:'home'}); });
+  const ad=document.getElementById('add'); if(ad) ad.onclick=()=>{ view.add=true; render(); document.getElementById('nm').focus(); };
+  const cc=document.getElementById('cancel'); if(cc) cc.onclick=()=>{ view.add=false; render(); };
+  const nf=document.getElementById('nf');
+  if(nf) nf.onsubmit=e=>{ e.preventDefault(); const v=document.getElementById('nm').value.trim();
+    if(!v){ const er=document.getElementById('nmerr'); er.hidden=false; er.textContent='Schreib bitte deinen Namen.'; return; }
+    if(DB.profiles.length>=8 && !DB.profiles.some(p=>p.name.toLowerCase()===v.toLowerCase())){ const er=document.getElementById('nmerr'); er.hidden=false; er.textContent='Es gibt schon 8 Namen. Ein Erwachsener kann im Elternbereich Namen löschen.'; return; }
+    useProfile(addProfile(v)); go({name:'home'}); };
 }
 
 /* ---------- Start ---------- */
@@ -602,11 +660,11 @@ function home(){
   $app.innerHTML = `
   <header class="top">
     <div><div class="kicker">Forscher-Insel · Klasse ${T.klasse||3} · ${esc(T.subject||'Sachunterricht')}</div>
-    <h1>${S.name?`Hallo ${esc(S.name)}!`:'Forscher-Insel'}</h1></div>
+    <div class="row" style="gap:12px;flex-wrap:nowrap">${avatar(S,44)}<h1>Hallo ${esc(S.name)}!</h1></div>
+    <button class="swap" id="swap">Nicht ${esc(S.name)}? Wechseln</button></div>
     ${dl!=null && dl>=0 ? `<div class="countdown"><b>${dl}</b>${dl===1?'Tag':'Tage'} bis zum Test</div>`:''}
   </header>
   ${TOPICS.length>1?`<div class="row" aria-label="Thema" style="margin:-4px 0 14px">${TOPICS.map(t=>`<button class="chip" data-topic="${t.id}" aria-pressed="${t.id===T.id}">${esc(t.title)}</button>`).join('')}</div>`:''}
-  ${S.name?'':`<div class="tile hl row" style="margin-bottom:14px"><label for="nm" style="flex:1;min-width:160px">Wie heißt du?</label><input id="nm" style="font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);flex:2;min-width:0"><button class="btn" id="nmok">Los!</button></div>`}
   <div class="tiles">
     <button class="tile hl" data-go-unit="${next.id}"><b>Weiterlernen</b><span>${next.no}. ${esc(next.title)}</span></button>
     <button class="tile" id="test"><b>Probetest</b><span>12 gemischte Aufgaben</span></button>
@@ -622,8 +680,7 @@ function home(){
       <button class="main" data-go-unit="${u.id}"><div style="flex:1;min-width:0"><div class="t">${esc(u.title)} ${u.extra?'<span class="tag">Extra</span>':''}</div><div class="s">${esc(u.sub)}</div></div>${starHTML(n)}</button></li>`;}).join('')}
   </ol>
   <button class="foot-link ko" id="parent">부모님 화면 (Für Eltern)</button>`;
-  const nm=document.getElementById('nmok');
-  if(nm) nm.onclick=()=>{ const v=document.getElementById('nm').value.trim(); if(v){ S.name=v.slice(0,20); save(); render(); } };
+  document.getElementById('swap').onclick=()=>go({name:'who'});
   bindCommon();
   document.getElementById('test').onclick=()=>startQuiz('test');
   const f=document.getElementById('fehler'); if(wrongCount) f.onclick=()=>startQuiz('fehler');
@@ -917,6 +974,7 @@ function parentView(){
   <header class="top" style="margin-top:6px"><div><div class="kicker">부모님 화면 · ${esc(T.subject||'')} · ${T.klasse||''}학년</div><h1 style="font-family:var(--f-ko);font-weight:700;color:var(--ink);font-size:26px">${S.name?esc(S.name)+'의 ':''}${esc(T.ko)} 학습 현황</h1></div>
    ${dl!=null&&dl>=0?`<div class="countdown"><b class="de">D-${dl}</b>시험</div>`:''}</header>
 
+  ${DB.profiles.length>1?`<div class="row" style="margin:-4px 0 10px"><span class="muted" style="font-size:13px">아이:</span>${DB.profiles.map(p=>`<button class="chip" data-prof="${p.id}" aria-pressed="${p===S}">${esc(p.name)}</button>`).join('')}</div>`:''}
   ${TOPICS.length>1?`<div class="row" style="margin:-4px 0 14px">${TOPICS.map(t=>`<button class="chip" data-topic="${t.id}" aria-pressed="${t.id===T.id}">${esc(t.ko)}</button>`).join('')}</div>`:''}
   <div class="kpis">
     <div class="card kpi"><b>${seen}/${totalQ}</b><span>풀어 본 문제</span></div>
@@ -973,17 +1031,23 @@ function parentView(){
 
   <h2>설정</h2>
   <div class="card set">
-    <label>아이 이름 (아이 화면 인사말)<input id="s-name" value="${esc(S.name)}"></label>
+    <label>이름 (${esc(S.name)})<input id="s-name" maxlength="20" value="${esc(S.name)}"></label>
     <label>시험 날짜 (${esc(T.ko)})<input id="s-exam" type="date" value="${esc(S.exams[T.id]||'')}"></label>
     <label style="flex-direction:row;align-items:center;gap:8px"><input id="s-ko" type="checkbox" ${S.koHint?'checked':''}> 아이 화면 단어 카드에 한국어 뜻도 표시</label>
     <div class="row"><button class="btn" id="s-save">저장</button><span id="s-msg" class="muted" hidden>저장했습니다.</span></div>
+    <div class="row" style="border-top:1px solid var(--line);padding-top:12px"><button class="btn ghost" id="p-del" style="border-color:var(--bad);color:var(--bad)">${esc(S.name)} 프로필 삭제</button>
+      <span id="p-confirm" hidden>${esc(S.name)}의 모든 기록이 지워집니다. <button class="btn" id="p-yes" style="background:var(--bad);border-color:var(--bad)">삭제</button> <button class="btn ghost" id="p-no">취소</button></span></div>
     <div class="row" style="border-top:1px solid var(--line);padding-top:12px"><button class="btn ghost" id="s-reset" style="border-color:var(--bad);color:var(--bad)">이 주제 학습 기록 지우기</button>
       <span id="s-confirm" hidden>정말 지울까요? <button class="btn" id="s-yes" style="background:var(--bad);border-color:var(--bad)">지우기</button> <button class="btn ghost" id="s-no">취소</button></span></div>
-    <p class="muted" style="margin:0;font-size:13px">학습 기록은 이 기기의 이 브라우저에만 저장됩니다. 아이가 쓰는 기기에서 이 화면을 열어 확인하세요.</p>
+    <p class="muted" style="margin:0;font-size:13px">이름과 시험 날짜, 학습 기록은 아이(프로필)마다 따로 저장됩니다. 앱을 열 때마다 "Wer lernt heute?" 화면에서 이름을 고르거나 새 이름을 입력합니다. 학습 기록은 이 기기의 이 브라우저에만 저장됩니다. 아이가 쓰는 기기에서 이 화면을 열어 확인하세요.</p>
   </div></div>`;
   bindCommon();
   document.getElementById('bk').onclick=()=>go({name:'home'});
-  document.getElementById('s-save').onclick=()=>{ S.name=document.getElementById('s-name').value.trim().slice(0,20); S.exams[T.id]=document.getElementById('s-exam').value; S.koHint=document.getElementById('s-ko').checked; save(); render(); setTimeout(()=>{const m=document.getElementById('s-msg'); if(m) m.hidden=false;},10); };
+  $app.querySelectorAll('[data-prof]').forEach(b=>b.onclick=()=>{ useProfile(DB.profiles.find(p=>p.id===b.dataset.prof)); render(); });
+  document.getElementById('p-del').onclick=()=>{ document.getElementById('p-confirm').hidden=false; };
+  document.getElementById('p-no').onclick=()=>{ document.getElementById('p-confirm').hidden=true; };
+  document.getElementById('p-yes').onclick=()=>{ DB.profiles=DB.profiles.filter(p=>p!==S); try{ localStorage.setItem(PKEY, JSON.stringify(DB)); }catch(e){} S=blank(''); go({name:'who'}); };
+  document.getElementById('s-save').onclick=()=>{ const nn=document.getElementById('s-name').value.trim().slice(0,20); if(nn && !DB.profiles.some(p=>p!==S && p.name.toLowerCase()===nn.toLowerCase())) S.name=nn; S.exams[T.id]=document.getElementById('s-exam').value; S.koHint=document.getElementById('s-ko').checked; save(); render(); setTimeout(()=>{const m=document.getElementById('s-msg'); if(m) m.hidden=false;},10); };
   document.getElementById('s-reset').onclick=()=>{ document.getElementById('s-confirm').hidden=false; };
   document.getElementById('s-no').onclick=()=>{ document.getElementById('s-confirm').hidden=true; };
   document.getElementById('s-yes').onclick=()=>{ S.log=S.log.filter(r=>!inTopic(r,T)); units.forEach(u=>{ delete S.best[u.id]; u.q.forEach(q=>delete S.free[q.id]); }); save(); render(); };
