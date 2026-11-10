@@ -7,7 +7,6 @@
  "nr": 1,
  "halbjahr": 1,
  "schuljahr": "2026/27",
- "current": true,
  "title": "Texte verstehen",
  "ko": "독해와 Lernwörter (1차 읽기 시험)",
  "period": "2026년 9월 ~ 11월",

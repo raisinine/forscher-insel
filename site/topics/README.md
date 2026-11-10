@@ -18,8 +18,9 @@ PDF 이름도 같은 앞부분을 씁니다: `site/pdf/k3-sachunterricht-02-wass
 - `title`(독일어) · `ko`(한국어) · `period`(배운 시기) · `photos`(분석한 사진) · `current: true`(새 주제를 기본으로 열기)
 - `concepts`, `observations`, `pdfs`
 - `stories`: 읽기 지문 `{키: {title, p:[문단…]}}` — 학습 카드(`story`), 문제(`st`), 서술형(`st`)에서 불러 씀
-- `units`: 단원(Station) 목록 — `merk`의 `[[단어]]`는 소리 나는 단어, `lesson`은 Verstehen 카드, `q`는 퀴즈(타입: mc, tf, order, sort, match, cloze, free, spell=듣고 쓰기 `a:'정답'`)
-- `schreiben`: 서술형 연습 — `{id, unit, op(nennen|beschreiben|erklaeren|begruenden|vergleichen), q, ko, qk:[질문 단어 어간], start, words:[[단어, 어간, 한국어]], distract:[], kern:{o:[], a}, model, mk}`
+- `units`: 단원(Station) 목록 — `merk`의 `[[단어]]`는 소리 나는 단어, `lesson`은 Verstehen 카드, `q`는 퀴즈(타입: mc, tf, order, sort, match, cloze, free, spell=듣고 쓰기 `a:'정답'`, num=숫자 입력 `a:'220'`·`a:'6 R 3'`). 그림: `fig:{k:'blocks'|'numberline'|'solid'|'iso'|'net'|'dots', …}`
+  - `gen`: 연습 때마다 자동으로 새 계산 문제 6개 추가(einmaleins, plusminus100, stellen, nachbar, plusminus1000, halbdoppel)
+- `schreiben`: 서술형 연습 — `{id, unit, op(nennen|beschreiben|erklaeren|begruenden|vergleichen|muster|sachaufgabe), q, ko, qk:[질문 단어 어간], start, words:[[단어, 어간, 한국어]], distract:[], kern:{o:[], a}, model, mk}`
   - `parts`: 한 문제에 질문이 여러 개일 때 `[{de:'질문', k:[어간…]}]` → "모든 질문에 답했는지" 자동 체크
   - "In eigenen Worten"(자기 말로 다시 쓰기)는 각 단원의 Merkkarte에서 자동으로 만들어집니다.
 

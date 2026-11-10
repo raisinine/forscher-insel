@@ -6,7 +6,7 @@
 - 부모 화면: 한국어 · 주제별 이해도 · 약한 개념 · 틀린 문제와 아이 답 · 서술형 답안 · 사진 분석 소견 · 시험일 기준 계획 · 전체 주제 요약
 - 아이 화면: Schreibwerkstatt(서술형 연습: 지시어 파악 → 단어 고르기 → 핵심 찾기 → 한국어로 생각 → 독일어 문장 쓰기 → 자동 체크 / 자기 말로 다시 쓰기)
 - 분류: 학년 → 과목(Deutsch·Mathe·Sachunterricht…) → 순서. 아이 화면 "Meine Themen"과 부모 화면 주제 선택에 반영
-- 현재 주제: 3학년 Sachunterricht 1. Im Dschungel wird gewählt, 2. Wasser
+- 현재 주제: 3학년 Deutsch 1. Texte verstehen · Mathe 1. Zahlen bis 1000 und Körper · Sachunterricht 1. Im Dschungel wird gewählt, 2. Wasser
 
 ## 새 주제 추가하기
 1. 새 단원 공책·학습지 사진을 Claude 대화에 올리고 "Forscher-Insel 새 주제 파일 만들어줘"라고 요청합니다.

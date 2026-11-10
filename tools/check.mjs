@@ -1,7 +1,9 @@
 // Actions-Prüfung: App-Skript parsen, alle Themen-Dateien laden und Inhalte prüfen.
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 const FAECHER = ['deutsch','mathe','sachunterricht','englisch','religion','ethik','musik','kunst','sport'];
-const OPS = ['nennen','beschreiben','erklaeren','begruenden','vergleichen'];
+const OPS = ['nennen','beschreiben','erklaeren','begruenden','vergleichen','muster','sachaufgabe'];
+const FIGS = ['blocks','numberline','solid','iso','net','dots'];
+const GENS = ['einmaleins','plusminus100','stellen','nachbar','plusminus1000','halbdoppel'];
 const html = readFileSync('site/index.html', 'utf8');
 [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].forEach((m, i) => { new Function(m[1]); console.log(`index.html script ${i}: ok`); });
 globalThis.window = {};
@@ -28,12 +30,14 @@ for (const f of files) {
     for (const st of (u.lesson && u.lesson.steps) || []) if (st.story && !(t.stories && t.stories[st.story])) fail(f, `Station ${u.id}: Lesetext ${st.story} fehlt`);
     if (!u.id || !u.title || !Array.isArray(u.merk) || !Array.isArray(u.words) || !Array.isArray(u.q)) fail(f, `Station unvollständig: ${u.id}`);
     uids.add(u.id);
+    for (const g of [].concat(u.gen || [])) if (!GENS.includes(g)) fail(f, `Station ${u.id}: gen ${g} unbekannt (${GENS.join(', ')})`);
     for (const q of u.q) {
       if (qids.has(q.id)) fail(f, `doppelte Aufgaben-ID ${q.id}`); qids.add(q.id);
       const ok = { mc: () => Array.isArray(q.o) && q.a >= 0 && q.a < q.o.length, tf: () => typeof q.a === 'boolean',
         order: () => Array.isArray(q.items), sort: () => Array.isArray(q.cats) && Array.isArray(q.items),
         match: () => Array.isArray(q.pairs), cloze: () => Array.isArray(q.ans) && (q.text.match(/\{\d\}/g) || []).length === q.ans.length && q.ans.every(a => q.bank.includes(a)),
-        free: () => !!q.model, spell: () => typeof q.a === 'string' && q.a.trim() === q.a && q.a.length > 0 }[q.t];
+        free: () => !!q.model, spell: () => typeof q.a === 'string' && q.a.trim() === q.a && q.a.length > 0, num: () => typeof q.a === 'string' && q.a.length > 0 }[q.t];
+      if (q.fig && !FIGS.includes(q.fig.k)) fail(f, `Aufgabe ${q.id}: Bildtyp ${q.fig.k} unbekannt (${FIGS.join(', ')})`);
       if (q.st && !(t.stories && t.stories[q.st])) fail(f, `Aufgabe ${q.id}: Lesetext ${q.st} fehlt in stories`);
       if (!ok || !ok()) fail(f, `Aufgabe ${q.id} (Typ ${q.t}) fehlerhaft`);
     }
