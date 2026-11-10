@@ -1,15 +1,17 @@
-/* Forscher-Insel Thema: Wasser
-   Neue Themen: eine Datei wie diese in site/topics/ ablegen und pushen. Siehe README. */
+/* Forscher-Insel · Klasse 3 · sachunterricht · Thema 2: Wasser
+   Ein Thema = eine Datei. Name: k<Klasse>-<fach>-<Nr>-<name>.js  (siehe site/topics/README.md) */
 (window.TOPICS=window.TOPICS||[]).push({
  "id": "wasser",
- "order": 20,
- "current": true,
- "subject": "Sachunterricht",
+ "fach": "sachunterricht",
  "klasse": 3,
+ "nr": 2,
+ "halbjahr": 1,
+ "schuljahr": "2026/27",
  "title": "Wasser",
  "ko": "물 (과학)",
  "period": "2026년 10월 ~ 11월",
  "photos": "공책·학습지 사진 13장, 2026-11-08",
+ "current": true,
  "concepts": {
   "forschen": "실험 기록(예상·관찰 구분)",
   "zustand": "물의 세 가지 상태",
@@ -63,11 +65,455 @@
  "pdfs": [
   {
    "label": "모의시험 A·B 열기",
-   "file": "pdf/Probetest_Wasser_A_B.pdf"
+   "file": "pdf/k3-sachunterricht-02-wasser_Probetest_A_B.pdf"
   },
   {
    "label": "부모용 정답지 열기",
-   "file": "pdf/Loesungen_Eltern.pdf"
+   "file": "pdf/k3-sachunterricht-02-wasser_Loesungen.pdf"
+  }
+ ],
+ "schreiben": [
+  {
+   "id": "s1",
+   "unit": "u3",
+   "op": "erklaeren",
+   "q": "Warum steht das Eis im Becher höher als der Strich?",
+   "ko": "얼음이 컵에 그은 선보다 높이 올라오는 이유를 설명하세요.",
+   "qk": [
+    "eis",
+    "höher",
+    "strich"
+   ],
+   "start": "Das Eis steht höher als der Strich, weil …",
+   "words": [
+    [
+     "Eis",
+     "eis",
+     "얼음"
+    ],
+    [
+     "Platz",
+     "platz",
+     "자리"
+    ],
+    [
+     "Wasser",
+     "wasser",
+     "물"
+    ],
+    [
+     "gefrieren",
+     "gefr",
+     "얼다"
+    ],
+    [
+     "sich ausdehnen",
+     "dehn",
+     "부피가 늘어나다"
+    ]
+   ],
+   "distract": [
+    "Sonne",
+    "Salz",
+    "Wolke"
+   ],
+   "kern": {
+    "o": [
+     "Eis braucht mehr Platz als Wasser.",
+     "Eis ist schwerer als Wasser.",
+     "Im Gefrierfach verdunstet das Wasser."
+    ],
+    "a": 0
+   },
+   "model": "Das Eis steht höher als der Strich, weil Eis mehr Platz braucht als Wasser. Wasser dehnt sich beim Gefrieren aus. Darum darf man keine volle Glasflasche einfrieren.",
+   "mk": "얼음은 물보다 자리를 더 차지하기 때문에 선보다 높아진다. 물은 얼 때 부피가 늘어난다. 그래서 가득 찬 유리병을 얼리면 안 된다."
+  },
+  {
+   "id": "s2",
+   "unit": "u5",
+   "op": "erklaeren",
+   "q": "Woher kommen die Wassertropfen außen an einem Glas mit Eiswürfeln?",
+   "ko": "얼음 컵 바깥에 맺힌 물방울은 어디서 왔는지 설명하세요.",
+   "qk": [
+    "tropfen",
+    "glas",
+    "außen"
+   ],
+   "start": "Die Wassertropfen außen am Glas kommen aus …",
+   "words": [
+    [
+     "Luft",
+     "luft",
+     "공기"
+    ],
+    [
+     "Wasserdampf",
+     "wasserdampf",
+     "수증기"
+    ],
+    [
+     "kalt",
+     "kalt",
+     "차가운"
+    ],
+    [
+     "abkühlen",
+     "kühl",
+     "식다"
+    ],
+    [
+     "kondensieren",
+     "kondens",
+     "응결하다"
+    ]
+   ],
+   "distract": [
+    "Loch",
+    "Salz",
+    "schmelzen"
+   ],
+   "kern": {
+    "o": [
+     "Wasserdampf aus der Luft wird am kalten Glas wieder zu Wasser.",
+     "Das Wasser läuft durch ein Loch im Glas.",
+     "Das Eis schmilzt außen am Glas."
+    ],
+    "a": 0
+   },
+   "model": "Die Wassertropfen außen am Glas kommen aus der Luft. In der Luft ist unsichtbarer Wasserdampf. Am kalten Glas kühlt er ab und wird wieder zu Wasser. Das heißt kondensieren.",
+   "mk": "물방울은 공기에서 왔다. 공기 속에는 보이지 않는 수증기가 있다. 차가운 컵에서 식어 다시 물이 된다. 이것을 응결이라고 한다."
+  },
+  {
+   "id": "s3",
+   "unit": "u4",
+   "op": "begruenden",
+   "q": "Drei Gläser stehen drei Tage lang: A in der Sonne ohne Deckel, B im Schatten ohne Deckel, C im Schatten mit Deckel. In welchem Glas ist am Ende am meisten Wasser? Begründe.",
+   "ko": "세 컵 중 3일 뒤 물이 가장 많이 남은 컵을 고르고 이유를 쓰세요.",
+   "qk": [
+    "glas",
+    "wasser",
+    "meisten"
+   ],
+   "start": "In Glas C ist am meisten Wasser, denn …",
+   "words": [
+    [
+     "Deckel",
+     "deckel",
+     "뚜껑"
+    ],
+    [
+     "Schatten",
+     "schatten",
+     "그늘"
+    ],
+    [
+     "verdunsten",
+     "verduns",
+     "증발하다"
+    ],
+    [
+     "Wasserdampf",
+     "wasserdampf",
+     "수증기"
+    ],
+    [
+     "Sonne",
+     "sonne",
+     "해"
+    ]
+   ],
+   "distract": [
+    "Kies",
+    "Hagel",
+    "Salz"
+   ],
+   "kern": {
+    "o": [
+     "Glas C, weil der Deckel den Wasserdampf festhält und es im Schatten kühler ist.",
+     "Glas A, weil die Sonne neues Wasser macht.",
+     "Alle Gläser haben gleich viel, weil Wasser nicht verschwindet."
+    ],
+    "a": 0
+   },
+   "model": "In Glas C ist am meisten Wasser, denn es hat einen Deckel. Der Wasserdampf kann nicht weg und tropft zurück. Außerdem steht Glas C im Schatten. Dort verdunstet weniger Wasser als in der Sonne.",
+   "mk": "C에 물이 가장 많다. 뚜껑이 있어 수증기가 빠져나가지 못하고 다시 떨어진다. 또 그늘에 있어 햇빛보다 덜 증발한다."
+  },
+  {
+   "id": "s4",
+   "unit": "u6",
+   "op": "erklaeren",
+   "q": "Du rührst Salz in Wasser. Danach siehst du es nicht mehr. Ist das Salz verschwunden? Erkläre.",
+   "ko": "소금을 물에 저으면 안 보인다. 소금이 사라진 것인지 설명하세요.",
+   "qk": [
+    "salz",
+    "verschwunden",
+    "wasser"
+   ],
+   "start": "Das Salz ist nicht verschwunden, weil …",
+   "words": [
+    [
+     "sich lösen",
+     "lös",
+     "녹다"
+    ],
+    [
+     "Salz",
+     "salz",
+     "소금"
+    ],
+    [
+     "Wasser",
+     "wasser",
+     "물"
+    ],
+    [
+     "schmecken",
+     "schmeck",
+     "맛이 나다"
+    ],
+    [
+     "salzig",
+     "salzig",
+     "짠"
+    ]
+   ],
+   "distract": [
+    "sinken",
+    "Wolke",
+    "Kies"
+   ],
+   "kern": {
+    "o": [
+     "Nein. Das Salz hat sich gelöst. Man schmeckt es noch.",
+     "Ja. Das Salz ist weg.",
+     "Nein. Das Salz ist nach unten gesunken."
+    ],
+    "a": 0
+   },
+   "model": "Das Salz ist nicht verschwunden, weil es sich im Wasser gelöst hat. Man sieht es nicht mehr, aber das Wasser schmeckt salzig. Salz ist wasserlöslich.",
+   "mk": "소금은 사라지지 않았다. 물에 녹았기 때문이다. 보이지 않지만 물에서 짠맛이 난다. 소금은 물에 녹는 물질이다."
+  },
+  {
+   "id": "s5",
+   "unit": "u7",
+   "op": "vergleichen",
+   "q": "Vergleiche Kies und Ton. Wie läuft das Wasser durch?",
+   "ko": "자갈과 점토를 비교하세요. 물이 어떻게 통과하나요?",
+   "qk": [
+    "kies",
+    "ton",
+    "wasser"
+   ],
+   "start": "Durch Kies läuft das Wasser …, aber durch Ton …",
+   "words": [
+    [
+     "Kies",
+     "kies",
+     "자갈"
+    ],
+    [
+     "Ton",
+     "ton",
+     "점토"
+    ],
+    [
+     "schnell",
+     "schnell",
+     "빠르게"
+    ],
+    [
+     "Lücken",
+     "lücke",
+     "틈"
+    ],
+    [
+     "speichern",
+     "speicher",
+     "저장하다"
+    ]
+   ],
+   "distract": [
+    "Wolke",
+    "Salz",
+    "Sonne"
+   ],
+   "kern": {
+    "o": [
+     "Durch Kies läuft Wasser schnell, durch Ton fast gar nicht.",
+     "Durch Ton läuft Wasser schnell, durch Kies gar nicht.",
+     "Bei beiden läuft das Wasser gleich schnell."
+    ],
+    "a": 0
+   },
+   "model": "Durch Kies läuft das Wasser sehr schnell, weil Kies große Lücken hat. Aber durch Ton kommt fast kein Wasser, denn die Lücken sind winzig. Ton kann Wasser gut speichern.",
+   "mk": "자갈은 틈이 커서 물이 아주 빨리 통과한다. 하지만 점토는 틈이 아주 작아 물이 거의 통과하지 못한다. 점토는 물을 잘 저장한다."
+  },
+  {
+   "id": "s6",
+   "unit": "u7",
+   "op": "erklaeren",
+   "q": "Wie entsteht eine Quelle?",
+   "ko": "샘이 어떻게 생기는지 설명하세요.",
+   "qk": [
+    "quelle",
+    "entsteht"
+   ],
+   "start": "Eine Quelle entsteht, wenn …",
+   "words": [
+    [
+     "versickern",
+     "versicker",
+     "스며들다"
+    ],
+    [
+     "Tonschicht",
+     "ton",
+     "점토층"
+    ],
+    [
+     "Hang",
+     "hang",
+     "비탈"
+    ],
+    [
+     "fließen",
+     "fließ",
+     "흐르다"
+    ],
+    [
+     "Regenwasser",
+     "regen",
+     "빗물"
+    ]
+   ],
+   "distract": [
+    "Wolke",
+    "Salz",
+    "Eis"
+   ],
+   "kern": {
+    "o": [
+     "Wasser versickert, wird von der Tonschicht aufgehalten und fließt seitlich aus dem Hang.",
+     "Wasser fällt aus einer Wolke direkt in einen Brunnen.",
+     "Das Meer fließt den Berg hinauf."
+    ],
+    "a": 0
+   },
+   "model": "Eine Quelle entsteht, wenn Regenwasser im Boden versickert. Unten trifft es auf eine Tonschicht. Dort kommt es nicht weiter. Deshalb fließt es zur Seite und kommt am Hang aus der Erde.",
+   "mk": "빗물이 땅에 스며들다 점토층을 만나면 더 내려가지 못한다. 그래서 옆으로 흘러 비탈에서 땅 밖으로 나온다. 그곳이 샘이다."
+  },
+  {
+   "id": "s7",
+   "unit": "u8",
+   "op": "beschreiben",
+   "q": "Beschreibe den Wasserkreislauf.",
+   "ko": "물의 순환을 순서대로 설명하세요.",
+   "qk": [
+    "wasserkreislauf",
+    "wasser"
+   ],
+   "start": "Zuerst erwärmt die Sonne …",
+   "words": [
+    [
+     "Sonne",
+     "sonne",
+     "해"
+    ],
+    [
+     "verdunsten",
+     "verduns",
+     "증발하다"
+    ],
+    [
+     "kondensieren",
+     "kondens",
+     "응결하다"
+    ],
+    [
+     "Wolken",
+     "wolke",
+     "구름"
+    ],
+    [
+     "Niederschlag",
+     "niederschl",
+     "강수"
+    ],
+    [
+     "Fluss",
+     "fluss",
+     "강"
+    ]
+   ],
+   "distract": [
+    "Salz",
+    "Kies"
+   ],
+   "min": 4,
+   "kern": {
+    "o": [
+     "Das Wasser wandert im Kreis: vom Meer in die Luft, in die Wolken und wieder zurück.",
+     "Das Wasser bleibt immer im Meer.",
+     "Wolken entstehen aus Rauch."
+    ],
+    "a": 0
+   },
+   "model": "Zuerst erwärmt die Sonne das Wasser im Meer. Dann verdunstet das Wasser und steigt als Wasserdampf auf. Oben kühlt es ab und kondensiert. So entstehen Wolken. Danach fällt Niederschlag auf die Erde. Zum Schluss fließt das Wasser als Fluss zurück ins Meer.",
+   "mk": "먼저 해가 바닷물을 데운다. 물이 증발해 수증기로 올라간다. 위에서 식어 응결하고 구름이 된다. 비나 눈이 내린다. 마지막으로 강이 되어 바다로 돌아간다."
+  },
+  {
+   "id": "s8",
+   "unit": "u9",
+   "op": "erklaeren",
+   "q": "Warum baut man Hochbehälter auf Bergen?",
+   "ko": "왜 고지 배수지를 산 위에 짓는지 설명하세요.",
+   "qk": [
+    "hochbehälter",
+    "berg"
+   ],
+   "start": "Man baut Hochbehälter auf Bergen, weil …",
+   "words": [
+    [
+     "verbunden",
+     "verbund",
+     "연결된"
+    ],
+    [
+     "gleich hoch",
+     "gleich",
+     "같은 높이"
+    ],
+    [
+     "von selbst",
+     "selbst",
+     "저절로"
+    ],
+    [
+     "Stockwerk",
+     "stock",
+     "층"
+    ],
+    [
+     "Pumpe",
+     "pumpe",
+     "펌프"
+    ]
+   ],
+   "distract": [
+    "Sand",
+    "Wolke",
+    "schmelzen"
+   ],
+   "kern": {
+    "o": [
+     "Das Wasser fließt von selbst in die Häuser, weil der Behälter höher steht.",
+     "Auf dem Berg bleibt das Wasser kälter.",
+     "Dort haben die Fische mehr Platz."
+    ],
+    "a": 0
+   },
+   "model": "Man baut Hochbehälter auf Bergen, weil das Wasser dann von selbst in die Häuser fließt. In verbundenen Rohren steht das Wasser überall gleich hoch. Deshalb kommt es bis in die oberen Stockwerke. Man braucht keine Pumpe.",
+   "mk": "배수지를 산 위에 지으면 물이 저절로 집으로 흐른다. 연결된 관에서는 물 높이가 같다. 그래서 위층까지 올라오고 펌프가 필요 없다."
   }
  ],
  "units": [

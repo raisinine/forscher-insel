@@ -1,15 +1,24 @@
-# Themen-Dateien (주제 파일)
+# 주제 파일 (Themen)
 
-파일 하나 = 주제 하나. 파일 이름 앞 숫자는 정렬용(10, 20, 30 …), `order` 값과 맞춥니다.
-`window.TOPICS.push({...})` 형식이며 Actions가 이 폴더의 `[숫자]*.js`를 모아 `topics.bundle.js`로 만듭니다.
+**파일 하나 = 주제 하나.** 파일 이름 규칙: `k<학년>-<과목>-<순서>-<이름>.js`
 
-필드
-- id: 영문 소문자만 (예: wasser, strom). 바꾸면 학습 기록이 끊깁니다.
-- subject, klasse, title(독일어), ko(한국어), period(배운 시기), photos(분석한 사진 설명), current(true면 처음 열 때 이 주제)
-- concepts: { 개념키: '한국어 이름' } — 부모 화면 "보충이 필요한 개념"에 쓰임
-- observations: { todo:[['라벨','내용'],…], good:['…'] } — 사진 분석 소견
-- pdfs: [{label, file:'pdf/…'}] — 출력용 모의시험
-- units: [{ id, title, sub, ko, c(기본 개념), merk:[문장…], koSum, words:[{w,s,ko,d}], q:[문제…] }]
-  - merk 문장의 `[[단어]]` 또는 `[[보이는말|단어장키]]`는 누르면 소리 나는 노란 단어
-  - 문제 타입 t: mc(o,a), tf(a:true/false), order(items 정답순), sort(cats, items:[[이름,칸]]), match(pairs), cloze(text의 {0}{1}…, ans, bank), free(model, mk)
-  - 모든 문제: id(주제 안에서 고유), q, ko(한국어 뜻), ex(아이용 독일어 피드백), exk(부모용 설명), 선택 c, img
+| 예시 | 뜻 |
+|---|---|
+| `k3-sachunterricht-01-demokratie.js` | 3학년 Sachunterricht 1번째 주제 |
+| `k3-sachunterricht-02-wasser.js` | 3학년 Sachunterricht 2번째 주제 |
+| `k3-deutsch-01-nomen.js` | 3학년 Deutsch 1번째 주제 (예시) |
+| `k4-mathe-03-flaechen.js` | 4학년 Mathe 3번째 주제 (예시) |
+
+과목 키: `deutsch`, `mathe`, `sachunterricht`, `englisch`, `religion`, `ethik`, `musik`, `kunst`, `sport`
+
+PDF 이름도 같은 앞부분을 씁니다: `site/pdf/k3-sachunterricht-02-wasser_Probetest_A_B.pdf`
+
+## 필드
+- `id` 영문 소문자(바꾸면 학습 기록이 끊김) · `fach` · `klasse` · `nr` · `halbjahr` · `schuljahr` (예: "2026/27")
+- `title`(독일어) · `ko`(한국어) · `period`(배운 시기) · `photos`(분석한 사진) · `current: true`(새 주제를 기본으로 열기)
+- `concepts`, `observations`, `pdfs`
+- `units`: 단원(Station) 목록 — `merk`의 `[[단어]]`는 소리 나는 단어, `lesson`은 Verstehen 카드, `q`는 퀴즈
+- `schreiben`: 서술형 연습 — `{id, unit, op(nennen|beschreiben|erklaeren|begruenden|vergleichen), q, ko, qk:[질문 단어 어간], start, words:[[단어, 어간, 한국어]], distract:[], kern:{o:[], a}, model, mk}`
+  - "In eigenen Worten"(자기 말로 다시 쓰기)는 각 단원의 Merkkarte에서 자동으로 만들어집니다.
+
+push하면 Actions의 "App und Themen prüfen" 단계가 파일 이름과 내용을 검사합니다.

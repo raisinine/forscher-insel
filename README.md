@@ -4,11 +4,13 @@
 
 - 아이 화면: 독일어 · 주제 선택 · 학습 순서대로 Station · 학습카드 · 어려운 단어 음성(보통/천천히) · 듣기 게임 · 연습 · Probetest · Fehlerkiste
 - 부모 화면: 한국어 · 주제별 이해도 · 약한 개념 · 틀린 문제와 아이 답 · 서술형 답안 · 사진 분석 소견 · 시험일 기준 계획 · 전체 주제 요약
-- 현재 주제: Wasser(물), Im Dschungel wird gewählt(민주주의·선거)
+- 아이 화면: Schreibwerkstatt(서술형 연습: 지시어 파악 → 단어 고르기 → 핵심 찾기 → 한국어로 생각 → 독일어 문장 쓰기 → 자동 체크 / 자기 말로 다시 쓰기)
+- 분류: 학년 → 과목(Deutsch·Mathe·Sachunterricht…) → 순서. 아이 화면 "Meine Themen"과 부모 화면 주제 선택에 반영
+- 현재 주제: 3학년 Sachunterricht 1. Im Dschungel wird gewählt, 2. Wasser
 
 ## 새 주제 추가하기
 1. 새 단원 공책·학습지 사진을 Claude 대화에 올리고 "Forscher-Insel 새 주제 파일 만들어줘"라고 요청합니다.
-2. 받은 `NN-이름.js` 파일(필요하면 PDF도)을 Codespace에서 `site/topics/`(PDF는 `site/pdf/`)에 넣습니다.
+2. 받은 `k3-과목-NN-이름.js` 파일(필요하면 PDF도)을 Codespace에서 `site/topics/`(PDF는 `site/pdf/`)에 넣습니다.
 3. 터미널:
    ```bash
    git add -A && git commit -m "Thema: 이름" && git push

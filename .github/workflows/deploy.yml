@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: 20
       - name: Themen bündeln
-        run: cat $(ls site/topics/[0-9]*.js | sort) > site/topics.bundle.js
+        run: cat $(ls site/topics/*.js | sort) > site/topics.bundle.js
       - name: App und Themen prüfen
         run: node tools/check.mjs
       - name: Cache-Version setzen

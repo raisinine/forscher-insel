@@ -1,8 +1,8 @@
 // Offline-Cache für die Forscher-Insel. VERSION wird von GitHub Actions bei jedem Deploy ersetzt.
 const VERSION = '__BUILD__';
 const CACHE = 'forscher-insel-' + VERSION;
-const CORE = ['./', 'index.html', 'topics.bundle.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png',
-  'pdf/Probetest_Wasser_A_B.pdf', 'pdf/Loesungen_Eltern.pdf'];
+const CORE = ['./', 'index.html', 'topics.bundle.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
+// PDFs werden beim ersten Öffnen gespeichert.
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('forscher-insel-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));

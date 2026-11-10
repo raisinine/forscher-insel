@@ -184,6 +184,49 @@ textarea{width:100%;min-height:120px;font:inherit;font-size:18px;border:2px soli
 .newname input{font:inherit;font-size:20px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);flex:1;min-width:0}
 .swap{border:0;background:none;color:var(--muted);text-decoration:underline;font-size:14px;padding:4px 0;margin-top:4px}
 
+
+/* Themen-Regal */
+.topicbar{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:-4px 0 6px}
+.topicbar b{display:block;font-size:17px;line-height:1.3}
+.topicbar .kicker{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tnr{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--card);font-weight:700;flex:none}
+.regal{margin-bottom:22px}
+.regal-k{font-size:24px;color:var(--blue);margin:0 0 8px}
+.fach{margin:12px 0}
+.fach-h{display:flex;align-items:center;gap:8px;font-weight:700;margin-bottom:6px}
+.fdot{width:12px;height:12px;border-radius:50%}
+.tlist{display:flex;flex-direction:column;gap:8px}
+.tcard{display:flex;gap:12px;align-items:center;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;width:100%}
+.tcard:hover{border-color:var(--blue)} .tcard.on{border:2px solid var(--blue)}
+.tcard b{display:block;line-height:1.3}
+.tcard .muted{display:block;font-size:13.5px}
+.opb{font-size:12px;font-weight:700;background:var(--blue-soft);color:var(--blue);border-radius:8px;padding:3px 8px;flex:none;max-width:110px;text-align:center;line-height:1.3}
+.sec{font-size:18px;margin:22px 0 8px}
+.psel{display:flex;gap:8px;align-items:center;margin:-4px 0 14px;font-size:14px}
+.psel select{font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);flex:1;min-width:0}
+.tabs{overflow-x:auto;scrollbar-width:none}.tabs button{white-space:nowrap;flex:none}
+/* Schreibwerkstatt */
+.formel{background:var(--sun-soft);border-color:var(--sun)}
+.formel-l{margin:8px 0 0;padding-left:22px;line-height:1.7}
+.stepdots{flex-wrap:wrap;gap:6px}
+.stepdots span{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--line);color:var(--muted)}
+.stepdots span.on{background:var(--blue);color:var(--card);font-weight:700} .stepdots span.done{background:var(--blue-soft);color:var(--blue)}
+.wchip small{display:block;font-size:12px;color:var(--muted);font-weight:400}
+.wchip.cright{border-color:var(--ok);background:var(--ok-soft)} .wchip.cwrong{border-color:var(--bad);background:var(--bad-soft)}
+.wchip.cmiss{border-style:dashed;border-color:var(--ok)}
+.wchip.used{border-color:var(--ok);background:var(--ok-soft)} .wchip.used::after{content:" ✓";color:var(--ok)}
+.starter{background:var(--blue-soft);border-color:transparent;color:var(--blue)}
+.kern{background:var(--blue-soft);border-radius:10px;padding:8px 12px;margin-top:10px}
+.kern .kicker{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--blue);margin-right:6px}
+.kobox{margin-top:14px} .kobox textarea{min-height:80px;font-size:16px}
+.lab{font-weight:700;margin:14px 0 6px}
+.checks{list-style:none;padding:0;margin:8px 0;display:flex;flex-direction:column;gap:8px}
+.checks li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px}
+.checks li.ok{background:var(--ok-soft)} .checks li.no{background:var(--bad-soft)}
+.checks .ck{font-weight:700;width:20px;flex:none} .checks li.ok .ck{color:var(--ok)} .checks li.no .ck{color:var(--bad)}
+.checks small{color:var(--muted);font-size:14px}
+mark{background:var(--sun-soft);color:inherit;border-bottom:2px solid var(--sun);padding:0 1px}
+
 /* Elternbereich */
 .parent{font-family:var(--f-ko);font-size:15.5px}
 .parent h2{font-size:19px;margin:26px 0 10px}
@@ -239,7 +282,7 @@ const ICON = {
 
 /* ---------- Speicher ---------- */
 const PKEY = 'forscher-insel-profile-v1';
-const blank = name => ({id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), name:name||'', log:[], free:{}, best:{}, exams:{}, koHint:false, topic:'', created:Date.now(), used:0});
+const blank = name => ({id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6), name:name||'', log:[], free:{}, best:{}, exams:{}, koHint:false, topic:'', writes:[], created:Date.now(), used:0});
 function migrateOne(S){ // v1 (nur Thema Wasser, IDs ohne Präfix) -> v2
   if(!S.exams) S.exams={}; if(S.exam){ S.exams.wasser=S.exam; delete S.exam; }
   const fx=id=> (id && !/^(hoer:|[a-z]+-)/.test(id)) ? ((/^(u10|d\d)$/.test(id))?'demokratie-':'wasser-')+id.replace(/^u10$/,'u1') : id;
@@ -247,6 +290,7 @@ function migrateOne(S){ // v1 (nur Thema Wasser, IDs ohne Präfix) -> v2
   const nf={}; Object.keys(S.free||{}).forEach(k=>nf[fx(k)]=S.free[k]); S.free=nf;
   const nb={}; Object.keys(S.best||{}).forEach(k=>nb[fx(k)]=S.best[k]); S.best=nb;
   if('extra' in S) delete S['extra'];
+  if(!S.writes) S.writes=[];
   return S;
 }
 function loadDB(){
@@ -273,14 +317,15 @@ function avatar(p,size=56){ const i=Math.max(0,DB.profiles.indexOf(p)); const c=
   return `<span class="av" style="width:${size}px;height:${size}px;background:${c};font-size:${Math.round(size*.42)}px" aria-hidden="true">${esc((p.name||'?').charAt(0).toUpperCase())}</span>`; }
 
 /* ---------- Daten aufbereiten ---------- */
-const TOPICS = (window.TOPICS||[]).slice().sort((a,b)=>(a.order||0)-(b.order||0));
+const FORDER=['deutsch','mathe','sachunterricht','englisch','religion','ethik','musik','kunst','sport'];
+const TOPICS = (window.TOPICS||[]).slice().sort((a,b)=>(a.klasse||0)-(b.klasse||0) || FORDER.indexOf(a.fach)-FORDER.indexOf(b.fach) || (a.nr||0)-(b.nr||0));
 const QBY = {}, UBY = {}, GLOSS = {}, TBY = {}, CONCEPTS = {};
 TOPICS.forEach(t=>{ TBY[t.id]=t; Object.assign(CONCEPTS, t.concepts||{});
   t.units.forEach((u,i)=>{ u.id=t.id+'-'+u.id; u.no=i+1; u.tid=t.id; UBY[u.id]=u;
     u.q.forEach(q=>{ q.id=t.id+'-'+q.id; q.u=u.id; q.c=q.c||u.c; QBY[q.id]=q; });
     u.words.forEach(w=>{ const base=w.w.replace(/^(der|die|das)\s+/,''); GLOSS[base.toLowerCase()]=w; w.u=u.id; }); }); });
 const ALLWORDS = TOPICS.flatMap(t=>t.units.flatMap(u=>u.words));
-function cur(){ return TBY[S.topic] || TOPICS.find(t=>t.current) || TOPICS[0]; }
+function cur(){ return TBY[S.topic] || TOPICS.find(t=>t.current) || TOPICS[TOPICS.length-1]; }
 const inTopic = (r,t) => UBY[r.u] && UBY[r.u].tid===t.id;
 
 /* ---------- Hilfen ---------- */
@@ -610,6 +655,257 @@ taps:{
 };
 function initSims(root){ root.querySelectorAll('[data-sim]').forEach(el=>{ const s=SIM[el.dataset.sim]; if(s) s.init(el); }); }
 
+/* ---------- Fächer & Ordnung ---------- */
+const FACH = {
+  deutsch:{de:'Deutsch', ko:'독일어(국어)', c:'var(--bad)'},
+  mathe:{de:'Mathematik', ko:'수학', c:'var(--ok)'},
+  sachunterricht:{de:'Sachunterricht', ko:'사회·과학', c:'var(--blue)'},
+  englisch:{de:'Englisch', ko:'영어', c:'var(--sun)'},
+  religion:{de:'Religion', ko:'종교', c:'var(--muted)'},
+  ethik:{de:'Ethik', ko:'윤리', c:'var(--muted)'},
+  musik:{de:'Musik', ko:'음악', c:'var(--muted)'},
+  kunst:{de:'Kunst / Werken', ko:'미술·공작', c:'var(--muted)'},
+  sport:{de:'Sport', ko:'체육', c:'var(--muted)'}
+};
+const FACH_ORDER = Object.keys(FACH);
+const MAIN_FAECHER = ['deutsch','mathe','sachunterricht'];
+const fachDe = t => (FACH[t.fach]||{de:t.fach||''}).de;
+const fachKo = t => (FACH[t.fach]||{ko:t.fach||''}).ko;
+const topicLabelDe = t => `Klasse ${t.klasse} · ${fachDe(t)} · Thema ${t.nr}`;
+const topicLabelKo = t => `${t.klasse}학년 ${fachKo(t)} ${t.nr}번째`;
+function topicProgress(t){ const n=t.units.length; const done=t.units.filter(u=>starsFor(u.id)>=2).length; return {n,done}; }
+
+/* ---------- Themen-Regal ---------- */
+function regalView(){
+  const T=cur();
+  const klassen=[...new Set(TOPICS.map(t=>t.klasse))].sort((a,b)=>b-a);
+  $app.innerHTML=`<button class="back" id="bk">‹ Zurück</button>
+   <header class="top" style="margin-top:6px"><div><div class="kicker">${esc(S.name)}</div><h1>Meine Themen</h1></div></header>
+   ${klassen.map(k=>{ const ts=TOPICS.filter(t=>t.klasse===k); const sj=ts.find(t=>t.schuljahr);
+     const fs=FACH_ORDER.filter(f=>MAIN_FAECHER.includes(f)||ts.some(t=>t.fach===f));
+     return `<section class="regal"><h2 class="hand regal-k">Klasse ${k}${sj?` <span class="muted" style="font-family:var(--f-body);font-size:15px">Schuljahr ${esc(sj.schuljahr)}</span>`:''}</h2>
+       ${fs.map(f=>{ const list=ts.filter(t=>t.fach===f).sort((a,b)=>a.nr-b.nr);
+         return `<div class="fach"><div class="fach-h"><span class="fdot" style="background:${FACH[f].c}"></span>${esc(FACH[f].de)}</div>
+           ${list.length?`<div class="tlist">${list.map(t=>{ const p=topicProgress(t);
+             return `<button class="tcard ${t.id===T.id?'on':''}" data-topic="${t.id}"><span class="tnr" style="background:${FACH[f].c}">${t.nr}</span>
+               <span style="flex:1;min-width:0"><b>${esc(t.title)}</b><span class="muted">${p.done}/${p.n} Stationen geschafft${t.schreiben&&t.schreiben.length?' · '+t.schreiben.length+' Schreibaufgaben':''}</span></span></button>`;}).join('')}</div>`
+           :`<p class="muted" style="margin:4px 0 0;font-size:15px">Noch keine Themen.</p>`}</div>`; }).join('')}</section>`; }).join('')}`;
+  document.getElementById('bk').onclick=()=>go({name:'home'});
+  $app.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{ S.topic=b.dataset.topic; save(); go({name:'home'}); });
+}
+
+/* ---------- Schreibwerkstatt ---------- */
+const OPS = {
+  nennen:{de:'Nennen', what:'Schreib nur die Namen oder Wörter auf.', ko:'이름이나 단어만 쓰면 돼요.'},
+  beschreiben:{de:'Beschreiben', what:'Schreib der Reihe nach auf, was passiert. Benutze zuerst, dann, danach, zum Schluss.', ko:'일어나는 일을 순서대로 써요. zuerst, dann, danach, zum Schluss를 써요.'},
+  erklaeren:{de:'Erklären / Begründen', what:'Schreib, warum oder wie etwas passiert. Benutze weil, denn oder deshalb.', ko:'왜, 어떻게 일어나는지 써요. weil, denn, deshalb를 써요.'},
+  vergleichen:{de:'Vergleichen', what:'Schreib, was gleich und was anders ist. Benutze aber.', ko:'무엇이 같고 무엇이 다른지 써요. aber를 써요.'}
+};
+const opKey = op => op==='begruenden'?'erklaeren':op;
+const CONN = {
+  erklaeren:['weil','denn','deshalb','darum','dadurch','daher','das heißt','damit','sodass','so dass','wenn'],
+  beschreiben:['zuerst','dann','danach','anschließend','zum schluss','am ende','später','als nächstes'],
+  vergleichen:['aber','während','beide','im gegensatz','genauso','dagegen','anders als','wie'],
+  nennen:[]
+};
+const ALLCONN=[...new Set([...CONN.erklaeren,...CONN.beschreiben,...CONN.vergleichen.filter(w=>w!=='wie')])];
+const STARTERS = {
+  erklaeren:['…, weil …','Deshalb …','Das heißt …','Zum Beispiel …'],
+  beschreiben:['Zuerst …','Dann …','Danach …','Zum Schluss …'],
+  vergleichen:['…, aber …','Beide …','Bei … ist es anders.'],
+  nennen:[],
+  eigene:['Ich habe gelernt, dass …','Wichtig ist: …','…, weil …','Deshalb …','Zum Beispiel …','Das heißt …']
+};
+const norm = s => ' '+String(s).toLowerCase().replace(/[^a-zäöüß0-9]+/g,' ')+' ';
+function hasStem(text, stem){ const t=norm(text); stem=stem.toLowerCase(); return stem.length<=3 ? t.includes(' '+stem) : t.includes(stem); }
+function stemOf(word){ const w=String(word).toLowerCase().replace(/^(der|die|das|sich)\s+/,'').split(/\s+/).sort((a,b)=>b.length-a.length)[0]||'';
+  return w.length<=4? w : w.slice(0, Math.max(4, w.length-3)); }
+function sentences(text){ return String(text).replace(/\s+/g,' ').trim().split(/(?<=[.!?])\s+/).filter(s=>s.split(' ').filter(Boolean).length>=3); }
+function insertAt(ta, str){ const s=ta.selectionStart??ta.value.length, e=ta.selectionEnd??s; const before=ta.value.slice(0,s), after=ta.value.slice(e);
+  const pre = before && !/\s$/.test(before) ? ' ' : ''; ta.value=before+pre+str+after; const pos=(before+pre+str).length; ta.focus(); ta.setSelectionRange(pos,pos); ta.dispatchEvent(new Event('input')); }
+
+function eigeneTask(u){ // aus der Merkkarte automatisch
+  const kw=[]; const seen=new Set();
+  u.merk.forEach(m=>m.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g,(x,txt,key)=>{ const g=GLOSS[(key||txt).toLowerCase()]; const st=stemOf(txt);
+    if(!seen.has(st)){ seen.add(st); kw.push([txt, st, g?g.ko:'']); } }));
+  return {id:'g-'+u.id.split('-').pop(), kind:'g', unit:u.id, op:'eigene', q:`Erkläre „${u.title}“ mit deinen eigenen Worten.`, ko:`"${u.ko}" 내용을 자기 말로 다시 쓰기`,
+    words:kw, src:u.merk, min:Math.min(4, Math.ceil(kw.length*0.5))};
+}
+function tasksFor(T, uid){
+  const e=(T.schreiben||[]).map(w=>Object.assign({kind:'e'}, w, {unit:T.id+'-'+w.unit, key:T.id+'-'+w.id}))
+    .filter(w=>!uid || w.unit===uid);
+  const g=T.units.filter(u=>!uid||u.id===uid).map(u=>Object.assign(eigeneTask(u),{key:T.id+'-g-'+u.id.split('-').pop()}));
+  return {e,g};
+}
+function findTask(key){ for(const T of TOPICS){ const {e,g}=tasksFor(T); const t=[...e,...g].find(x=>x.key===key); if(t) return [T,t]; } return [null,null]; }
+function lastWrite(key){ const w=(S.writes||[]).filter(r=>r.key===key); return w[w.length-1]; }
+
+function checkText(task, text){
+  const op = task.op==='eigene'?'eigene':opKey(task.op);
+  const ss=sentences(text), first=ss[0]||text;
+  const used=task.words.filter(w=>hasStem(text,w[1]));
+  const need= task.min || Math.min(3, task.words.length);
+  const C=[];
+  if(op!=='eigene') C.push({k:'start', ok: (task.qk||[]).some(s=>hasStem(first,s)), de:'Dein erster Satz benutzt Wörter aus der Frage.', tip:`Fang so an: „${task.start||''}“`, ko:'질문의 단어로 첫 문장 시작'});
+  const conns = op==='eigene'?ALLCONN:CONN[op];
+  if(conns.length) C.push({k:'conn', ok: conns.some(c=>norm(text).includes(' '+c+' ')), de: op==='beschreiben'?'Du benutzt zuerst, dann, danach …':op==='vergleichen'?'Du benutzt aber, beide oder genauso.':'Du benutzt weil, denn oder deshalb.',
+    tip: op==='beschreiben'?'Erzähl der Reihe nach: Zuerst … Dann … Danach …':op==='vergleichen'?'Zeig den Unterschied mit „aber“.':'Sag den Grund mit „weil“ oder „denn“.', ko: op==='beschreiben'?'순서 말(zuerst, dann…) 사용':op==='vergleichen'?'비교 말(aber…) 사용':'이유 말(weil, denn…) 사용'});
+  C.push({k:'fach', ok: used.length>=need, de:`Du benutzt mindestens ${need} Fachwörter (${used.length}/${need}).`, tip:'Nimm Wörter aus deinem Wortspeicher.', ko:`전문 용어 ${need}개 이상 사용`});
+  const minS = op==='beschreiben'||op==='eigene'?3:2;
+  C.push({k:'saetze', ok: ss.length>=minS, de:`Du schreibst mindestens ${minS} ganze Sätze (${ss.length}/${minS}).`, tip:'Ein Satz endet mit einem Punkt.', ko:`완전한 문장 ${minS}개 이상`});
+  C.push({k:'gross', ok: ss.length>0 && ss.every(s=>/^[„"]?[A-ZÄÖÜ]/.test(s)), de:'Jeder Satz beginnt mit einem großen Buchstaben.', tip:'Schau dir den Anfang von jedem Satz an.', ko:'문장 첫 글자 대문자'});
+  if(op==='eigene'){ const src=norm(task.src.map(plain).join(' ')).trim().split(' '); const grams=new Set(); for(let i=0;i+5<=src.length;i++) grams.add(src.slice(i,i+5).join(' '));
+    const tw=norm(text).trim().split(' '); let copied=false; for(let i=0;i+5<=tw.length;i++) if(grams.has(tw.slice(i,i+5).join(' '))){ copied=true; break; }
+    C.push({k:'eigen', ok:!copied, de:'Du schreibst mit eigenen Worten und schreibst nicht ab.', tip:'Sag es so, wie du es einem Freund erklären würdest.', ko:'베끼지 않고 자기 말로'}); }
+  return {C, used:used.map(w=>w[0]), score:C.filter(c=>c.ok).length, total:C.length};
+}
+
+function schreibListView(){
+  const T=cur(), uid=view.uid||null, {e,g}=tasksFor(T, uid);
+  const row=t=>{ const l=lastWrite(t.key); const op=t.op==='eigene'?'In eigenen Worten':OPS[opKey(t.op)].de;
+    return `<button class="tcard" data-task="${t.key}"><span class="opb">${esc(op)}</span><span style="flex:1;min-width:0"><b>${esc(t.q)}</b>
+      <span class="muted">${l?`Zuletzt ${l.score}/${l.total} Haken`:'Noch nicht geschrieben'}</span></span>${l?`<span class="stars">${'✓'.repeat(Math.min(3,Math.round(l.score/l.total*3)))}</span>`:''}</button>`; };
+  $app.innerHTML=`<button class="back" id="bk">‹ Zurück</button>
+   <header class="top" style="margin-top:6px"><div><div class="kicker">${esc(topicLabelDe(T))}</div><h1>Schreibwerkstatt</h1></div></header>
+   <div class="qcard formel"><div class="kicker">So schreibst du eine gute Antwort</div>
+    <ol class="formel-l"><li><b>Antwort:</b> Fang mit Wörtern aus der Frage an.</li><li><b>Grund:</b> Sag warum, mit <i>weil</i> oder <i>denn</i>.</li><li><b>Fachwort:</b> Benutze die Wörter aus dem Unterricht.</li></ol>
+    <button class="ko-toggle ko" aria-expanded="${S.koHint}">한국어</button><p class="ko kotext" ${S.koHint?'':'hidden'}>① 질문의 단어로 답을 시작해요. ② weil/denn으로 이유를 써요. ③ 수업에서 배운 전문 용어를 써요.</p></div>
+   ${e.length?`<h2 class="sec">Erklär-Aufgaben</h2><div class="tlist">${e.map(row).join('')}</div>`:''}
+   <h2 class="sec">In eigenen Worten</h2><p class="muted" style="margin:0 0 8px">Lies die Merkkarte. Dann wird sie versteckt und du schreibst sie mit deinen eigenen Worten auf.</p>
+   <div class="tlist">${g.map(t=>`<button class="tcard" data-task="${t.key}"><span class="opb">Station ${UBY[t.unit].no}</span><span style="flex:1;min-width:0"><b>${esc(UBY[t.unit].title)}</b><span class="muted">${(l=>l?`Zuletzt ${l.score}/${l.total} Haken`:'Noch nicht geschrieben')(lastWrite(t.key))}</span></span></button>`).join('')}</div>`;
+  document.getElementById('bk').onclick=()=>go(uid?{name:'unit',id:uid,tab:'schreiben'}:{name:'home'});
+  $app.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>go({name:'stask', key:b.dataset.task, back:view, step:0}));
+  $app.querySelectorAll('.ko-toggle').forEach(b=>b.onclick=()=>{ const p=b.nextElementSibling; p.hidden=!p.hidden; });
+}
+
+function staskView(){
+  const [T,t]=findTask(view.key); if(!t) return go({name:'home'});
+  const st = view.st || (view.st={op:null, picked:[], wcheck:false, kern:null, ko:'', text:'', attempts:0, peek:0, res:null, sid:'w'+Date.now().toString(36), pool:shuffle([...t.words.map(w=>w[0]), ...(t.distract||[])])});
+  const steps = t.kind==='e' ? ['Frage','Wörter','Kern','Schreiben','Prüfen'] : ['Lesen','Stichwörter','Schreiben','Prüfen'];
+  const i=view.step, name=steps[i];
+  const dots=`<div class="dots stepdots">${steps.map((s,k)=>`<span class="${k===i?'on':k<i?'done':''}">${k+1}. ${s}</span>`).join('')}</div>`;
+  const ko = (txt)=>`<button class="ko-toggle ko" aria-expanded="${S.koHint}">한국어</button><p class="ko kotext" ${S.koHint?'':'hidden'}>${esc(txt)}</p>`;
+  const qbox=`<div class="qtext">${spk(t.q)}<span class="txt">${esc(t.q)}</span></div>${ko(t.ko)}`;
+  const need = t.min || Math.min(3, t.words.length);
+  let body='', foot='';
+  const coreSet=new Set(t.words.map(w=>w[0]));
+  if(name==='Frage'){
+    const right=opKey(t.op);
+    body=`${qbox}<p style="font-weight:700;margin:16px 0 8px">Was sollst du hier tun?</p>
+      <div class="opts">${Object.entries(OPS).map(([k,o])=>{ let cls=''; if(st.op){ if(k===right) cls='right'; else if(k===st.op) cls='wrong'; } return `<button class="opt ${cls}" data-op="${k}" ${st.op===right?'disabled':''}>${o.de}</button>`; }).join('')}</div>
+      ${st.op?`<div class="fb ${st.op===right?'ok':'no'}">${st.op===right?'Genau!':'Schau nochmal genau auf die Frage.'}<p>${st.op===right?esc(OPS[right].what):'Bei „Warum“ oder „Wie“ musst du erklären. Bei „Beschreibe“ erzählst du der Reihe nach.'}</p>${st.op===right?`<p class="ko muted" style="margin-top:6px">${esc(OPS[right].ko)}</p>`:''}</div>`:''}`;
+    foot=`<button class="btn" data-next ${st.op===right?'':'disabled'}>Weiter ›</button>`;
+  }
+  if(name==='Wörter'){
+    const okN=st.picked.filter(w=>coreSet.has(w)).length;
+    body=`${qbox}<p style="font-weight:700;margin:16px 0 4px">Welche Wörter brauchst du für die Antwort?</p><p class="muted" style="margin:0 0 8px">Tippe die passenden Wörter an. Sie kommen in deinen Wortspeicher.</p>
+      <div class="bank">${st.pool.map(w=>{ const on=st.picked.includes(w); let cls=''; if(st.wcheck&&on) cls=coreSet.has(w)?'cright':'cwrong'; else if(st.wcheck&&coreSet.has(w)) cls='cmiss';
+        const k=t.words.find(x=>x[0]===w); return `<button class="chip wchip ${cls}" data-pick="${esc(w)}" aria-pressed="${on}">${esc(w)}${st.wcheck&&k?`<small class="ko">${esc(k[2])}</small>`:''}</button>`; }).join('')}</div>
+      ${st.wcheck?`<div class="fb ${okN>=need && st.picked.every(w=>coreSet.has(w))?'ok':'no'}">${okN>=need && st.picked.every(w=>coreSet.has(w))?'Super Wortspeicher!':'Fast!'}<p>${st.picked.some(w=>!coreSet.has(w))?'Rote Wörter passen nicht zu dieser Frage. ':''}${okN<need?`Du brauchst mindestens ${need} passende Wörter. Gestrichelte Wörter fehlen noch.`:''}</p></div>`:''}`;
+    foot = st.wcheck && okN>=need && st.picked.every(w=>coreSet.has(w)) ? `<button class="btn" data-next>Weiter ›</button>` : `<button class="btn" id="wchk" ${st.picked.length?'':'disabled'}>Prüfen</button>`;
+  }
+  if(name==='Kern'){
+    body=`${qbox}<p style="font-weight:700;margin:16px 0 8px">Was ist das Wichtigste? Das ist der Kern deiner Antwort.</p>
+      <div class="opts">${t.kern.o.map((o,k)=>{ let cls=''; if(st.kern!=null){ if(k===t.kern.a) cls='right'; else if(k===st.kern) cls='wrong'; } return `<button class="opt ${cls}" data-kern="${k}" ${st.kern===t.kern.a?'disabled':''}>${esc(o)}</button>`; }).join('')}</div>
+      ${st.kern===t.kern.a?`<div class="kobox"><label for="kothink" class="ko"><b>먼저 한국어로 설명해 봐요</b> <span class="muted">(선택)</span></label>
+        <p class="muted ko" style="margin:2px 0 6px;font-size:14px">생각을 한국어로 정리한 다음 독일어로 쓰면 더 쉬워요.</p><textarea id="kothink" class="ko" rows="3">${esc(st.ko)}</textarea></div>`:''}`;
+    foot=`<button class="btn" data-next ${st.kern===t.kern.a?'':'disabled'}>Weiter ›</button>`;
+  }
+  if(name==='Lesen'){
+    body=`<div class="qtext"><span class="txt">Lies die Merkkarte genau. Danach wird sie versteckt.</span></div>
+      <div class="row" style="justify-content:flex-end;margin:8px 0"><button class="btn ghost" data-speak="${esc(t.src.join(' '))}">Alles vorlesen</button></div>
+      <div class="lined"><ul class="merk">${t.src.map(m=>`<li>${spk(m)}<span class="txt">${rich(m)}</span></li>`).join('')}</ul></div>`;
+    foot=`<button class="btn" data-next>Ich habe alles gelesen ›</button>`;
+  }
+  if(name==='Stichwörter'){
+    body=`<div class="qtext"><span class="txt">Die Merkkarte ist jetzt versteckt. Das sind deine Stichwörter:</span></div>
+      <div class="bank" style="margin:12px 0">${t.words.map(w=>`<button class="chip" data-speak="${esc(w[0])}">${esc(w[0])}${S.koHint&&w[2]?`<small class="ko">${esc(w[2])}</small>`:''}</button>`).join('')}</div>
+      <p>Was weißt du noch? Erzähl es zuerst laut. Benutze die Stichwörter.</p>
+      <div class="kobox"><label for="kothink" class="ko"><b>한국어로 먼저 정리해도 돼요</b> <span class="muted">(선택)</span></label><textarea id="kothink" class="ko" rows="3">${esc(st.ko)}</textarea></div>
+      <div class="row" style="margin-top:10px"><button class="btn ghost" id="peek">${st.showSrc?'Wieder verstecken':'Nochmal kurz lesen'}</button>${st.peek?`<span class="muted">${st.peek}× nachgeschaut</span>`:''}</div>
+      ${st.showSrc?`<div class="lined" style="margin-top:10px"><ul class="merk">${t.src.map(m=>`<li><span class="txt">${rich(m)}</span></li>`).join('')}</ul></div>`:''}`;
+    foot=`<button class="btn" data-next>Jetzt schreiben ›</button>`;
+  }
+  if(name==='Schreiben'){
+    const pool = t.kind==='e' ? t.words.filter(w=>st.picked.includes(w[0])) : t.words;
+    const starters = t.kind==='e' ? [t.start, ...STARTERS[opKey(t.op)]].filter(Boolean) : STARTERS.eigene;
+    body=`${t.kind==='e'?`<div class="qtext" style="font-size:17px">${spk(t.q)}<span class="txt">${esc(t.q)}</span></div><div class="kern"><span class="kicker">Dein Kern</span> ${esc(t.kern.o[t.kern.a])}</div>`
+        :`<div class="qtext" style="font-size:17px"><span class="txt">Schreib mit deinen eigenen Worten: ${esc(UBY[t.unit].title)}</span></div>`}
+      ${st.ko?`<div class="kern ko"><span class="kicker">내 생각</span> ${esc(st.ko)}</div>`:''}
+      <p class="lab">Wortspeicher <span class="muted" id="wcount"></span></p>
+      <div class="bank">${pool.map(w=>`<button class="chip wchip" data-ins="${esc(w[0])}" data-stem="${esc(w[1])}">${esc(w[0])}</button>`).join('')}</div>
+      <p class="lab">Satzanfänge</p>
+      <div class="bank">${starters.map(s=>`<button class="chip starter" data-ins="${esc(s.replace(/\s*…\s*$/,'').replace(/^…\s*/,''))}">${esc(s)}</button>`).join('')}</div>
+      <textarea id="wtext" placeholder="Schreib hier deine Antwort …" style="margin-top:12px;min-height:180px">${esc(st.text)}</textarea>
+      <p class="muted" id="live" style="margin:6px 0 0"></p>`;
+    foot=`<button class="btn" id="wcheck">Prüfen</button>`;
+  }
+  if(name==='Prüfen'){
+    const r=st.res; const all=r.score===r.total;
+    const model = t.kind==='e' ? t.model : null;
+    const hl = s => { let h=esc(s); t.words.forEach(w=>{ h=h.replace(new RegExp('('+w[1].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'[a-zäöüß]*)','gi'),'<mark>$1</mark>'); }); return h; };
+    body=`<div class="result" style="padding:6px 0"><div class="score">${r.score} / ${r.total}</div><p style="font-size:18px;margin:4px 0">${all?'Toll! Alle Haken!':r.score>=r.total-1?'Fast perfekt!':'Guter Anfang! Mach es noch besser.'}</p></div>
+      <ul class="checks">${r.C.map(c=>`<li class="${c.ok?'ok':'no'}"><span class="ck">${c.ok?'✓':'✗'}</span><span>${esc(c.de)}${c.ok?'':`<br><small>${esc(c.tip)}</small>`}</span></li>`).join('')}</ul>
+      <div class="qcard" style="margin-top:12px"><div class="kicker">Dein Text</div><p style="white-space:pre-wrap;margin:6px 0 0">${hl(st.text)}</p></div>
+      ${model?`<div class="model"><div class="row" style="align-items:flex-start">${spk(model)}<span style="flex:1;min-width:0"><b>So kann man es auch schreiben:</b><br>${hl(model)}</span></div>${ko(t.mk)}</div>`
+             :`<div class="model"><b>Die Merkkarte zum Vergleichen:</b><ul class="merk" style="margin-top:6px">${t.src.map(m=>`<li style="line-height:1.5;min-height:0;margin-bottom:6px"><span class="txt">${rich(m)}</span></li>`).join('')}</ul></div>`}
+      <p class="muted" style="font-size:14px">Gelb markiert: deine Fachwörter.</p>`;
+    foot=`${all?'':`<button class="btn sun" id="improve">Verbessern</button>`}<button class="btn ${all?'':'ghost'}" id="done">Fertig</button>`;
+  }
+  $app.innerHTML=`<button class="back" id="bk">‹ Schreibwerkstatt</button>${dots}<div class="qcard">${body}<div class="qfoot">${i>0&&name!=='Prüfen'?`<button class="btn ghost" data-prev>‹ Zurück</button>`:''}${foot}</div></div>`;
+  const back=()=>go(Object.assign({}, view.back||{name:'schreib'}));
+  document.getElementById('bk').onclick=back;
+  bindCommon();
+  $app.querySelectorAll('.ko-toggle').forEach(b=>b.onclick=()=>{ const p=b.nextElementSibling; p.hidden=!p.hidden; });
+  const nx=$app.querySelector('[data-next]'); if(nx) nx.onclick=()=>{ view.step++; render(); window.scrollTo(0,0); };
+  const pv=$app.querySelector('[data-prev]'); if(pv) pv.onclick=()=>{ view.step--; render(); };
+  $app.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{ st.op=b.dataset.op; if(st.op!==opKey(t.op)) st.opTries=(st.opTries||0)+1; render(); });
+  $app.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{ const w=b.dataset.pick; st.wcheck=false; st.picked = st.picked.includes(w)? st.picked.filter(x=>x!==w) : [...st.picked,w]; speak(w); render(); });
+  const wc=document.getElementById('wchk'); if(wc) wc.onclick=()=>{ st.wcheck=true; st.picked=st.picked.filter(w=>coreSet.has(w)).concat(st.picked.filter(w=>!coreSet.has(w))); render(); };
+  $app.querySelectorAll('[data-kern]').forEach(b=>b.onclick=()=>{ st.kern=+b.dataset.kern; render(); });
+  const kt=document.getElementById('kothink'); if(kt) kt.oninput=()=>{ st.ko=kt.value; };
+  const pk=document.getElementById('peek'); if(pk) pk.onclick=()=>{ st.showSrc=!st.showSrc; if(st.showSrc) st.peek++; render(); };
+  const ta=document.getElementById('wtext');
+  if(ta){ const live=()=>{ st.text=ta.value; const r=checkText(t, ta.value); const ss=sentences(ta.value).length;
+      $app.querySelectorAll('.wchip[data-stem]').forEach(c=>c.classList.toggle('used', hasStem(ta.value,c.dataset.stem)));
+      document.getElementById('live').textContent=`Fachwörter: ${r.used.length}/${need} · Sätze: ${ss}`;
+      document.getElementById('wcheck').disabled = ta.value.trim().split(/\s+/).length<4; };
+    ta.oninput=live; live();
+    $app.querySelectorAll('[data-ins]').forEach(b=>b.onclick=()=>insertAt(ta, b.dataset.ins));
+    document.getElementById('wcheck').onclick=()=>{ const r=checkText(t, st.text); st.res=r; st.attempts++;
+      S.writes=S.writes||[]; let rec=S.writes.find(w=>w.sid===st.sid);
+      if(!rec){ rec={sid:st.sid, key:t.key, tid:T.id, u:t.unit, kind:t.kind}; S.writes.push(rec); }
+      Object.assign(rec,{text:st.text.trim(), ko:st.ko.trim(), score:r.score, total:r.total, checks:r.C.map(c=>({k:c.k,ok:c.ok,ko:c.ko})), attempts:st.attempts, peek:st.peek,
+        wrongWords:st.picked.filter(w=>!coreSet.has(w)), opWrong: st.opTries||0, t:Date.now()});
+      if(S.writes.length>500) S.writes=S.writes.slice(-500);
+      save(); view.step++; render(); window.scrollTo(0,0); };
+  }
+  const im=document.getElementById('improve'); if(im) im.onclick=()=>{ view.step--; render(); const a=document.getElementById('wtext'); if(a){ a.focus(); a.setSelectionRange(a.value.length,a.value.length);} };
+  const dn=document.getElementById('done'); if(dn) dn.onclick=back;
+}
+
+/* ---------- Eltern: Schreibwerkstatt ---------- */
+function parentWritingHTML(T){
+  const ws=(S.writes||[]).filter(w=>w.tid===T.id);
+  if(!ws.length) return `<p class="muted" style="margin:0">아직 쓴 글이 없습니다. 아이 화면의 <span class="de">Schreibwerkstatt</span>에서 시작합니다.</p>`;
+  const miss={}; ws.forEach(w=>w.checks.forEach(c=>{ miss[c.ko]=miss[c.ko]||{n:0,m:0}; miss[c.ko].n++; if(!c.ok) miss[c.ko].m++; }));
+  const mrank=Object.entries(miss).map(([k,v])=>({k,p:Math.round(v.m/v.n*100)})).filter(x=>x.p>0).sort((a,b)=>b.p-a.p);
+  const avg=a=>a.length?Math.round(a.reduce((s,w)=>s+w.score/w.total,0)/a.length*100):null;
+  const first=avg(ws.slice(0,3)), last=avg(ws.slice(-3));
+  const byKey=t=>{ const [,task]=findTask(t.key); return task; };
+  return `<div class="kpis" style="margin-bottom:12px"><div class="card kpi"><b>${ws.length}</b><span>쓴 글</span></div>
+     <div class="card kpi"><b>${last}%</b><span>최근 3개 체크 통과율${ws.length>3?` (처음 3개 ${first}%)`:''}</span></div>
+     <div class="card kpi"><b>${(ws.reduce((s,w)=>s+w.attempts,0)/ws.length).toFixed(1)}</b><span>글 하나당 고쳐 쓴 횟수</span></div></div>
+   ${mrank.length?`<p style="margin:0 0 6px;font-weight:700">자주 빠뜨리는 것</p><ul class="obs" style="margin-bottom:12px">${mrank.slice(0,4).map(m=>`<li><span class="pill ${m.p>=50?'p-bad':'p-mid'} de">${m.p}%</span><span>${esc(m.k)}</span></li>`).join('')}</ul>`:''}
+   ${ws.slice().reverse().slice(0,12).map(w=>{ const t=byKey(w)||{}; return `<div class="wrongitem"><div class="muted" style="font-size:13px">${fmt(w.t)} · ${w.kind==='g'?'자기 말로 다시 쓰기':'서술형'} · 고쳐 쓴 횟수 ${w.attempts}${w.peek?` · 원문 다시 봄 ${w.peek}회`:''}</div>
+     <div><b>${esc(t.ko||'')}</b></div>
+     <div class="row" style="gap:4px;margin:4px 0">${w.checks.map(c=>`<span class="pill ${c.ok?'p-ok':'p-bad'}">${c.ok?'✓':'✗'} ${esc(c.ko)}</span>`).join('')}</div>
+     <div class="de" style="background:var(--paper);border-radius:8px;padding:8px 10px;white-space:pre-wrap">${esc(w.text)}</div>
+     ${w.ko?`<div style="margin-top:4px">아이의 한국어 생각: ${esc(w.ko)}</div>`:''}
+     ${w.wrongWords&&w.wrongWords.length?`<div class="muted">처음에 잘못 고른 단어: <span class="de">${esc(w.wrongWords.join(', '))}</span></div>`:''}
+     ${t.model?`<details style="margin-top:4px"><summary class="muted">모범 답안 보기</summary><p class="de" style="margin:4px 0">${esc(t.model)}</p><p style="margin:0">${esc(t.mk||'')}</p></details>`:''}</div>`; }).join('')}`;
+}
+
 /* ---------- Router ---------- */
 let view={name:'who'};
 function go(v){ view=v; if('speechSynthesis' in window) speechSynthesis.cancel(); render(); window.scrollTo(0,0); }
@@ -618,6 +914,9 @@ function render(){
   const v=view.name;
   if(v==='who') return whoView();
   if(v==='home') return home();
+  if(v==='regal') return regalView();
+  if(v==='schreib') return schreibListView();
+  if(v==='stask') return staskView();
   if(v==='unit') return unitView();
   if(v==='quiz') return quizView();
   if(v==='result') return resultView();
@@ -659,16 +958,17 @@ function home(){
   const next = units.find(u=>starsFor(u.id)<2) || units[0];
   $app.innerHTML = `
   <header class="top">
-    <div><div class="kicker">Forscher-Insel · Klasse ${T.klasse||3} · ${esc(T.subject||'Sachunterricht')}</div>
+    <div><div class="kicker">Forscher-Insel</div>
     <div class="row" style="gap:12px;flex-wrap:nowrap">${avatar(S,44)}<h1>Hallo ${esc(S.name)}!</h1></div>
     <button class="swap" id="swap">Nicht ${esc(S.name)}? Wechseln</button></div>
     ${dl!=null && dl>=0 ? `<div class="countdown"><b>${dl}</b>${dl===1?'Tag':'Tage'} bis zum Test</div>`:''}
   </header>
-  ${TOPICS.length>1?`<div class="row" aria-label="Thema" style="margin:-4px 0 14px">${TOPICS.map(t=>`<button class="chip" data-topic="${t.id}" aria-pressed="${t.id===T.id}">${esc(t.title)}</button>`).join('')}</div>`:''}
+  <button class="topicbar" id="regal"><span class="tnr" style="background:${(FACH[T.fach]||{c:'var(--blue)'}).c}">${T.nr||1}</span><span style="flex:1;min-width:0"><span class="kicker">${esc(topicLabelDe(T))}</span><b>${esc(T.title)}</b></span><span class="muted" style="white-space:nowrap">Themen ›</span></button>
   <div class="tiles">
     <button class="tile hl" data-go-unit="${next.id}"><b>Weiterlernen</b><span>${next.no}. ${esc(next.title)}</span></button>
     <button class="tile" id="test"><b>Probetest</b><span>12 gemischte Aufgaben</span></button>
     <button class="tile" id="fehler" ${wrongCount?'':'disabled style="opacity:.55"'}><b>Fehlerkiste</b><span>${wrongCount} Aufgabe${wrongCount===1?'':'n'} nochmal üben</span></button>
+    <button class="tile" id="schreib"><b>Schreibwerkstatt</b><span>Antworten schreiben üben</span></button>
     <button class="tile" id="dict"><b>Wörter hören</b><span>${tw} schwere Wörter mit Ton</span></button>
   </div>
   <h2 class="hand" style="font-size:22px;color:var(--blue);margin:8px 0 6px">Dein Lernweg: ${esc(T.title)}</h2>
@@ -685,6 +985,8 @@ function home(){
   document.getElementById('test').onclick=()=>startQuiz('test');
   const f=document.getElementById('fehler'); if(wrongCount) f.onclick=()=>startQuiz('fehler');
   document.getElementById('dict').onclick=()=>go({name:'dict'});
+  document.getElementById('regal').onclick=()=>go({name:'regal'});
+  document.getElementById('schreib').onclick=()=>go({name:'schreib'});
   document.getElementById('parent').onclick=()=>go({name:'gate'});
   $app.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{ S.topic=b.dataset.topic; save(); render(); });
 }
@@ -699,6 +1001,9 @@ function unitView(){
       <button class="btn ghost" data-speak="${esc(u.merk.join(' '))}">Alles vorlesen</button></div>
       <div class="lined"><ul class="merk">${u.merk.map(m=>`<li>${spk(m)}<span class="txt">${rich(m)}</span></li>`).join('')}</ul></div>
       <div class="qfoot"><button class="btn ghost" data-tab="woerter">Wörter</button><button class="btn" id="start">Jetzt üben</button></div>`;
+  } else if(tab==='schreiben'){
+    const {e,g}=tasksFor(cur(), u.id);
+    body=`<p class="muted">Übe, Antworten in ganzen Sätzen zu schreiben.</p><div class="tlist">${[...e,...g].map(t=>{ const l=lastWrite(t.key); return `<button class="tcard" data-task="${t.key}"><span class="opb">${t.op==='eigene'?'In eigenen Worten':OPS[opKey(t.op)].de}</span><span style="flex:1;min-width:0"><b>${esc(t.op==='eigene'?'Merkkarte mit eigenen Worten':t.q)}</b><span class="muted">${l?`Zuletzt ${l.score}/${l.total} Haken`:'Noch nicht geschrieben'}</span></span></button>`; }).join('')}</div>`;
   } else if(tab==='woerter'){
     body=`<p class="muted">Hör zu und sprich nach. Mit „langsam“ hörst du das Wort ganz deutlich.</p>${wordCards(u.words)}
       <div class="qfoot"><button class="btn" id="start">Jetzt üben</button></div>`;
@@ -708,11 +1013,12 @@ function unitView(){
       <div class="qfoot"><button class="btn" id="start">Los geht’s</button></div>`;
   }
   $app.innerHTML=`<button class="back" id="bk">‹ Zurück</button>
-    <header class="top" style="margin-top:6px"><div><div class="kicker">Station ${u.no}${u.extra?' · Extra':''}</div><h1>${esc(u.title)}</h1><div class="muted">${esc(u.sub)}</div></div>${starHTML(starsFor(u.id))}</header>
-    <div class="tabs" role="tablist">${[...(u.lesson?[['verstehen','Verstehen']]:[]),['lernen','Merken'],['woerter','Wörter'],['ueben','Üben']].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
+    <header class="top" style="margin-top:6px"><div><div class="kicker">${esc(cur().title)} · Station ${u.no}</div><h1>${esc(u.title)}</h1><div class="muted">${esc(u.sub)}</div></div>${starHTML(starsFor(u.id))}</header>
+    <div class="tabs" role="tablist">${[...(u.lesson?[['verstehen','Verstehen']]:[]),['lernen','Merken'],['woerter','Wörter'],['ueben','Üben'],['schreiben','Schreiben']].map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" data-tab="${k}">${l}</button>`).join('')}</div>${body}`;
   document.getElementById('bk').onclick=()=>go({name:'home'});
   $app.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ view.tab=b.dataset.tab; view.step=0; render(); window.scrollTo(0,0); });
   const s=document.getElementById('start'); if(s) s.onclick=()=>startQuiz('practice',u.id);
+  $app.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>go({name:'stask', key:b.dataset.task, back:{name:'unit',id:u.id,tab:'schreiben'}, step:0}));
   $app.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{ view.step=+b.dataset.step; render(); const c=document.getElementById('lcard'); if(c) c.scrollIntoView({block:'start'}); });
   $app.querySelectorAll('.ko-toggle').forEach(b=>b.onclick=()=>{ const p=b.nextElementSibling; p.hidden=!p.hidden; b.setAttribute('aria-expanded',!p.hidden); });
   bindCommon(); initSims($app);
@@ -971,11 +1277,11 @@ function parentView(){
   }
   $app.innerHTML=`<div class="parent">
   <button class="back" id="bk">‹ 아이 화면으로</button>
-  <header class="top" style="margin-top:6px"><div><div class="kicker">부모님 화면 · ${esc(T.subject||'')} · ${T.klasse||''}학년</div><h1 style="font-family:var(--f-ko);font-weight:700;color:var(--ink);font-size:26px">${S.name?esc(S.name)+'의 ':''}${esc(T.ko)} 학습 현황</h1></div>
+  <header class="top" style="margin-top:6px"><div><div class="kicker">부모님 화면 · ${esc(topicLabelKo(T))}</div><h1 style="font-family:var(--f-ko);font-weight:700;color:var(--ink);font-size:26px">${S.name?esc(S.name)+'의 ':''}${esc(T.ko)} 학습 현황</h1></div>
    ${dl!=null&&dl>=0?`<div class="countdown"><b class="de">D-${dl}</b>시험</div>`:''}</header>
 
   ${DB.profiles.length>1?`<div class="row" style="margin:-4px 0 10px"><span class="muted" style="font-size:13px">아이:</span>${DB.profiles.map(p=>`<button class="chip" data-prof="${p.id}" aria-pressed="${p===S}">${esc(p.name)}</button>`).join('')}</div>`:''}
-  ${TOPICS.length>1?`<div class="row" style="margin:-4px 0 14px">${TOPICS.map(t=>`<button class="chip" data-topic="${t.id}" aria-pressed="${t.id===T.id}">${esc(t.ko)}</button>`).join('')}</div>`:''}
+  ${TOPICS.length>1?`<label class="psel">주제 <select id="ptopic">${[...new Set(TOPICS.map(t=>t.klasse))].map(k=>`<optgroup label="${k}학년">${TOPICS.filter(t=>t.klasse===k).map(t=>`<option value="${t.id}" ${t.id===T.id?'selected':''}>${esc(fachKo(t))} ${t.nr}. ${esc(t.ko)}</option>`).join('')}</optgroup>`).join('')}</select></label>`:''}
   <div class="kpis">
     <div class="card kpi"><b>${seen}/${totalQ}</b><span>풀어 본 문제</span></div>
     <div class="card kpi"><b>${seen?Math.round(okN/seen*100)+'%':'–'}</b><span>현재 정답률(문제별 최근 답)</span></div>
@@ -1006,7 +1312,15 @@ function parentView(){
      <div>정답: <span class="de" style="color:var(--ok)">${esc(correctText(q))}</span></div>
      ${q.exk?`<div class="muted">설명: ${esc(q.exk)}</div>`:''}</div>`;}).join('') : '<p class="muted" style="margin:0">틀린 문제가 없습니다.</p>'}</div>
 
-  <h2>서술형 답안</h2>
+  <h2>서술형 연습 (Schreibwerkstatt)</h2>
+  <div class="card">${parentWritingHTML(T)}
+   <details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">집에서 도와주는 방법</summary><ul style="margin:8px 0 0;padding-left:20px">
+    <li>아이가 쓰기 전에 <b>말로 먼저</b> 설명하게 하세요. 부모님이 "왜?"라고 물어 주면 이유가 분명해집니다.</li>
+    <li>한국어로 먼저 생각을 정리해도 괜찮습니다. 다만 독일어로 쓸 때는 공책의 전문 용어를 쓰게 하세요.</li>
+    <li>문법을 다 고칠 필요는 없습니다. ① 질문의 단어로 시작했는지 ② weil/denn이 있는지 ③ 전문 용어를 썼는지만 확인해 주세요.</li>
+    <li>하루 한 문제, 세 문장이면 충분합니다.</li></ul></details></div>
+
+  <h2>퀴즈 속 서술형 답안</h2>
   <div class="card">${units.flatMap(u=>u.q.filter(q=>q.t==='free')).map(q=>{ const f=S.free[q.id];
      return `<div class="wrongitem"><b>${esc(q.ko)}</b><div style="margin-top:4px">${f?`아이 답: <span class="de">${esc(f.text)}</span> <span class="pill ${f.self==='ja'?'p-ok':f.self==='teil'?'p-mid':'p-bad'}">스스로 평가: ${f.self==='ja'?'다 씀':f.self==='teil'?'일부':'못 씀'}</span>`:'<span class="muted">아직 안 씀</span>'}</div>
      <div class="muted" style="margin-top:4px">모범 답안: <span class="de">${esc(q.model)}</span><br>뜻: ${esc(q.mk)}</div></div>`;}).join('')}
@@ -1026,8 +1340,8 @@ function parentView(){
    <p class="muted" style="margin:10px 0 0;font-size:13px">앱 안의 <span class="de">Probetest</span>는 매번 이 주제에서 최대 12문제를 무작위로 냅니다.</p></div>
 
   <h2>전체 주제 요약</h2>
-  <div class="card scroll"><table class="tbl"><thead><tr><th>주제</th><th>배운 시기</th><th>정답률</th><th>시험일</th></tr></thead><tbody>${TOPICS.map(t=>{ const lt=Object.values(L).filter(r=>inTopic(r,t)); const p=lt.length?Math.round(lt.filter(r=>r.ok).length/lt.length*100):null;
-    return `<tr><td><b>${esc(t.ko)}</b><br><span class="de muted" style="font-size:13px">${esc(t.subject||'')} · ${esc(t.title)}</span></td><td>${esc(t.period||'')}</td><td style="white-space:nowrap">${meter(p)}</td><td class="de">${esc(S.exams[t.id]||'–')}</td></tr>`;}).join('')}</tbody></table></div>
+  <div class="card scroll"><table class="tbl"><thead><tr><th>학년·과목·순서</th><th>주제</th><th>배운 시기</th><th>정답률</th><th>시험일</th></tr></thead><tbody>${TOPICS.map(t=>{ const lt=Object.values(L).filter(r=>inTopic(r,t)); const p=lt.length?Math.round(lt.filter(r=>r.ok).length/lt.length*100):null;
+    return `<tr><td style="white-space:nowrap">${t.klasse}학년 · ${esc(fachKo(t))}<br><span class="muted">${t.nr}번째</span></td><td><b>${esc(t.ko)}</b><br><span class="de muted" style="font-size:13px">${esc(t.title)}</span></td><td>${esc(t.period||'')}</td><td style="white-space:nowrap">${meter(p)}</td><td class="de">${esc(S.exams[t.id]||'–')}</td></tr>`;}).join('')}</tbody></table></div>
 
   <h2>설정</h2>
   <div class="card set">
@@ -1043,6 +1357,7 @@ function parentView(){
   </div></div>`;
   bindCommon();
   document.getElementById('bk').onclick=()=>go({name:'home'});
+  const pt=document.getElementById('ptopic'); if(pt) pt.onchange=()=>{ S.topic=pt.value; save(); render(); };
   $app.querySelectorAll('[data-prof]').forEach(b=>b.onclick=()=>{ useProfile(DB.profiles.find(p=>p.id===b.dataset.prof)); render(); });
   document.getElementById('p-del').onclick=()=>{ document.getElementById('p-confirm').hidden=false; };
   document.getElementById('p-no').onclick=()=>{ document.getElementById('p-confirm').hidden=true; };

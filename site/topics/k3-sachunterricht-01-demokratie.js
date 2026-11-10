@@ -1,10 +1,12 @@
-/* Forscher-Insel Thema: Im Dschungel wird gewählt
-   Neue Themen: eine Datei wie diese in site/topics/ ablegen und pushen. Siehe README. */
+/* Forscher-Insel · Klasse 3 · sachunterricht · Thema 1: Im Dschungel wird gewählt
+   Ein Thema = eine Datei. Name: k<Klasse>-<fach>-<Nr>-<name>.js  (siehe site/topics/README.md) */
 (window.TOPICS=window.TOPICS||[]).push({
  "id": "demokratie",
- "order": 10,
- "subject": "Sachunterricht",
+ "fach": "sachunterricht",
  "klasse": 3,
+ "nr": 1,
+ "halbjahr": 1,
+ "schuljahr": "2026/27",
  "title": "Im Dschungel wird gewählt",
  "ko": "민주주의와 선거 (사회)",
  "period": "2026년 9월",
@@ -29,6 +31,113 @@
   ]
  },
  "pdfs": [],
+ "schreiben": [
+  {
+   "id": "s1",
+   "unit": "u1",
+   "op": "erklaeren",
+   "q": "Was ist eine Demokratie? Erkläre.",
+   "ko": "민주주의가 무엇인지 설명하세요.",
+   "qk": [
+    "demokratie"
+   ],
+   "start": "In einer Demokratie …",
+   "words": [
+    [
+     "Mehrheit",
+     "mehrheit",
+     "다수"
+    ],
+    [
+     "wählen",
+     "wähl",
+     "투표하다"
+    ],
+    [
+     "bestimmen",
+     "bestimm",
+     "정하다"
+    ],
+    [
+     "Bevölkerung",
+     "bevölker",
+     "국민"
+    ],
+    [
+     "regieren",
+     "regier",
+     "다스리다"
+    ]
+   ],
+   "distract": [
+    "König",
+    "Wolke"
+   ],
+   "kern": {
+    "o": [
+     "Alle dürfen wählen und die Mehrheit bestimmt.",
+     "Ein König bestimmt alles allein.",
+     "Nur Kinder dürfen wählen."
+    ],
+    "a": 0
+   },
+   "model": "In einer Demokratie bestimmt nicht einer allein. Die Bevölkerung darf wählen. Die Mehrheit bestimmt, wer das Land regiert.",
+   "mk": "민주주의에서는 한 사람이 혼자 정하지 않는다. 국민이 투표하고, 다수가 누가 나라를 다스릴지 정한다."
+  },
+  {
+   "id": "s2",
+   "unit": "u1",
+   "op": "erklaeren",
+   "q": "Warum ist eine Wahl geheim?",
+   "ko": "선거는 왜 비밀이어야 하는지 설명하세요.",
+   "qk": [
+    "wahl",
+    "geheim"
+   ],
+   "start": "Die Wahl ist geheim, damit …",
+   "words": [
+    [
+     "geheim",
+     "geheim",
+     "비밀의"
+    ],
+    [
+     "Stimmzettel",
+     "stimmzettel",
+     "투표용지"
+    ],
+    [
+     "niemand",
+     "niemand",
+     "아무도"
+    ],
+    [
+     "frei",
+     "frei",
+     "자유로운"
+    ],
+    [
+     "wählen",
+     "wähl",
+     "투표하다"
+    ]
+   ],
+   "distract": [
+    "Wolke",
+    "laut"
+   ],
+   "kern": {
+    "o": [
+     "Niemand soll sehen, wen ich wähle. So kann mich niemand zwingen.",
+     "Damit die Wahl schneller geht.",
+     "Damit der Stimmzettel nicht nass wird."
+    ],
+    "a": 0
+   },
+   "model": "Die Wahl ist geheim, damit niemand sieht, wen ich wähle. Deshalb kann mich niemand zwingen oder ärgern. So kann ich frei wählen.",
+   "mk": "선거가 비밀인 것은 내가 누구를 뽑았는지 아무도 모르게 하기 위해서다. 그래서 아무도 강요하거나 괴롭힐 수 없고, 자유롭게 투표할 수 있다."
+  }
+ ],
  "units": [
   {
    "id": "u1",
