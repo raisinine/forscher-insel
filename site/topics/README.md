@@ -17,8 +17,10 @@ PDF 이름도 같은 앞부분을 씁니다: `site/pdf/k3-sachunterricht-02-wass
 - `id` 영문 소문자(바꾸면 학습 기록이 끊김) · `fach` · `klasse` · `nr` · `halbjahr` · `schuljahr` (예: "2026/27")
 - `title`(독일어) · `ko`(한국어) · `period`(배운 시기) · `photos`(분석한 사진) · `current: true`(새 주제를 기본으로 열기)
 - `concepts`, `observations`, `pdfs`
-- `units`: 단원(Station) 목록 — `merk`의 `[[단어]]`는 소리 나는 단어, `lesson`은 Verstehen 카드, `q`는 퀴즈
+- `stories`: 읽기 지문 `{키: {title, p:[문단…]}}` — 학습 카드(`story`), 문제(`st`), 서술형(`st`)에서 불러 씀
+- `units`: 단원(Station) 목록 — `merk`의 `[[단어]]`는 소리 나는 단어, `lesson`은 Verstehen 카드, `q`는 퀴즈(타입: mc, tf, order, sort, match, cloze, free, spell=듣고 쓰기 `a:'정답'`)
 - `schreiben`: 서술형 연습 — `{id, unit, op(nennen|beschreiben|erklaeren|begruenden|vergleichen), q, ko, qk:[질문 단어 어간], start, words:[[단어, 어간, 한국어]], distract:[], kern:{o:[], a}, model, mk}`
+  - `parts`: 한 문제에 질문이 여러 개일 때 `[{de:'질문', k:[어간…]}]` → "모든 질문에 답했는지" 자동 체크
   - "In eigenen Worten"(자기 말로 다시 쓰기)는 각 단원의 Merkkarte에서 자동으로 만들어집니다.
 
 push하면 Actions의 "App und Themen prüfen" 단계가 파일 이름과 내용을 검사합니다.

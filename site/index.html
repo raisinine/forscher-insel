@@ -20,7 +20,7 @@
 /* Layout: ein Schulheft – liniertes Papier, Tintenblau, Sonnengelb als einziger Akzent. Kind: Lernpfad. Eltern: Übersicht. */
 :root{
   --paper:#F3F6FA; --card:#FFFFFF; --ink:#16304F; --muted:#5B6C82; --line:#CBD8E8;
-  --blue:#1D55C4; --blue-soft:#DDE7FA; --water:#8EBAF2; --sun:#F2B705; --sun-soft:#FFF2C4;
+  --blue:#1D55C4; --blue-soft:#DDE7FA; --water:#8EBAF2; --berry:#8E3B8A; --sun:#F2B705; --sun-soft:#FFF2C4;
   --ok:#2C8A57; --ok-soft:#DDF2E5; --bad:#C0453A; --bad-soft:#FBE3E0;
   --f-hand:'Playwrite DE Grund', 'Andika', cursive;
   --f-body:'Andika', 'Segoe UI', system-ui, sans-serif;
@@ -28,11 +28,11 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:#0E1625; --card:#152038; --ink:#E5ECF6; --muted:#97A7BC; --line:#2A3B57;
-  --blue:#86AEFF; --blue-soft:#1C2D4D; --water:#3366B3; --sun:#F5C842; --sun-soft:#3A3115;
+  --blue:#86AEFF; --blue-soft:#1C2D4D; --water:#3366B3; --berry:#D58BD0; --sun:#F5C842; --sun-soft:#3A3115;
   --ok:#62C690; --ok-soft:#173527; --bad:#F2867B; --bad-soft:#3E1F1C; color-scheme:dark}}
 :root[data-theme="dark"]{
   --paper:#0E1625; --card:#152038; --ink:#E5ECF6; --muted:#97A7BC; --line:#2A3B57;
-  --blue:#86AEFF; --blue-soft:#1C2D4D; --water:#3366B3; --sun:#F5C842; --sun-soft:#3A3115;
+  --blue:#86AEFF; --blue-soft:#1C2D4D; --water:#3366B3; --berry:#D58BD0; --sun:#F5C842; --sun-soft:#3A3115;
   --ok:#62C690; --ok-soft:#173527; --bad:#F2867B; --bad-soft:#3E1F1C; color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -226,6 +226,17 @@ textarea{width:100%;min-height:120px;font:inherit;font-size:18px;border:2px soli
 .checks .ck{font-weight:700;width:20px;flex:none} .checks li.ok .ck{color:var(--ok)} .checks li.no .ck{color:var(--bad)}
 .checks small{color:var(--muted);font-size:14px}
 mark{background:var(--sun-soft);color:inherit;border-bottom:2px solid var(--sun);padding:0 1px}
+
+/* Lesetexte & Diktat */
+.story{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:12px 0}
+.story summary{cursor:pointer;line-height:1.5}
+.story .kicker{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-right:4px}
+.spara{display:flex;gap:10px;align-items:flex-start;margin:8px 0}
+.spara p{margin:4px 0 0;flex:1;min-width:0;font-size:17.5px;line-height:1.65}
+.spara .icon-btn{width:30px;height:30px}.spara .icon-btn svg{width:16px;height:16px}
+.spellin{display:block;width:100%;max-width:360px;margin:0 auto;font:inherit;font-size:26px;text-align:center;padding:10px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink)}
+.spellcmp{text-align:center;font-size:24px;margin-top:10px;letter-spacing:.04em}
+.spellcmp .diff{color:var(--bad);text-decoration:underline}
 
 /* Elternbereich */
 .parent{font-family:var(--f-ko);font-size:15.5px}
@@ -657,7 +668,7 @@ function initSims(root){ root.querySelectorAll('[data-sim]').forEach(el=>{ const
 
 /* ---------- Fächer & Ordnung ---------- */
 const FACH = {
-  deutsch:{de:'Deutsch', ko:'독일어(국어)', c:'var(--bad)'},
+  deutsch:{de:'Deutsch', ko:'독일어(국어)', c:'var(--berry)'},
   mathe:{de:'Mathematik', ko:'수학', c:'var(--ok)'},
   sachunterricht:{de:'Sachunterricht', ko:'사회·과학', c:'var(--blue)'},
   englisch:{de:'Englisch', ko:'영어', c:'var(--sun)'},
@@ -751,6 +762,8 @@ function checkText(task, text){
   if(conns.length) C.push({k:'conn', ok: conns.some(c=>norm(text).includes(' '+c+' ')), de: op==='beschreiben'?'Du benutzt zuerst, dann, danach …':op==='vergleichen'?'Du benutzt aber, beide oder genauso.':'Du benutzt weil, denn oder deshalb.',
     tip: op==='beschreiben'?'Erzähl der Reihe nach: Zuerst … Dann … Danach …':op==='vergleichen'?'Zeig den Unterschied mit „aber“.':'Sag den Grund mit „weil“ oder „denn“.', ko: op==='beschreiben'?'순서 말(zuerst, dann…) 사용':op==='vergleichen'?'비교 말(aber…) 사용':'이유 말(weil, denn…) 사용'});
   C.push({k:'fach', ok: used.length>=need, de:`Du benutzt mindestens ${need} Fachwörter (${used.length}/${need}).`, tip:'Nimm Wörter aus deinem Wortspeicher.', ko:`전문 용어 ${need}개 이상 사용`});
+  if(task.parts){ const got=task.parts.filter(p=>p.k.some(k=>hasStem(text,k))).length;
+    C.push({k:'teile', ok: got===task.parts.length, de:`Du beantwortest jede Frage (${got}/${task.parts.length}).`, tip:'Fehlt: '+task.parts.filter(p=>!p.k.some(k=>hasStem(text,k))).map(p=>p.de).join(' '), ko:'모든 질문에 답하기'}); }
   const minS = op==='beschreiben'||op==='eigene'?3:2;
   C.push({k:'saetze', ok: ss.length>=minS, de:`Du schreibst mindestens ${minS} ganze Sätze (${ss.length}/${minS}).`, tip:'Ein Satz endet mit einem Punkt.', ko:`완전한 문장 ${minS}개 이상`});
   C.push({k:'gross', ok: ss.length>0 && ss.every(s=>/^[„"]?[A-ZÄÖÜ]/.test(s)), de:'Jeder Satz beginnt mit einem großen Buchstaben.', tip:'Schau dir den Anfang von jedem Satz an.', ko:'문장 첫 글자 대문자'});
@@ -785,7 +798,7 @@ function staskView(){
   const i=view.step, name=steps[i];
   const dots=`<div class="dots stepdots">${steps.map((s,k)=>`<span class="${k===i?'on':k<i?'done':''}">${k+1}. ${s}</span>`).join('')}</div>`;
   const ko = (txt)=>`<button class="ko-toggle ko" aria-expanded="${S.koHint}">한국어</button><p class="ko kotext" ${S.koHint?'':'hidden'}>${esc(txt)}</p>`;
-  const qbox=`<div class="qtext">${spk(t.q)}<span class="txt">${esc(t.q)}</span></div>${ko(t.ko)}`;
+  const qbox=`<div class="qtext">${spk(t.q)}<span class="txt">${esc(t.q)}</span></div>${ko(t.ko)}${t.st?storyHTML(T.id,t.st,name==='Frage'):''}`;
   const need = t.min || Math.min(3, t.words.length);
   let body='', foot='';
   const coreSet=new Set(t.words.map(w=>w[0]));
@@ -829,7 +842,7 @@ function staskView(){
   if(name==='Schreiben'){
     const pool = t.kind==='e' ? t.words.filter(w=>st.picked.includes(w[0])) : t.words;
     const starters = t.kind==='e' ? [t.start, ...STARTERS[opKey(t.op)]].filter(Boolean) : STARTERS.eigene;
-    body=`${t.kind==='e'?`<div class="qtext" style="font-size:17px">${spk(t.q)}<span class="txt">${esc(t.q)}</span></div><div class="kern"><span class="kicker">Dein Kern</span> ${esc(t.kern.o[t.kern.a])}</div>`
+    body=`${t.kind==='e'?`<div class="qtext" style="font-size:17px">${spk(t.q)}<span class="txt">${esc(t.q)}</span></div>${t.st?storyHTML(T.id,t.st,false):''}<div class="kern"><span class="kicker">Dein Kern</span> ${esc(t.kern.o[t.kern.a])}</div>`
         :`<div class="qtext" style="font-size:17px"><span class="txt">Schreib mit deinen eigenen Worten: ${esc(UBY[t.unit].title)}</span></div>`}
       ${st.ko?`<div class="kern ko"><span class="kicker">내 생각</span> ${esc(st.ko)}</div>`:''}
       <p class="lab">Wortspeicher <span class="muted" id="wcount"></span></p>
@@ -904,6 +917,14 @@ function parentWritingHTML(T){
      ${w.ko?`<div style="margin-top:4px">아이의 한국어 생각: ${esc(w.ko)}</div>`:''}
      ${w.wrongWords&&w.wrongWords.length?`<div class="muted">처음에 잘못 고른 단어: <span class="de">${esc(w.wrongWords.join(', '))}</span></div>`:''}
      ${t.model?`<details style="margin-top:4px"><summary class="muted">모범 답안 보기</summary><p class="de" style="margin:4px 0">${esc(t.model)}</p><p style="margin:0">${esc(t.mk||'')}</p></details>`:''}</div>`; }).join('')}`;
+}
+
+/* ---------- Lesetexte ---------- */
+function storyHTML(tid, sid, open){
+  const T=TBY[tid]; const sto=T&&T.stories&&T.stories[sid]; if(!sto) return '';
+  return `<details class="story" ${open?'open':''}><summary><span class="kicker">Lesetext</span> <b>${esc(sto.title)}</b></summary>
+    <div class="row" style="justify-content:flex-end;margin:6px 0"><button class="btn ghost" data-speak="${esc(sto.title+'. '+sto.p.join(' '))}">Ganzen Text vorlesen</button></div>
+    ${sto.p.map(p=>`<div class="spara">${spk(p)}<p>${esc(p)}</p></div>`).join('')}</details>`;
 }
 
 /* ---------- Router ---------- */
@@ -1029,7 +1050,7 @@ function lessonHTML(u){
   const ko=(t)=>`<button class="ko-toggle ko" aria-expanded="${S.koHint}">한국어</button><p class="ko kotext" ${S.koHint?'':'hidden'}>${esc(t)}</p>`;
   if(i<n){ const st=L.steps[i];
     return `${dots}<div class="qcard lcard" id="lcard"><div class="kicker">Schritt ${i+1} von ${n}</div><h2 class="hand ltitle">${esc(st.t)}</h2>
-      ${st.sim?`<div class="sim fig" data-sim="${st.sim}">${SIM[st.sim].html()}</div>`:st.fig?`<div class="fig">${FIG[st.fig]}</div>`:''}
+      ${st.story?storyHTML(u.tid, st.story, true):''}${st.sim?`<div class="sim fig" data-sim="${st.sim}">${SIM[st.sim].html()}</div>`:st.fig?`<div class="fig">${FIG[st.fig]}</div>`:''}
       <div class="ltext">${spk(st.txt)}<p>${rich(st.txt)}</p></div>${ko(st.ko)}
       <div class="qfoot">${i>0?`<button class="btn ghost" data-step="${i-1}">‹ Zurück</button>`:''}<button class="btn" data-step="${i+1}">Weiter ›</button></div></div>`; }
   return `${dots}<div class="stack" id="lcard">
@@ -1097,6 +1118,7 @@ function newState(q){
   if(q.t==='match') return {sel:{}, rights:shuffle(q.pairs.map(p=>p[1]))};
   if(q.t==='cloze') return {fill:q.ans.map(()=>null), act:0, bank:shuffle(q.bank)};
   if(q.t==='free') return {text:'', shown:false};
+  if(q.t==='spell') return {text:''};
   return {sel:null};
 }
 function quizView(){
@@ -1127,6 +1149,15 @@ function quizView(){
     const used=st.fill.filter(Boolean);
     inner=`<div class="cloze">${html}</div><div class="bank">${st.bank.map(b=>`<button class="chip" data-bank="${esc(b)}" ${checked||used.includes(b)?'disabled':''}>${esc(b)}</button>`).join('')}</div>
       ${checked&&!test?`<p class="muted">Richtig: ${q.ans.map(esc).join(', ')}</p>`:''}`;
+  } else if(q.t==='spell'){
+    let cmp='';
+    if(checked && !test){ const a=q.a, v=st.text.trim(); const A=[...a], B=[...v], D=A.map(()=>Array(B.length+1).fill(0)).concat([Array(B.length+1).fill(0)]);
+      for(let i=A.length-1;i>=0;i--) for(let j=B.length-1;j>=0;j--) D[i][j]= A[i]===B[j]?D[i+1][j+1]+1:Math.max(D[i+1][j],D[i][j+1]);
+      const okc=new Set(); for(let i=0,j=0;i<A.length&&j<B.length;){ if(A[i]===B[j]){ okc.add(i); i++; j++; } else if(D[i+1][j]>=D[i][j+1]) i++; else j++; }
+      cmp=`<div class="spellcmp"><span class="muted">Richtig:</span> ${A.map((c,i)=>`<b class="${okc.has(i)?'':'diff'}">${esc(c)}</b>`).join('')}</div>`; }
+    inner=`<div class="row" style="justify-content:center;margin:14px 0"><button class="btn sun" data-speak="${esc(q.a)}">▶ Anhören</button><button class="btn ghost" data-speak="${esc(q.a)}" data-slow="1">langsam</button></div>
+      <input id="sp-${q.id}" class="spellin" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Schreib das Wort" value="${esc(st.text)}" ${checked?'disabled':''}>
+      ${q.hint&&!checked?`<details class="muted" style="margin-top:8px"><summary>Tipp</summary>${esc(q.hint)}</details>`:''}${cmp}`;
   } else if(q.t==='free'){
     inner=`<textarea id="free-${q.id}" placeholder="Schreibe hier deine Antwort …" ${st.shown?'readonly':''}>${esc(st.text)}</textarea>
       ${st.shown?`<div class="model"><b>So kann man es schreiben:</b><div class="row" style="align-items:flex-start;margin-top:6px">${spk(q.model)}<span style="flex:1;min-width:0">${esc(q.model)}</span></div></div>
@@ -1141,7 +1172,7 @@ function quizView(){
    <div class="qhead"><span class="muted" style="font-size:14px">${esc(title)}</span></div>
    <div class="qhead"><div class="bar"><i style="width:${Q.i/Q.list.length*100}%"></i></div><span class="muted">${Q.i+1}/${Q.list.length}</span></div>
    <div class="qcard"><div class="qtext">${spk(q.q)}<span class="txt">${rich(q.q)}</span></div>
-   ${q.img?`<div class="fig">${FIG[q.img]}</div>`:''}${inner}${fb}
+   ${q.st?storyHTML(UBY[q.u].tid, q.st, !Q.storySeen||Q.storySeen!==q.st):''}${q.img?`<div class="fig">${FIG[q.img]}</div>`:''}${inner}${fb}
    <div class="qfoot">${q.t==='free'? (st.shown?'':`<button class="btn" id="show" ${st.text.trim().length<3?'disabled':''}>Musterlösung zeigen</button>`)
      : checked? `<button class="btn" id="next">${Q.i+1<Q.list.length?'Weiter':'Fertig'}</button>`
      : `<button class="btn" id="check" ${canCheck?'':'disabled'}>${test?'Weiter':'Prüfen'}</button>`}</div></div>`;
@@ -1155,6 +1186,11 @@ function quizView(){
   $app.querySelectorAll('select[data-m]').forEach(s=>s.onchange=()=>{ st.sel[+s.dataset.m]=s.value||undefined; render(); });
   $app.querySelectorAll('[data-blank]').forEach(b=>b.onclick=()=>{ const n=+b.dataset.blank; if(st.fill[n]) st.fill[n]=null; st.act=n; render(); });
   $app.querySelectorAll('[data-bank]').forEach(b=>b.onclick=()=>{ let n=st.act; if(n==null||st.fill[n]) n=st.fill.findIndex(x=>!x); if(n<0) return; st.fill[n]=b.dataset.bank; const nx=st.fill.findIndex(x=>!x); st.act=nx<0?null:nx; render(); });
+  const spi=document.getElementById('sp-'+q.id);
+  if(spi && !checked){ spi.oninput=()=>{ st.text=spi.value; const c=document.getElementById('check'); if(c) c.disabled=!spi.value.trim(); };
+    spi.onkeydown=e=>{ if(e.key==='Enter' && spi.value.trim()){ const c=document.getElementById('check'); if(c) c.click(); } };
+    if(!st.played){ st.played=true; setTimeout(()=>speak(q.a),300); } }
+  $app.querySelectorAll('details.story').forEach(d=>d.ontoggle=()=>{ if(!d.open) Q.storySeen=q.st; });
   const ta=document.getElementById('free-'+q.id);
   if(ta && !st.shown){ ta.oninput=()=>{ st.text=ta.value; const s=document.getElementById('show'); if(s) s.disabled=st.text.trim().length<3; }; }
   const sh=document.getElementById('show'); if(sh) sh.onclick=()=>{ st.shown=true; render(); };
@@ -1171,6 +1207,7 @@ function ready(q,st){
   if(q.t==='sort') return q.items.every((_,i)=>st.sel[i]!=null);
   if(q.t==='match') return q.pairs.every((_,i)=>st.sel[i]);
   if(q.t==='cloze') return st.fill.every(Boolean);
+  if(q.t==='spell') return !!st.text.trim();
   return false;
 }
 function evaluate(q,st){
@@ -1180,6 +1217,7 @@ function evaluate(q,st){
   if(q.t==='sort') return {ok:q.items.every(([_,c],i)=>st.sel[i]===c), ans:q.items.map(([it],i)=>it+': '+q.cats[st.sel[i]]).join(', ')};
   if(q.t==='match') return {ok:q.pairs.every(([_,r],i)=>st.sel[i]===r), ans:q.pairs.map(([l],i)=>l+' = '+st.sel[i]).join('; ')};
   if(q.t==='cloze') return {ok:st.fill.every((v,i)=>v===q.ans[i]), ans:st.fill.join(', ')};
+  if(q.t==='spell') return {ok:st.text.trim()===q.a, ans:st.text.trim()};
 }
 function correctText(q){
   if(q.t==='mc') return q.o[q.a];
@@ -1189,6 +1227,7 @@ function correctText(q){
   if(q.t==='match') return q.pairs.map(p=>p.join(' = ')).join('; ');
   if(q.t==='cloze') return q.ans.join(', ');
   if(q.t==='free') return q.model;
+  if(q.t==='spell') return q.a;
 }
 function resultView(){
   const n=Q.res.length, ok=Q.res.filter(r=>r.ok).length + Q.res.filter(r=>r.part).length*0.5;
